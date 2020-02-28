@@ -1,6 +1,7 @@
 
 export const LOGIN_TO_WAREHOUSE_STARTED = 'LOGIN_ACTION_STARTED';
 export const LOGIN_TO_WAREHOUSE_SUCCESS = 'LOGIN_ACTION_SUCCESS';
+export const LOGIN_TO_WAREHOUSE_REQUEST = 'LOGIN_ACTION_REQUEST';
 export const LOGIN_TO_WAREHOUSE_FAIL = 'LOGIN_ACTION_FAIL';
 
 
@@ -10,6 +11,11 @@ export const doLoginBasicStart = () => ({
 
 export const loginBasicSuccess = (param: any) => ({
     type: LOGIN_TO_WAREHOUSE_SUCCESS,
+    payload: param
+});
+
+export const loginBasicRequest = (param: any) => ({
+    type: LOGIN_TO_WAREHOUSE_REQUEST,
     payload: param
 });
 

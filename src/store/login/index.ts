@@ -16,10 +16,7 @@ const loginReducer = (state: ILogin = initialLoginState, actions: any) => {
         case LOGIN_ACTIONS.LOGIN_TO_WAREHOUSE_FAIL:
             return state;
         case LOGIN_ACTIONS.LOGIN_TO_WAREHOUSE_STARTED:
-            return {
-                ...state,
-                username: actions.payload.username,
-            };
+            return state;
         case LOGIN_ACTIONS.LOGIN_TO_WAREHOUSE_SUCCESS:
             return {
                 ...state,

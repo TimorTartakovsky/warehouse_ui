@@ -1,5 +1,4 @@
-import React from 'react';
-import { LoginPage } from "../components/Auth/Login";
+import LoginPage from "../components/Auth/Login";
 
 export interface IPath {
     path: string;

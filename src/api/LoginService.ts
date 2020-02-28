@@ -5,7 +5,8 @@ export interface ILoginService {
 }
 
 class LoginService extends HttpService implements ILoginService {
-    async login(username: string, password: string): Promise<boolean> {
+    
+    public async login(username: string, password: string): Promise<boolean> {
         try {
             return await this.instance.post(`5e58c2c22f0000a206962111`, {
                 username, password
@@ -18,4 +19,4 @@ class LoginService extends HttpService implements ILoginService {
 
 }
 
-export default LoginService;
+export default new LoginService();
