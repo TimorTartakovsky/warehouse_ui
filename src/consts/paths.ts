@@ -1,4 +1,4 @@
-import LoginPage from "../components/Auth/Login";
+import WareHouseDashboard from '../components/Dashboard';
 
 export interface IPath {
     path: string;
@@ -7,7 +7,7 @@ export interface IPath {
 
 export const ROUTES: IPath[] = [
     {
-        path: '/login',
-        component: LoginPage,
+        path: '/dashboard',
+        component: WareHouseDashboard,
     }
 ]
