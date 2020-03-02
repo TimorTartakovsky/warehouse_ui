@@ -64,6 +64,27 @@ function ApplicationWarehouse() {
       </>
     );
   };
+
+  const pageTransition = {
+    type: 'tween',
+    ease: 'anticipate',
+    duration: 0.4
+  };
+
+  const pageVariants = {
+    initial: {
+      opacity: 0,
+      scale: 0.99
+    },
+    in: {
+      opacity: 1,
+      scale: 1
+    },
+    out: {
+      opacity: 0,
+      scale: 1.01
+    }
+  };
   return (
     <Provider store={store} >
       <BrowserRouter basename="/">
@@ -73,16 +94,20 @@ function ApplicationWarehouse() {
                 <Suspense fallback={<SuspenseLoading />}>
                   <Switch> 
                     <Route path="/login" exact component={LoginPage}/>
-                    {
-                      PATHS.ROUTES.map(
-                        (r: PATHS.IPath) => (<Route key={r.path} path={r.path} exact component={r.component} />))
-                    }
-                    {/* <PresentationLayout> */}
-                      {/* <CollapsedSidebar>
-                      </CollapsedSidebar> */}
-                      {/* <LeftSidebar> */}
-                      {/* </LeftSidebar> */}
-                    {/* </PresentationLayout> */}
+                    <LeftSidebar>
+                      <motion.div
+                        initial="initial"
+                        animate="in"
+                        exit="out"
+                        variants={pageVariants}
+                        transition={pageTransition}
+                      >
+                        {
+                          PATHS.ROUTES.map(
+                            (r: PATHS.IPath) => (<Route key={r.path} path={r.path} exact component={r.component} />))
+                        }
+                      </motion.div>
+                    </LeftSidebar>
                     <Redirect path="*" to="/login" />
                     <Redirect exact from="/" to="/login" />
                   </Switch>
