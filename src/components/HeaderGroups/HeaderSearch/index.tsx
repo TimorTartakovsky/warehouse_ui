@@ -1,5 +1,5 @@
 import React, { Fragment, useRef, useState } from 'react';
-import {dummySearches} from '../helpers';
+
 import {
   ClickAwayListener,
   InputBase,
@@ -15,6 +15,16 @@ import SearchIcon from '@material-ui/icons/Search';
 
 const HeaderSearch = () => {
   const searchRef = useRef(null);
+
+  const dummySearches = [
+    'Analytics',
+    'Sales',
+    'Buttons',
+    'Cards',
+    'Helpdesk',
+    'Projects',
+    'Statistics'
+  ];
 
   const handleSearchChange = (event: any) => {
     setSearchValue(event.target.value);
@@ -36,7 +46,7 @@ const HeaderSearch = () => {
   const [searchValue, setSearchValue] = useState('');
 
   return (
-    <Fragment>
+    <>
       <div className="app-search-wrapper" ref={searchRef}>
         <SearchIcon className="app-search-icon" />
         <InputBase
@@ -75,7 +85,7 @@ const HeaderSearch = () => {
           </Paper>
         </ClickAwayListener>
       </Popper>
-    </Fragment>
+    </>
   );
 };
 

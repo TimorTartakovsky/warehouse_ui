@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { Fragment } from 'react';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
@@ -14,12 +15,14 @@ import {
   Button,
   Divider
 } from '@material-ui/core';
+
 import avatar1 from '../../../assets/images/avatars/avatar1.jpg';
 import avatar2 from '../../../assets/images/avatars/avatar2.jpg';
 import avatar6 from '../../../assets/images/avatars/avatar6.jpg';
 import avatar7 from '../../../assets/images/avatars/avatar7.jpg';
 import people1 from '../../../assets/images/stock-photos/people-1.jpg';
 import people3 from '../../../assets/images/stock-photos/people-3.jpg';
+
 import NotificationsActiveTwoToneIcon from '@material-ui/icons/NotificationsActiveTwoTone';
 import PollTwoToneIcon from '@material-ui/icons/PollTwoTone';
 import PeopleAltTwoToneIcon from '@material-ui/icons/PeopleAltTwoTone';
@@ -27,8 +30,8 @@ import Chart from 'react-apexcharts';
 
 export interface ITabPanel {
     children: React.ReactElement | React.ReactElement[];
-    value: any; // TODO: remove as everywhere
-    index: any; // TODO: remove as everywhere
+    index: any,
+    value: any
 }
 
 const TabPanel = (props: ITabPanel) => {
@@ -45,7 +48,7 @@ const TabPanel = (props: ITabPanel) => {
   );
 }
 
-export default function HeaderDots() {
+const HeaderDots = () => {
   const chart16Options = {
     chart: {
       toolbar: {
@@ -114,21 +117,21 @@ export default function HeaderDots() {
   const [anchorEl2, setAnchorEl2] = React.useState(null);
   const [anchorEl3, setAnchorEl3] = React.useState(null);
 
-  const handleClick1 = (event: any) => {
+  const handleClick1 = (event: any): void => {
     setAnchorEl1(event.currentTarget);
   };
   const handleClose1 = () => {
     setAnchorEl1(null);
   };
 
-  const handleClick2 = (event: any) => {
+  const handleClick2 = (event: any): void => {
     setAnchorEl2(event.currentTarget);
   };
   const handleClose2 = () => {
     setAnchorEl2(null);
   };
 
-  const handleClick3 = (event: any) => {
+  const handleClick3 = (event: any): void => {
     setAnchorEl3(event.currentTarget);
   };
   const handleClose3 = () => {
@@ -141,12 +144,12 @@ export default function HeaderDots() {
 
   const [value, setValue] = React.useState(0);
 
-  const handleChange = (event: any, newValue: number) => {
+  const handleChange = (event: any, newValue: any) => {
     setValue(newValue);
   };
 
   return (
-    <>
+    <Fragment>
       <div className="d-flex align-items-center popover-header-wrapper">
         <Hidden smDown>
           <Box component="span" pr="2">
@@ -531,6 +534,8 @@ export default function HeaderDots() {
           </Popover>
         </Box>
       </div>
-    </>
+    </Fragment>
   );
 }
+
+export default HeaderDots;

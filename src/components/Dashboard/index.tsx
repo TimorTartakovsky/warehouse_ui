@@ -1,12 +1,8 @@
 import React from 'react';
 
-export interface IWareHouseDashboardState {
+export interface IWareHouseDashboardState {}
 
-}
-
-export interface IWareHouseDashboardProps {
-
-}
+export interface IWareHouseDashboardProps {}
 
 class WareHouseDashboard extends React.Component<IWareHouseDashboardProps, IWareHouseDashboardState> {
 

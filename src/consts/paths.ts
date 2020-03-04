@@ -1,4 +1,4 @@
-import WareHouseDashboard from '../components/Dashboard';
+import WareHouseDashboard from '../components/Dashboard/index';
 
 export interface IPath {
     path: string;

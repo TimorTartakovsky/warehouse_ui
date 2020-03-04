@@ -1,11 +1,9 @@
-import React, { Fragment } from 'react';
-
+import React, { Fragment, Dispatch } from 'react';
 import clsx from 'clsx';
-
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { Hidden, Drawer, Paper } from '@material-ui/core';
 
-// import { connect } from 'react-redux';
+import { connect } from 'react-redux';
 
 import SidebarHeader from '../SidebarHeader';
 import SidebarUserbox from '../SidebarUserbox';
@@ -14,15 +12,29 @@ import SidebarFooter from '../SidebarFooter';
 
 import navItems from './navItems';
 
-// import {
-//   setSidebarToggleMobile,
-//   setSidebarHover,
-//   setSidebarToggle,
-//   setSidebarFooter,
-//   setSidebarUserbox
-// } from '../../reducers/ThemeOptions';
+import {
+  setSidebarToggleMobile,
+  setSidebarHover,
+  setSidebarToggle,
+  setSidebarFooter,
+  setSidebarUserbox
+} from '../../../store/theme-options';
+import { IRootState } from '../../../store';
+import { IActionPayload, IActionBasic } from '../../../actions';
 
-const Sidebar = (props: any) => {
+export interface ISidebarProps {
+  setSidebarToggleMobile: (p: boolean) => void;
+  setSidebarHover: (p: boolean) => void;
+  sidebarToggleMobile: boolean;
+  sidebarFixed: boolean;
+  sidebarHover: boolean;
+  sidebarToggle: boolean;
+  sidebarUserbox: boolean;
+  sidebarShadow: boolean;
+  sidebarFooter: boolean;
+}
+
+const Sidebar = (props: ISidebarProps) => {
   const {
     setSidebarToggleMobile,
     sidebarToggleMobile,
@@ -85,8 +97,9 @@ const Sidebar = (props: any) => {
             'app-sidebar-wrapper-fixed': sidebarFixed
           })}
           square
-          // open={sidebarToggle && sidebarToggle}
-          elevation={sidebarShadow ? 11 : 3}>
+          open={sidebarToggle}
+          elevation={sidebarShadow ? 11 : 3}
+        >
           <SidebarHeader />
           <div
             className={clsx({
@@ -105,25 +118,23 @@ const Sidebar = (props: any) => {
   );
 };
 
-// const mapStateToProps = state => ({
-//   sidebarFixed: state.ThemeOptions.sidebarFixed,
-//   headerFixed: state.ThemeOptions.headerFixed,
-//   sidebarToggle: state.ThemeOptions.sidebarToggle,
-//   sidebarHover: state.ThemeOptions.sidebarHover,
-//   sidebarShadow: state.ThemeOptions.sidebarShadow,
-//   sidebarFooter: state.ThemeOptions.sidebarFooter,
-//   sidebarUserbox: state.ThemeOptions.sidebarUserbox,
-//   sidebarToggleMobile: state.ThemeOptions.sidebarToggleMobile
-// });
+const mapStateToProps = (state: IRootState) => ({
+  sidebarFixed: state.theme.sidebarFixed,
+  headerFixed: state.theme.headerFixed,
+  sidebarToggle: state.theme.sidebarToggle,
+  sidebarHover: state.theme.sidebarHover,
+  sidebarShadow: state.theme.sidebarShadow,
+  sidebarFooter: state.theme.sidebarFooter,
+  sidebarUserbox: state.theme.sidebarUserbox,
+  sidebarToggleMobile: state.theme.sidebarToggleMobile
+});
 
-// const mapDispatchToProps = dispatch => ({
-//   setSidebarToggleMobile: enable => dispatch(setSidebarToggleMobile(enable)),
-//   setSidebarToggle: enable => dispatch(setSidebarToggle(enable)),
-//   setSidebarHover: enable => dispatch(setSidebarHover(enable)),
-//   setSidebarFooter: enable => dispatch(setSidebarFooter(enable)),
-//   setSidebarUserbox: enable => dispatch(setSidebarUserbox(enable))
-// });
+const mapDispatchToProps = (dispatch: Dispatch<IActionPayload | IActionBasic>) => ({
+  setSidebarToggleMobile: (enable: boolean) => dispatch(setSidebarToggleMobile(enable)),
+  setSidebarToggle: (enable: boolean) => dispatch(setSidebarToggle(enable)),
+  setSidebarHover: (enable: boolean) => dispatch(setSidebarHover(enable)),
+  setSidebarFooter: (enable: boolean) => dispatch(setSidebarFooter(enable)),
+  setSidebarUserbox: (enable: boolean) => dispatch(setSidebarUserbox(enable))
+});
 
-// export default connect(mapStateToProps, mapDispatchToProps)(Sidebar);
-
-export default Sidebar;
+export default connect(mapStateToProps, mapDispatchToProps)(Sidebar);

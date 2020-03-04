@@ -8,7 +8,7 @@ import EmailIcon from '@material-ui/icons/MailOutlineTwoTone';
 import LockIcon from '@material-ui/icons/LockTwoTone';
 import { connect } from 'react-redux';
 import { LOGIN_ACTIONS, IActionPayload } from '../../actions'
-import { RootState } from '../../store';
+import { IRootState } from '../../store';
 import { withCookies, Cookies } from 'react-cookie';
 import { COOKIE_TOKEN_NAME } from '../../api/HttpService';
 import { RouteChildrenProps } from 'react-router';
@@ -247,7 +247,7 @@ class LoginPage extends React.Component<LoginProps, LoginState> {
    
 } 
 
-const mapStateToProps = (state: RootState) => {
+const mapStateToProps = (state: IRootState) => {
   return {
     username: state.login.username || '',
     isWaiting: state.login.isWaiting,

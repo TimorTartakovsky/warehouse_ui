@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -17,8 +17,8 @@ import {
   Divider
 } from '@material-ui/core';
 
-import avatar1 from '../../../assets/images/avatars/avatar1.jpg';
 import avatar2 from '../../../assets/images/avatars/avatar2.jpg';
+import avatar1 from '../../../assets/images/avatars/avatar1.jpg';
 import avatar6 from '../../../assets/images/avatars/avatar6.jpg';
 import avatar7 from '../../../assets/images/avatars/avatar7.jpg';
 
@@ -86,7 +86,7 @@ function HeaderDrawer() {
   }
 
   return (
-    <>
+    <Fragment>
       <Hidden smDown>
         <Box className="ml-2">
           <Tooltip title="Toggle Drawer" placement="right">
@@ -116,7 +116,7 @@ function HeaderDrawer() {
                     Daily statistics regarding your sales targets
                   </p>
                 </div>
-                <div className="rounded p-4 text-white bg-deep-sky">
+                <div className="rounded p-4 text-`white bg-deep-sky">
                   <div className="d-flex mb-3 justify-content-center">
                     <Circle
                       animate={true} // Boolean: Animated/Static progress
@@ -452,7 +452,7 @@ function HeaderDrawer() {
           </Box>
         </Drawer>
       </Hidden>
-    </>
+    </Fragment>
   );
 }
 

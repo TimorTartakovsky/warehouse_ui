@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -133,11 +133,11 @@ const HeaderMenu = () => {
                   <Divider className="my-3" />
                   <ListItem className="px-0 pb-0">
                     <Button
-                      href="/dashboard"
-                      color="primary"
-                      size="small"
-                      variant="outlined"
-                      className="w-100"
+                        href="/dashboard"
+                        color="primary"
+                        size="small"
+                        variant="outlined"
+                        className="w-100"
                     >
                       <span className="btn-wrapper--label">Learn more</span>
                     </Button>
@@ -207,11 +207,12 @@ const HeaderMenu = () => {
                   <Divider className="my-3" />
                   <ListItem className="px-0 pb-0">
                     <Button
-                      href="/ApplicationsMail"
-                      size="small"
-                      color="primary"
-                      variant="outlined"
-                      className="w-100">
+                        href="/dashboard"
+                        size="small"
+                        color="primary"
+                        variant="outlined"
+                        className="w-100"
+                    >
                       <span className="btn-wrapper--label">Learn more</span>
                     </Button>
                   </ListItem>
@@ -282,7 +283,7 @@ const HeaderMenu = () => {
                   <Divider className="my-3" />
                   <ListItem className="px-0 pb-0">
                     <Button
-                      href="/NavigationMenus"
+                      href="/dashboard"
                       color="primary"
                       size="small"
                       variant="outlined"

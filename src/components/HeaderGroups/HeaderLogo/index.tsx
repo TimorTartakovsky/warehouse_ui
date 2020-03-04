@@ -1,19 +1,20 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 import { Link } from 'react-router-dom';
 import { IconButton, Box } from '@material-ui/core';
 import { connect } from 'react-redux';
 import projectLogo from '../../../assets/images/react.svg';
+import { IRootState } from '../../../store';
 
 export interface IHeaderLogo {
-    sidebarToggle?: boolean;
-    sidebarHover?: boolean;
+    sidebarToggle: boolean;
+    sidebarHover: boolean;
 }
 
-const HeaderLogo = (props: IHeaderLogo) => {
+const HeaderLogo = (props: IHeaderLogo): React.ReactElement => {
   const { sidebarToggle, sidebarHover } = props;
   return (
-    <Fragment>
+    <>
       <div
         className={clsx('app-header-logo', {
           'app-header-logo-close': sidebarToggle,
@@ -37,15 +38,13 @@ const HeaderLogo = (props: IHeaderLogo) => {
           <Box className="header-logo-text">Carolina</Box>
         </Box>
       </div>
-    </Fragment>
+    </>
   );
 };
 
-export default HeaderLogo;
+const mapStateToProps = (state: IRootState) => ({
+  sidebarToggle: state.theme.sidebarToggle,
+  sidebarHover: state.theme.sidebarHover
+});
 
-// const mapStateToProps = state => ({
-//   sidebarToggle: state.ThemeOptions.sidebarToggle,
-//   sidebarHover: state.ThemeOptions.sidebarHover
-// });
-
-// export default connect(mapStateToProps)(HeaderLogo);
+export default connect(mapStateToProps)(HeaderLogo);
