@@ -380,7 +380,7 @@ function ApplicationWarehouse() {
                             animate="in"
                             exit="out"
                             variants={pageVariants}
-                            transition={pageTransition}>
+                            transition={pageTransition}
                           >
                             {
                               PATHS.ROUTES.map(
