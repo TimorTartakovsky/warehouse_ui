@@ -131,10 +131,10 @@ const SidebarUserbox = (props: ISidebarUserboxProps) => {
         />
         <Box className="app-sidebar-userbox-name">
           <Box>
-            <b>Emma Taylor</b>
+            <b>Anders Suarez</b>
           </Box>
           <Box className="app-sidebar-userbox-description">
-            Senior Web Developer
+            CEO
           </Box>
           <Box className="app-sidebar-userbox-btn-profile">
             <Button

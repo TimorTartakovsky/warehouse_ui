@@ -70,12 +70,12 @@ export default function HeaderUserbox() {
               horizontal: 'right'
             }}
             variant="dot">
-            <Avatar sizes="44" alt="Dustin Watson" src={avatar4} />
+            <Avatar sizes="44" alt="Anders Suarez" src={avatar4} />
           </StyledBadge>
         </Box>
         <div className="d-none d-xl-block pl-3">
           <div className="font-weight-bold pt-2 line-height-1">
-            Dustin Watson
+            Anders Suarez
           </div>
           <span className="text-white-50">Senior React Developer</span>
         </div>
@@ -109,15 +109,15 @@ export default function HeaderUserbox() {
                   horizontal: 'right'
                 }}
                 variant="dot">
-                <Avatar sizes="44" alt="Dustin Watson" src={avatar4} />
+                <Avatar sizes="44" alt="Anders Suarez" src={avatar4} />
               </StyledBadge>
             </Box>
             <div className="pl-3 ">
               <div className="font-weight-bold text-center pt-2 line-height-1">
-                Dustin Watson
+                Anders Suarez
               </div>
               <span className="text-black-50 text-center">
-                Senior React Developer
+                CEO
               </span>
             </div>
             <Divider className="w-100 mt-2" />

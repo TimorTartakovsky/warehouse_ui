@@ -404,7 +404,7 @@ const HeaderDots = () => {
                     <Avatar alt="Travis Howard" src={avatar7} />
                   </Badge>
                   <div className="pl-2">
-                    <span className="pb-1 d-block">Emma Taylor</span>
+                    <span className="pb-1 d-block">Anders Suarez</span>
                     <small className="pb-1 text-black-50 d-block">
                       This is an accountant profile
                     </small>
