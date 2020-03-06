@@ -1,22 +1,26 @@
 // SAGA 
 import { takeLatest, put, call, fork } from 'redux-saga/effects';
-import { LOGIN_ACTIONS, IActionPayload } from '../../actions/';
-import LoginService from '../../api/LoginService';
+import { LOGIN_ACTIONS, USER_ACTIONS, IActionPayload } from '../../actions/';
+import UserService from '../../api/UserService';
 
 // GENERATORS START
 function* loginAsync(action: IActionPayload) {
     try {
         yield put(LOGIN_ACTIONS.doLoginBasicStart());
         const { username, password, history } = action.payload;
-        const result = yield call(LoginService.login, username, password);
-        if (result) {
+        const loginResult = yield call(UserService.login, username, password);
+        const userResult =  yield call(UserService.whoAmI);
+        if (loginResult && userResult) {
             yield put(LOGIN_ACTIONS.loginBasicSuccess({ username, password }));
+            yield put(USER_ACTIONS.userRequestWhoAmISuccess(userResult));
             history.push('/dashboard') 
         } else {
-            yield put(LOGIN_ACTIONS.loginBasicFailed());   
+            yield put(LOGIN_ACTIONS.loginBasicFailed());
+            yield put(USER_ACTIONS.userRequestWhoAmIFail(userResult));   
         }
     } catch (e) {
         yield put(LOGIN_ACTIONS.loginBasicFailed());
+        yield put(USER_ACTIONS.userRequestWhoAmIFail(new Error('Failed to login or fetch user.')));  
         console.error(`loginAsync -> login request failed`);
     }
 }
@@ -24,7 +28,7 @@ function* loginAsync(action: IActionPayload) {
 function* tokenAsync(action: IActionPayload) {
     try {
         const { token } = action.payload;
-        const res = yield call(LoginService.verifyToken, token);
+        const res = yield call(UserService.verifyToken, token);
         if (res) {
             yield put(LOGIN_ACTIONS.tokenBasicSuccess(token));
         } else {

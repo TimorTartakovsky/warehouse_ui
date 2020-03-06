@@ -1,11 +1,12 @@
 import HttpService from "./HttpService";
+import { IUser } from "../store/user";
 
-export interface ILoginService {
+export interface IUserService {
     login: (u: string, p: string) => Promise<boolean>;
     verifyToken: (t: string) => Promise<boolean>;
 }
 
-class LoginService extends HttpService implements ILoginService {
+class UserService extends HttpService implements IUserService {
 
     private httpService: HttpService;
     
@@ -27,6 +28,16 @@ class LoginService extends HttpService implements ILoginService {
         }
     };
 
+    public whoAmI = async (): Promise<IUser> => {
+        try {
+            const result = await this.httpService.post(`authMe/me`, {});
+            return result;
+        } catch(e) {
+            console.error(`LoginService -> whoAmI -> failed to fetch user.`);
+            throw new Error(`Cannot find user in the system.`);
+        }
+    }
+
     public verifyToken = async  (token: string): Promise<boolean> => {
         try {
             await this.httpService.get(`equipment/apply/${token}`);
@@ -40,4 +51,4 @@ class LoginService extends HttpService implements ILoginService {
 
 }
 
-export default new LoginService();
+export default new UserService();
