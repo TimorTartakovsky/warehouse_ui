@@ -1,9 +1,10 @@
 import HttpService from "./HttpService";
-import { IUser } from "../store/user";
+import { IUser } from "../store/user/user.types";
 
 export interface IUserService {
     login: (u: string, p: string) => Promise<boolean>;
     verifyToken: (t: string) => Promise<boolean>;
+    whoAmI: () => Promise<IUser>;
 }
 
 class UserService extends HttpService implements IUserService {

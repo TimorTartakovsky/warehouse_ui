@@ -1,5 +1,5 @@
 import { IActionPayload, IActionBasic } from ".";
-import { IUser } from "../store/user";
+import { IUser } from "../store/user/user.types";
 
 export const USER_ACTION_START = 'USER_ACTION_START';
 export const USER_ACTION_REQUEST = 'USER_ACTION_REQUEST';
@@ -20,11 +20,11 @@ export const userRequestWhoAmI = (history: History)
 export const userRequestWhoAmISuccess = (user: IUser)
 : IActionPayload => ({
     type: USER_ACTION_REQUEST_SUCCESS,
-    payload: user,
+    payload: { user },
 });
 
 export const userRequestWhoAmIFail = (error: Error)
 : IActionPayload => ({
     type: USER_ACTION_REQUEST_FAILED,
-    payload: error,
+    payload: { error },
 });

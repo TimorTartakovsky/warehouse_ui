@@ -375,7 +375,9 @@ const ApplicationWarehouse = () => {
                           >
                             {
                               PATHS.ROUTES.map(
-                                (r: PATHS.IPath) => (<Route key={r.path} path={r.path} exact component={r.component} />))
+                                (r: PATHS.IPath) => (
+                                  <Route key={r.path} path={r.path} exact component={() => r.component(r.props)} />)
+                                )
                             }
                           </motion.div>
                         </Switch>

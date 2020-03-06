@@ -1,16 +1,26 @@
 import React from 'react';
-
+import {
+    TableBody,
+    Table,
+    TableCell,
+    TableContainer,
+    TableRow,
+    IconButton,
+    Paper
+  } from '@material-ui/core';
 
 export interface IBOLMonitoring {
 }
 
 const BOLMonitoring = (props: IBOLMonitoring): React.ReactElement => {
     return (
-        <>
-            <div>
-                IBOLMonitoring
-            </div>
-        </>
+        <TableContainer component={Paper}>
+            <Table aria-label="custom pagination table">
+                <TableBody>
+                    Monitoring
+                </TableBody>
+            </Table>
+        </TableContainer>
     )
 
 }
