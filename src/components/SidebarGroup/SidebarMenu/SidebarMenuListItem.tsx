@@ -3,13 +3,14 @@ import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 import { ListItem, Button, Collapse } from '@material-ui/core';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-const CustomRouterLink = forwardRef(function CustomLink(props, ref) {
-  return (
-    <div ref={ref as any} style={{ flexGrow: 1 }}>
-      <NavLink to="#" {...props} />
-    </div>
-  );
-});
+
+// const CustomRouterLink = forwardRef(function CustomLink(props, ref) {
+//   return (
+//     <div ref={ref as any} style={{ flexGrow: 1 }}>
+//       <NavLink to="#" {...props} />
+//     </div>
+//   );
+// });
 
 const SidebarMenuListItem = (props: any) => {
   const {
@@ -72,13 +73,10 @@ const SidebarMenuListItem = (props: any) => {
         className={clsx('app-sidebar-item', className)}
         disableGutters>
         <Button
-        //   activeClassName="active-item"
-        //   color="primary"
-        //   disableRipple
-        //   variant="text"
-        //   className={clsx('app-sidebar-button-wrapper', `depth-${depth}`)}
-        //   component={CustomRouterLink}
-        //   exact
+          color="primary"
+          disableFocusRipple
+          variant="text"
+          className={clsx('app-sidebar-button-wrapper', `depth-${depth}`)}
           style={style}
           href={href}
         >

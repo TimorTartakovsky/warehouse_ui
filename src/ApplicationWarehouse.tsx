@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+import React, { Suspense } from 'react';
 import { BrowserRouter, Switch, Route, useLocation, Redirect } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ThemeProvider } from '@material-ui/styles';
@@ -15,12 +15,7 @@ import rootSaga from './sagas';
 import './ApplicationWarehouse.scss';
 import LoginPage from './components/Auth/Login';
 import { LeftSidebar, MinimalLayout } from './components/Layout';
-
-
 import ScrollToTop from './utils/ScrollToTop';
-import configureStore from './config/configureStore';
-
-
 import './assets/base.scss';
 // TODO: check after what is used after 
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -300,52 +295,48 @@ const store = createStore(rootReducer, composeEnhancers(
 // RUNS REDUX SAGA ON SPECIFIC SAGA
 sagaMiddleware.run(rootSaga);
 
+const SuspenseLoading = () => {
+  return (
+    <>
+      <div className="d-flex align-items-center flex-column vh-100 justify-content-center text-center py-3">
+        <div className="d-flex align-items-center flex-column px-4">
+          <ClimbingBoxLoader color={'#5383ff'} loading={true} />
+        </div>
+        <div className="text-muted font-size-xl text-center pt-3">
+          Please wait while we load the live preview examples
+          <span className="font-size-lg d-block text-dark">
+            This live preview instance can be slower than a real production
+            build!
+          </span>
+        </div>
+      </div>
+    </>
+  );
+};
 
-function ApplicationWarehouse() {
+const pageTransition = {
+  type: 'tween',
+  ease: 'anticipate',
+  duration: 0.4
+};
+
+const pageVariants = {
+  initial: {
+    opacity: 0,
+    scale: 0.99
+  },
+  in: {
+    opacity: 1,
+    scale: 1
+  },
+  out: {
+    opacity: 0,
+    scale: 1.01
+  }
+};
+const ApplicationWarehouse = () => {
   
   // const location = useLocation();
-  
-  const SuspenseLoading = () => {
-    return (
-      <>
-        <div className="d-flex align-items-center flex-column vh-100 justify-content-center text-center py-3">
-          <div className="d-flex align-items-center flex-column px-4">
-            <ClimbingBoxLoader color={'#5383ff'} loading={true} />
-          </div>
-          <div className="text-muted font-size-xl text-center pt-3">
-            Please wait while we load the live preview examples
-            <span className="font-size-lg d-block text-dark">
-              This live preview instance can be slower than a real production
-              build!
-            </span>
-          </div>
-        </div>
-      </>
-    );
-  };
-
-  const pageTransition = {
-    type: 'tween',
-    ease: 'anticipate',
-    duration: 0.4
-  };
-
-  const pageVariants = {
-    initial: {
-      opacity: 0,
-      scale: 0.99
-    },
-    in: {
-      opacity: 1,
-      scale: 1
-    },
-    out: {
-      opacity: 0,
-      scale: 1.01
-    }
-  };
-
-
   return (
     <Provider store={store} >
       <BrowserRouter basename="/">

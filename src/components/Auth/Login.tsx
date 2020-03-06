@@ -119,7 +119,7 @@ class LoginPage extends React.Component<LoginProps, LoginState> {
                           <Grid
                             item
                             xs={12}
-                            lg={3}
+                            lg={4}
                             className="d-none d-xl-flex align-items-center">
                             <img
                               style={{ height: '55px', width: '55px'}}
