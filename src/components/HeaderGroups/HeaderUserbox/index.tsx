@@ -1,7 +1,5 @@
-import React, { Fragment } from 'react';
-
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 import {
   Avatar,
   Box,
@@ -13,7 +11,6 @@ import {
   Tooltip,
   Divider
 } from '@material-ui/core';
-
 import avatar4 from '../../../assets/images/avatars/avatar4.jpg';
 import { withStyles } from '@material-ui/core/styles';
 

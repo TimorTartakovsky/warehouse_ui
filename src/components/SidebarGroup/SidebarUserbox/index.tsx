@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -36,7 +36,7 @@ const SidebarUserbox = (props: ISidebarUserboxProps) => {
   }
 
   return (
-    <Fragment>
+    <>
       <Box
         className={clsx('app-sidebar-userbox', {
           'app-sidebar-userbox--collapsed': sidebarToggle && !sidebarHover
@@ -148,7 +148,7 @@ const SidebarUserbox = (props: ISidebarUserboxProps) => {
           </Box>
         </Box>
       </Box>
-    </Fragment>
+    </>
   );
 };
 

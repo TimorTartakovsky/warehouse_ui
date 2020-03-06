@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -52,7 +52,7 @@ const SidebarCollapsed = (props: any) => {
   const { setSidebarToggleMobile, sidebarToggleMobile } = props;
 
   return (
-    <Fragment>
+    <>
       <Hidden lgUp>
         <Drawer
           anchor="left"
@@ -216,7 +216,7 @@ const SidebarCollapsed = (props: any) => {
           </div>
         </Paper>
       </Hidden>
-    </Fragment>
+    </>
   );
 };
 

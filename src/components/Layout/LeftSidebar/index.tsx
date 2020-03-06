@@ -17,7 +17,7 @@ export interface ILeftSidebar {
 
 const LeftSidebar = (props: ILeftSidebar) => {
   const {
-    children,
+    children = null,
     sidebarToggle,
     sidebarFixed,
     footerFixed,

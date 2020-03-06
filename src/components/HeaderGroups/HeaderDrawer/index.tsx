@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -86,7 +86,7 @@ function HeaderDrawer() {
   }
 
   return (
-    <Fragment>
+    <>
       <Hidden smDown>
         <Box className="ml-2">
           <Tooltip title="Toggle Drawer" placement="right">
@@ -452,7 +452,7 @@ function HeaderDrawer() {
           </Box>
         </Drawer>
       </Hidden>
-    </Fragment>
+    </>
   );
 }
 

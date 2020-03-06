@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -29,13 +29,13 @@ import PeopleAltTwoToneIcon from '@material-ui/icons/PeopleAltTwoTone';
 import Chart from 'react-apexcharts';
 
 export interface ITabPanel {
-    children: React.ReactElement | React.ReactElement[];
+    children?: React.ReactElement | React.ReactElement[];
     index: any,
     value: any
 }
 
 const TabPanel = (props: ITabPanel) => {
-  const { children, value, index, ...other } = props;
+  const { children = null, value, index, ...other } = props;
 
   return (
     <Typography
@@ -149,7 +149,7 @@ const HeaderDots = () => {
   };
 
   return (
-    <Fragment>
+    <>
       <div className="d-flex align-items-center popover-header-wrapper">
         <Hidden smDown>
           <Box component="span" pr="2">
@@ -534,7 +534,7 @@ const HeaderDots = () => {
           </Popover>
         </Box>
       </div>
-    </Fragment>
+    </>
   );
 }
 

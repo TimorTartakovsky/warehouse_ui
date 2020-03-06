@@ -1,4 +1,4 @@
-import React, { Fragment, Dispatch } from 'react';
+import React, { Dispatch } from 'react';
 import clsx from 'clsx';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { Hidden, Drawer, Paper } from '@material-ui/core';
@@ -69,7 +69,7 @@ const Sidebar = (props: ISidebarProps) => {
   );
 
   return (
-    <Fragment>
+    <>
       <Hidden lgUp>
         <Drawer
           anchor="left"
@@ -114,7 +114,7 @@ const Sidebar = (props: ISidebarProps) => {
           </div>
         </Paper>
       </Hidden>
-    </Fragment>
+    </>
   );
 };
 

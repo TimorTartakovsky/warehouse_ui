@@ -1,4 +1,4 @@
-import React, { Fragment, Dispatch } from 'react';
+import React, { Dispatch } from 'react';
 import clsx from 'clsx';
 import { Link } from 'react-router-dom';
 import { Hidden, IconButton, AppBar, Box, Tooltip } from '@material-ui/core';
@@ -48,7 +48,7 @@ const SidebarHeader = (props: ISidebarHeaderProps) => {
   } = props;
 
   return (
-    <Fragment>
+    <>
       <AppBar
         color="secondary"
         className={clsx('app-header', {
@@ -126,7 +126,7 @@ const SidebarHeader = (props: ISidebarHeaderProps) => {
           </Box>
         </Box>
       </AppBar>
-    </Fragment>
+    </>
   );
 };
 

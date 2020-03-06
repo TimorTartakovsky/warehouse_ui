@@ -1,5 +1,4 @@
-import React, { Fragment, useRef, useState } from 'react';
-
+import React, { useRef, useState } from 'react';
 import {
   ClickAwayListener,
   InputBase,
@@ -10,7 +9,6 @@ import {
   ListItemIcon,
   ListItemText
 } from '@material-ui/core';
-
 import SearchIcon from '@material-ui/icons/Search';
 
 const HeaderSearch = () => {

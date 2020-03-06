@@ -1,7 +1,7 @@
 import React from 'react';
 
 export interface IMiniLayout {
-    children: React.ReactElement | React.ReactElement[];
+    children?: React.ReactElement | React.ReactElement[];
 }
 
 const MinimalLayout = (props: IMiniLayout) => {

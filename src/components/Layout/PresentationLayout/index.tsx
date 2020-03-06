@@ -1,7 +1,7 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 const PresentationLayout = (props: any) => {
-  const { children } = props;
+  const { children = null } = props;
 
   return <>{children}</>;
 };

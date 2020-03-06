@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 
 const ScrollToTop = (props: any): React.ReactElement => {
-    const { children, location: { pathname } } = props;  
+    const { children = null, location: { pathname } } = props;  
     useEffect(() => {
         window.scrollTo({
         top: 0,

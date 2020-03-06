@@ -6,6 +6,7 @@ import {
 import logo from '../../assets/images/illustrations/login.svg';
 import EmailIcon from '@material-ui/icons/MailOutlineTwoTone';
 import LockIcon from '@material-ui/icons/LockTwoTone';
+import Code from '@material-ui/icons/Code';
 import { connect } from 'react-redux';
 import { LOGIN_ACTIONS, IActionPayload } from '../../actions'
 import { IRootState } from '../../store';
@@ -49,7 +50,7 @@ class LoginPage extends React.Component<LoginProps, LoginState> {
     }
 
     private async login(): Promise<void> {
-      const { username, cookies, isLoginSucceeded } = this.props;
+      const { username } = this.props;
       const { password } = this.state;
       if (!username) {
         // show exception
@@ -210,7 +211,7 @@ class LoginPage extends React.Component<LoginProps, LoginState> {
                                             onChange={e => this.setToken(e.target.value)}
                                             startAdornment={
                                               <InputAdornment position="start">
-                                                {/* <EmailIcon /> */}
+                                                <Code />
                                               </InputAdornment>
                                             }
                                           />
