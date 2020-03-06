@@ -119,10 +119,10 @@ class LoginPage extends React.Component<LoginProps, LoginState> {
                           <Grid
                             item
                             xs={12}
-                            lg={4}
+                            lg={5}
                             className="d-none d-xl-flex align-items-center">
                             <img
-                              style={{ height: '55px', width: '55px'}}
+                              // style={{ height: '55px', width: '55px'}}
                               alt="warehouse-login-logo"
                               className="w-100 mx-auto d-block img-fluid"
                               src={logo}
@@ -131,7 +131,7 @@ class LoginPage extends React.Component<LoginProps, LoginState> {
                           <Grid
                             item
                             xs={12}
-                            lg={6}
+                            lg={7}
                             className="d-flex flex-column align-items-center">
                             <span className="w-100 text-center text-md-center pb-4">
                               <Typography style={{ paddingTop: '15px', paddingBottom: '15px' }} variant="h4" color="primary">
