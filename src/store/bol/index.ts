@@ -9,24 +9,24 @@ const bolReducer = (state: IBOLState = initBOLState, actions: IActionPayload) =>
         case BOL_ACTIONS.BOL_MONITORING_ACTION_REQUEST_SUCCESS:
             return {
                 ...state,
-                monitoring: actions.payload.monitoring,
+                monitoring: actions.payload && actions.payload.monitoring,
             }
         case BOL_ACTIONS.BOL_MONITORING_ACTION_REQUEST_FAILED:
             return {
                 ...state,
                 isMonitoringBolRequestFailed: true,
-                monitoringBolRequestErrorMessage: actions.payload.error,
+                monitoringBolRequestErrorMessage: actions.payload && actions.payload.error,
             }
         case BOL_ACTIONS.BOL_PROCESSING_ACTION_REQUEST_SUCCESS:
             return {
                 ...state,
-                processing: actions.payload.processing,
+                processing: actions.payload && actions.payload.processing,
             }
         case BOL_ACTIONS.BOL_PROCESSING_ACTION_REQUEST_FAILED:
             return {
                 ...state,
                 isProcessingBolRequestFailed: true,
-                processingBolRequestErrorMessage: actions.payload.error,
+                processingBolRequestErrorMessage: actions.payload && actions.payload.error,
             }
         default: return state;
     }

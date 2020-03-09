@@ -37,7 +37,6 @@ class HttpService implements IHttpService {
             return await this.instance.post(url, body, {
                 headers: {
                     'Content-Type': 'application/json',
-                    // 'Authorization': `Bearer ${this.token}`,
                 }
             });
         }

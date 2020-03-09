@@ -1,4 +1,4 @@
-import { ILocationResponse } from "./location.types";
+import { ILocation } from "./location.types";
 
 export interface IUser {
     id?: number;
@@ -38,7 +38,7 @@ export interface IUserState extends IUser {
     userFailedErrorMessage: string;
     isLocationRequestFailed: boolean;
     locationFailedErrorMessage: string;
-    location?: ILocationResponse | null; 
+    location?: ILocation | null; 
 }
 
 export const initialUserState: IUserState = {

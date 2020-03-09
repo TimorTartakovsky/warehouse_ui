@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import clsx from 'clsx';
 import { ListItem, Button, Collapse } from '@material-ui/core';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import { NavLink } from 'react-router-dom';
 
 // const CustomRouterLink = forwardRef(function CustomLink(props, ref) {
 //   return (
@@ -71,22 +72,23 @@ const SidebarMenuListItem = (props: any) => {
         {...rest}
         className={clsx('app-sidebar-item', className)}
         disableGutters>
-        <Button
-          color="primary"
-          disableFocusRipple
-          variant="text"
-          className={clsx('app-sidebar-button-wrapper', `depth-${depth}`)}
-          style={style}
-          href={href}
-        >
-          {Icon && <Icon className="app-sidebar-icon" />}
-          {title}
-          {Label && (
-            <span className="menu-item-label">
-              <Label />
-            </span>
-          )}
-        </Button>
+        <NavLink to={href}>
+          <Button
+            color="primary"
+            disableFocusRipple
+            variant="text"
+            className={clsx('app-sidebar-button-wrapper', `depth-${depth}`)}
+            style={style}
+          >
+            {Icon && <Icon className="app-sidebar-icon" />}
+            {title}
+            {Label && (
+              <span className="menu-item-label">
+                <Label />
+              </span>
+            )}
+          </Button>
+        </NavLink>
       </ListItem>
     );
   }

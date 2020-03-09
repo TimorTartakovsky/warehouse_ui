@@ -75,7 +75,7 @@ const SidebarHeader = (props: ISidebarHeaderProps) => {
                 </IconButton>
               </Link>
               <Hidden smDown>
-                <Box className="app-logo-text">Carolina</Box>
+                <Box className="app-logo-text">Warehouse</Box>
               </Hidden>
             </Box>
           </Hidden>

@@ -208,62 +208,62 @@ const INIT_OPTIONS_STATE: IThemeOptionState = {
     pageTitleDescription: true
 }
 
-const optionsReducer = (state = INIT_OPTIONS_STATE, action: IActionPayload
-): IThemeOptionState => {
+const optionsReducer = (state = INIT_OPTIONS_STATE, action: IActionPayload)
+: IThemeOptionState => {
   switch (action.type) {
     // Sidebar
 
     case SET_SIDEBAR_SHADOW:
       return {
         ...state,
-        sidebarShadow: action.payload.sidebarShadow
+        sidebarShadow: action.payload && action.payload.sidebarShadow
       };
     case SET_SIDEBAR_FIXED:
       return {
         ...state,
-        sidebarFixed: action.payload.sidebarFixed
+        sidebarFixed: action.payload && action.payload.sidebarFixed
       };
     case SET_SIDEBAR_TOGGLE_MOBILE:
       return {
         ...state,
-        sidebarToggleMobile: action.payload.sidebarToggleMobile
+        sidebarToggleMobile: action.payload && action.payload.sidebarToggleMobile
       };
     case SET_SIDEBAR_FOOTER:
       return {
         ...state,
-        sidebarFooter: action.payload.sidebarFooter
+        sidebarFooter: action.payload && action.payload.sidebarFooter
       };
     case SET_SIDEBAR_TOGGLE:
       return {
         ...state,
-        sidebarToggle: action.payload.sidebarToggle
+        sidebarToggle: action.payload && action.payload.sidebarToggle
       };
     case SET_SIDEBAR_HOVER:
       return {
         ...state,
-        sidebarHover: action.payload.sidebarHover
+        sidebarHover: action.payload && action.payload.sidebarHover
       };
     case SET_SIDEBAR_USERBOX:
       return {
         ...state,
-        sidebarUserbox: action.payload.sidebarUserbox
+        sidebarUserbox: action.payload && action.payload.sidebarUserbox
       };
     // Header
 
     case SET_HEADER_FIXED:
       return {
         ...state,
-        headerFixed: action.payload.headerFixed
+        headerFixed: action.payload && action.payload.headerFixed
       };
     case SET_HEADER_SHADOW:
       return {
         ...state,
-        headerShadow: action.payload.headerShadow
+        headerShadow: action.payload && action.payload.headerShadow
       };
     case SET_HEADER_SEARCH_HOVER:
       return {
         ...state,
-        headerSearchHover: action.payload.headerSearchHover
+        headerSearchHover: action.payload && action.payload.headerSearchHover
       };
 
     // Main content
@@ -271,24 +271,24 @@ const optionsReducer = (state = INIT_OPTIONS_STATE, action: IActionPayload
     case SET_CONTENT_BACKGROUND:
       return {
         ...state,
-        contentBackground: action.payload.contentBackground
+        contentBackground: action.payload && action.payload.contentBackground
       };
     case SET_THEME_CONFIGURATOR_TOGGLE:
       return {
         ...state,
-        themeConfiguratorToggle: action.payload.themeConfiguratorToggle
+        themeConfiguratorToggle: action.payload && action.payload.themeConfiguratorToggle
       };
     // Footer
 
     case SET_FOOTER_FIXED:
       return {
         ...state,
-        footerFixed: action.payload.footerFixed
+        footerFixed: action.payload && action.payload.footerFixed
       };
     case SET_FOOTER_SHADOW:
       return {
         ...state,
-        footerShadow: action.payload.footerShadow
+        footerShadow: action.payload && action.payload.footerShadow
       };
 
     // Page title
@@ -296,32 +296,32 @@ const optionsReducer = (state = INIT_OPTIONS_STATE, action: IActionPayload
     case SET_PAGE_TITLE_STYLE:
       return {
         ...state,
-        pageTitleStyle: action.payload.pageTitleStyle
+        pageTitleStyle: action.payload && action.payload.pageTitleStyle
       };
     case SET_PAGE_TITLE_BACKGROUND:
       return {
         ...state,
-        pageTitleBackground: action.payload.pageTitleBackground
+        pageTitleBackground: action.payload && action.payload.pageTitleBackground
       };
     case SET_PAGE_TITLE_SHADOW:
       return {
         ...state,
-        pageTitleShadow: action.payload.pageTitleShadow
+        pageTitleShadow: action.payload && action.payload.pageTitleShadow
       };
     case SET_PAGE_TITLE_BREADCRUMB:
       return {
         ...state,
-        pageTitleBreadcrumb: action.payload.pageTitleBreadcrumb
+        pageTitleBreadcrumb: action.payload && action.payload.pageTitleBreadcrumb
       };
     case SET_PAGE_TITLE_ICON_BOX:
       return {
         ...state,
-        pageTitleIconBox: action.payload.pageTitleIconBox
+        pageTitleIconBox: action.payload && action.payload.pageTitleIconBox
       };
     case SET_PAGE_TITLE_DESCRIPTION:
       return {
         ...state,
-        pageTitleDescription: action.payload.pageTitleDescription
+        pageTitleDescription: action.payload && action.payload.pageTitleDescription
       };
     default:
       break;

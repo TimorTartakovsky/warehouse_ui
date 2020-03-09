@@ -1,19 +1,15 @@
-import React from 'react';
-import { BrowserRouter} from 'react-router-dom';
-import { Provider } from 'react-redux';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { createStore, applyMiddleware, compose } from 'redux';
-import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
-import { PersistGate } from 'redux-persist/integration/react';
-import rootReducer from './store';
-import createSagaMiddleware from 'redux-saga';
-import rootSaga from './sagas';
+import React, { Suspense} from 'react';
+import { Switch, Route, Redirect, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ThemeProvider } from '@material-ui/styles';
+import { ClimbingBoxLoader } from 'react-spinners';
+import MuiTheme from './styles/theme';
+import { PATHS } from './consts';
 import './ApplicationWarehouse.scss';
-import ScrollToTop from './utils/ScrollToTop';
+import LoginPage from './components/Auth/Login';
+import { LeftSidebar, MinimalLayout } from './components/Layout';
 import './assets/base.scss';
 // TODO: check after what is used after 
-import ApplicationWarehouseRoutes from './Routes';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   fab,
@@ -259,59 +255,101 @@ library.add(
   faSignOutAlt,
   faLink
 );
-// TODO: remove most of it after setup
 
-
-// COVER REACT IN TYPESCRIPT GAP
-declare global {
-  interface Window {
-    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
-  }
-}
-
-// TODO: remove any and use proper types
-const logger = (store: any) => {
-  return (next: any) => {
-    return (action: any) => {
-      console.log(`[WarehouseMiddleWare] Dispatching`, action);
-      next(action);
-    }
-  }
-}
-// USED FOR DEV TOOLS OF THE REDUX
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-const sagaMiddleware = createSagaMiddleware();
-// const enhancer = composeEnhancers(applyMiddleware(sagaMiddleware));
-
-const persistConfig = {
-  key: 'root',
-  storage,
-}
-const persistedReducer = persistReducer(persistConfig, rootReducer);
-const store = createStore(persistedReducer, composeEnhancers(
-  applyMiddleware(sagaMiddleware),
-  applyMiddleware(logger)
-));
-
-const persistor = persistStore(store);
-
-// RUNS REDUX SAGA ON SPECIFIC SAGA
-sagaMiddleware.run(rootSaga);
-
-const ApplicationWarehouse = () => {
+const SuspenseLoading = () => {
   return (
-    <Provider store={store} >
-      <PersistGate loading={null} persistor={persistor}>
-        <BrowserRouter basename="/">
-          <CssBaseline />
-            <ScrollToTop>
-              <ApplicationWarehouseRoutes />
-            </ScrollToTop>
-        </BrowserRouter>
-      </PersistGate>
-    </Provider>
+    <>
+      <div className="d-flex align-items-center flex-column vh-100 justify-content-center text-center py-3">
+        <div className="d-flex align-items-center flex-column px-4">
+          <ClimbingBoxLoader color={'#5383ff'} loading={true} />
+        </div>
+        <div className="text-muted font-size-xl text-center pt-3">
+          Please wait while we load the live preview examples
+          <span className="font-size-lg d-block text-dark">
+            This live preview instance can be slower than a real production
+            build!
+          </span>
+        </div>
+      </div>
+    </>
+  );
+};
+
+const pageTransition = {
+  type: 'tween',
+  ease: 'anticipate',
+  duration: 0.4
+};
+
+const pageVariants = {
+  initial: {
+    opacity: 0,
+    scale: 0.99
+  },
+  in: {
+    opacity: 1,
+    scale: 1
+  },
+  out: {
+    opacity: 0,
+    scale: 1.01
+  }
+};
+
+
+const ApplicationWarehouseRoutes = () => {
+  
+  let location = useLocation();
+  const allRoutes = PATHS.ROUTES.map(r => r.path);
+  return (
+    <ThemeProvider theme={MuiTheme}>
+      <AnimatePresence>
+        <Suspense fallback={<SuspenseLoading />}>
+          <Switch location={location} key={location.pathname}>
+            
+            <Route path={['/login']}>
+              <MinimalLayout>
+                {/* <Switch location={location} key={location.pathname}> */}
+                  <motion.div
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                    variants={pageVariants}
+                    transition={pageTransition}>
+                    <Route path="/login" exact component={LoginPage}/>
+                    {/* <Route path="/PagesError404" component={PagesError404} /> */}
+                  </motion.div>
+                {/* </Switch> */}
+              </MinimalLayout>
+            </Route>
+
+            <Route path={allRoutes}>
+              <LeftSidebar>
+                {/* <Switch location={location} key={location.pathname}> */}
+                  <motion.div
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                    variants={pageVariants}
+                    transition={pageTransition}
+                  >
+                    {
+                      PATHS.ROUTES.map(
+                        (r: PATHS.IPath) => (
+                          <Route key={r.path} path={r.path} exact component={() => r.component(r.props)} />)
+                        )
+                    }
+                  </motion.div>
+                {/* </Switch> */}
+              </LeftSidebar>
+            </Route>
+            <Redirect path="*" to="/login" />
+            <Redirect exact from="/" to="/login" />
+          </Switch>
+        </Suspense>
+      </AnimatePresence>
+  </ThemeProvider>
   );
 }
 
-export default ApplicationWarehouse;
+export default ApplicationWarehouseRoutes;

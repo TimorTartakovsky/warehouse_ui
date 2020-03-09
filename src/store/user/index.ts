@@ -6,7 +6,7 @@ const userReducer = (state: IUserState = initialUserState, actions: IActionPaylo
         case USER_ACTIONS.USER_ACTION_REQUEST:
             return state;
         case USER_ACTIONS.USER_ACTION_REQUEST_SUCCESS:
-            const user = new UserState(actions.payload.user as UserState)
+            const user = actions.payload && new UserState(actions.payload.user as UserState)
             return {
                 ...state,
                 ...user,
@@ -15,7 +15,7 @@ const userReducer = (state: IUserState = initialUserState, actions: IActionPaylo
             return {
                 ...state,
                 isUserRequestFailed: true,
-                userFailedErrorMessage: actions.payload.error
+                userFailedErrorMessage: actions.payload && actions.payload.error
 
             }
         case LOCATION_ACTIONS.LOCATION_ACTION_START:
@@ -23,13 +23,13 @@ const userReducer = (state: IUserState = initialUserState, actions: IActionPaylo
         case LOCATION_ACTIONS.LOCATION_ACTION_REQUEST_SUCCESS:
             return {
                 ...state,
-                location: actions.payload.location,
+                location: actions.payload && actions.payload.location,
             }
         case LOCATION_ACTIONS.LOCATION_ACTION_REQUEST_FAILED:
             return {
                 ...state,
                 isLocationRequestFailed: true,
-                locationFailedErrorMessage: actions.payload.error,
+                locationFailedErrorMessage: actions.payload && actions.payload.error,
             }
         default: return state; 
     }

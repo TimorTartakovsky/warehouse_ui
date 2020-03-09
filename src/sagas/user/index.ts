@@ -4,16 +4,16 @@ import { LOGIN_ACTIONS, USER_ACTIONS, LOCATION_ACTIONS, IActionPayload } from '.
 import UserService from '../../api/UserService';
 import LocationService from '../../api/LocationService';
 import { IUser } from '../../store/user/user.types';
-import { ILocationResponse } from '../../store/user/location.types';
+import { ILocation } from '../../store/user/location.types';
 
 // GENERATORS START
 function* loginAsync(action: IActionPayload) {
     try {
         yield put(LOGIN_ACTIONS.doLoginBasicStart());
-        const { username, password, history } = action.payload;
+        const { username, password, history } = action.payload || {};
         const loginResult = yield call(UserService.login, username, password);
         const userResult: IUser =  yield call(UserService.whoAmI);
-        const location: ILocationResponse = yield call(LocationService.getLocationById, userResult.locationId)
+        const location: ILocation = yield call(LocationService.getLocationById, userResult.locationId)
         if (loginResult && userResult) {
             yield put(LOGIN_ACTIONS.loginBasicSuccess({ username, password }));
             yield put(USER_ACTIONS.userRequestWhoAmISuccess(userResult));
@@ -34,7 +34,7 @@ function* loginAsync(action: IActionPayload) {
 
 function* tokenAsync(action: IActionPayload) {
     try {
-        const { token } = action.payload;
+        const { token } = action.payload || {};
         const res = yield call(UserService.verifyToken, token);
         if (res) {
             yield put(LOGIN_ACTIONS.tokenBasicSuccess(token));

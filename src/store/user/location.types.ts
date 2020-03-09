@@ -10,14 +10,14 @@ export interface IFillRate {
 }
 
 export class FillRate implements IFillRate {
-    id: number = 0;
-    locationId: number = 0;
-    level: number = 0;
-    fillRatePercentage: number = 0;
-    incomingAllocPercentage: number = 0;
-    outgoingAllocPercentage: number = 0;
-    createdAt: Date = new Date();
-    updatedAt: Date = new Date();
+    public readonly id: number = 0;
+    public readonly locationId: number = 0;
+    public readonly level: number = 0;
+    public readonly fillRatePercentage: number = 0;
+    public readonly incomingAllocPercentage: number = 0;
+    public readonly outgoingAllocPercentage: number = 0;
+    public readonly createdAt: Date = new Date();
+    public readonly updatedAt: Date = new Date();
 
     constructor(fr: IFillRate) {
         if (!fr) {
@@ -49,14 +49,14 @@ export interface IDoorSetup {
 }
 
 export class DoorSetup implements IDoorSetup {
-    id: number = 0;
-    locationId: number = 0;
-    dockNumber: number = 0;
-    containerShipment: number = 0;
-    salesShipment: number = 0;
-    transferShipment: number = 0;
-    floorSpace: number = 0;
-    temp: number = 0;
+    public readonly id: number = 0;
+    public readonly locationId: number = 0;
+    public readonly dockNumber: number = 0;
+    public readonly containerShipment: number = 0;
+    public readonly salesShipment: number = 0;
+    public readonly transferShipment: number = 0;
+    public readonly floorSpace: number = 0;
+    public readonly temp: number = 0;
     constructor(ds: IDoorSetup) {
         const {
             id, locationId, dockNumber, containerShipment,
@@ -74,6 +74,43 @@ export class DoorSetup implements IDoorSetup {
 }
 
 export interface IDoorLog {
+    id: number;
+    locationId: number;
+    dockDoorNumber: number;
+    dockUsedFor: number;
+    dockUsedDocNumber: string;
+    dockUsedAddDocId: string;
+    dockSpaceUsedFor: string;
+}
+
+export class DoorLog implements IDoorLog{
+    public readonly id: number = 0;
+    public readonly locationId: number = 0;
+    public readonly dockDoorNumber: number = 0;
+    public readonly dockUsedFor: number = 0;
+    public readonly dockUsedDocNumber: string ='';
+    public readonly dockUsedAddDocId: string ='';
+    public readonly dockSpaceUsedFor: string ='';
+
+    constructor(p: IDoorLog) {
+        const {
+            id, locationId, dockDoorNumber, dockUsedFor,
+            dockUsedDocNumber, dockUsedAddDocId, dockSpaceUsedFor,
+        } = p;
+        this.id = id;
+        this.locationId = locationId;
+        this.dockDoorNumber = dockDoorNumber;
+        this.dockUsedFor = dockUsedFor;
+        this.dockUsedDocNumber = dockUsedDocNumber;
+        this.dockUsedAddDocId = dockUsedAddDocId;
+        this.dockSpaceUsedFor = dockSpaceUsedFor;
+    }
+}
+
+export interface ILocation {
+    fillRate?: Array<IFillRate>;
+    doorSetup?: Array<IDoorSetup>;
+    doorLog?: Array<IDoorLog>;
     name: string;
     shortName: string;
     branchId: number;
@@ -108,41 +145,41 @@ export interface IDoorLog {
     id: number;
 }
 
-export class DoorLog implements IDoorLog {
-    name: string = '';
-    shortName: string= '';
-    branchId: number= 0;
-    bolNumber: number= 0;
-    trNumber: number= 0;
-    address: string= '';
-    city: string = '';
-    country: string= '';
-    state: string= '';
-    bolCompanyName: string= '';
-    zip: string= '';
-    phone: string= '';
-    timezone: number = 0;
-    primaryEmail: string= '';
-    secondaryEmail: string= '';
-    tertiaryEmail: string= '';
-    genericEmail: string= '';
-    callcenterEmail: string= '';
-    archiveEmail: string= '';
-    palletTrigger: number= 0;
-    createdAt: string= '';
-    updatedAt: string= '';
-    opsStartHour: string= '';
-    opsEndHour: string= '';
-    nextBatchNumber: number= 0;
-    pickPercentageQueue: number= 0;
-    packPercentageQueue: number= 0;
-    docks: number = 0;
-    activateLocation: boolean = false;
-    activateSystem: boolean = false;
-    exceptionAccess: boolean = false;
-    id: number= 0;
+export class Location implements ILocation {
+    public readonly name: string = '';
+    public readonly shortName: string= '';
+    public readonly branchId: number= 0;
+    public readonly bolNumber: number= 0;
+    public readonly trNumber: number= 0;
+    public readonly address: string= '';
+    public readonly city: string = '';
+    public readonly country: string= '';
+    public readonly state: string= '';
+    public readonly bolCompanyName: string= '';
+    public readonly zip: string= '';
+    public readonly phone: string= '';
+    public readonly timezone: number = 0;
+    public readonly primaryEmail: string= '';
+    public readonly secondaryEmail: string= '';
+    public readonly tertiaryEmail: string= '';
+    public readonly genericEmail: string= '';
+    public readonly callcenterEmail: string= '';
+    public readonly archiveEmail: string= '';
+    public readonly palletTrigger: number= 0;
+    public readonly createdAt: string= '';
+    public readonly updatedAt: string= '';
+    public readonly opsStartHour: string= '';
+    public readonly opsEndHour: string= '';
+    public readonly nextBatchNumber: number= 0;
+    public readonly pickPercentageQueue: number= 0;
+    public readonly packPercentageQueue: number= 0;
+    public readonly docks: number = 0;
+    public readonly activateLocation: boolean = false;
+    public readonly activateSystem: boolean = false;
+    public readonly exceptionAccess: boolean = false;
+    public readonly id: number= 0;
 
-    constructor(dl: IDoorLog) {
+    constructor(dl: ILocation) {
         if (!dl) {
             return this;
         }
@@ -186,10 +223,4 @@ export class DoorLog implements IDoorLog {
         this.activateSystem = activateSystem;
         this.exceptionAccess = exceptionAccess;
     }
-}
-
-export interface ILocationResponse {
-    fillRate?: Array<IFillRate>;
-    doorSetup?: Array<IDoorSetup>;
-    doorLog?: Array<IDoorLog>;
 }

@@ -47,8 +47,8 @@ const Sidebar = (props: ISidebarProps) => {
     sidebarFooter
   } = props;
 
-  const toggleHoverOn = () => setSidebarHover(true);
-  const toggleHoverOff = () => setSidebarHover(false);
+  // const toggleHoverOn = () => setSidebarHover(true);
+  // const toggleHoverOff = () => setSidebarHover(false);
 
   const closeDrawer = () => setSidebarToggleMobile(!sidebarToggleMobile);
 
@@ -89,8 +89,8 @@ const Sidebar = (props: ISidebarProps) => {
 
       <Hidden mdDown>
         <Paper
-          onMouseEnter={toggleHoverOn}
-          onMouseLeave={toggleHoverOff}
+          // onMouseEnter={toggleHoverOn}
+          // onMouseLeave={toggleHoverOff}
           className={clsx('app-sidebar-wrapper', {
             'app-sidebar-wrapper-close': sidebarToggle,
             'app-sidebar-wrapper-open': sidebarHover,

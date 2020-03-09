@@ -38,6 +38,7 @@ const SidebarUserbox = (props: ISidebarUserboxProps) => {
   return (
     <>
       <Box
+        style={{ marginTop: '74px' }}
         className={clsx('app-sidebar-userbox', {
           'app-sidebar-userbox--collapsed': sidebarToggle && !sidebarHover
         })}>

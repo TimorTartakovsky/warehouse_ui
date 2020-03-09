@@ -10,7 +10,7 @@ export interface IActionBasic extends Action {
 }
 
 export interface IActionPayload extends IActionBasic {
-    payload: {
+    payload?: {
         [k: string]: any;
     }
 }
