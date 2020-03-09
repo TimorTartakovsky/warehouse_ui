@@ -1,19 +1,12 @@
 import React from 'react';
-import clsx from 'clsx';
 import {
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
   Checkbox,
-  Tooltip
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
-import DeleteIcon from '@material-ui/icons/Delete';
-import FilterListIcon from '@material-ui/icons/FilterList';
-import TablePagination from '@material-ui/icons/FilterList';
-import { lighten } from '@material-ui/core/styles';
 
 export enum ETableHeaderOrder {
     asc = 'asc',

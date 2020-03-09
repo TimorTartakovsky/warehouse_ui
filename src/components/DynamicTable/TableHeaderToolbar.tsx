@@ -1,20 +1,10 @@
 import React from 'react';
 import clsx from 'clsx';
 import {
-  TableBody,
-  Table,
-  Switch,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  FormControlLabel,
   Toolbar,
   IconButton,
-  Paper,
   Typography,
-  Checkbox,
-  Tooltip
+  Tooltip,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -63,7 +53,7 @@ const useToolbarStyles = makeStyles(theme => ({
           </Typography>
         ) : (
           <Typography className={classes.title} variant="h6" id="tableTitle">
-            Nutrition
+            No Selected
           </Typography>
         )}
   

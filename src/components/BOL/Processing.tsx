@@ -50,25 +50,27 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
             branchId, 
         });
     }
-
+    
     public render(): React.ReactElement {
         const parsedProcessingArray = (this.props.processing &&
         this.props.processing.length &&
-        this.props.processing.map((process: IBOLProcessing) => ({
-            orderNumber: process.orderNumber,
-            deliveryNumber: process.deliveryNumber,
-            pilot: process.pilot,
-            proNumber: process.proNumber,
-            carrier: process.carrier,
-            freightTerms: process.freightTerms,
-            freightCharges: process.freightCharges,
-            customerName: process.customerName,
-            shipToCity: process.shipToCity,
-            shipToState: process.shipToState,
-            boxes: process.boxes,
-            skid: process.skid,
-            originalWeight: process.originalWeight,
-        }))) || []
+        this.props.processing.map((process: IBOLProcessing) => {
+            return {
+                orderNumber: process.orderNumber,
+                deliveryNumber: process.deliveryNumber,
+                pilot: process.pilot,
+                proNumber: process.proNumber,
+                carrier: process.carrier,
+                freightTerms: process.freightTerms,
+                freightCharges: process.freightCharges,
+                customerName: process.customerName,
+                shipToCity: process.shipToCity,
+                shipToState: process.shipToState,
+                boxes: process.boxes,
+                skid: process.skid,
+                originalWeight: process.originalWeight,
+            }
+        })) || []
         return (
             <DynamicTable
                 headerProperty={'orderNumber'}

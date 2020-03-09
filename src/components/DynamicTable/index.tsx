@@ -2,87 +2,45 @@ import React from 'react';
 import {
   TableBody,
   Table,
-  Switch,
   TableCell,
   TableContainer,
-  TableHead,
   TableRow,
-  FormControlLabel,
-  Toolbar,
-  IconButton,
   Paper,
-  Typography,
   Checkbox,
-  Tooltip
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-// import TableSortLabel from '@material-ui/core/TableSortLabel';
-// import DeleteIcon from '@material-ui/icons/Delete';
-// import FilterListIcon from '@material-ui/icons/FilterList';
-// import TablePagination from '@material-ui/icons/FilterList';
-// import { lighten } from '@material-ui/core/styles';
 import TableHeader, { ETableHeaderOrder } from './TableHeader';
 import TableToolbar from './TableHeaderToolbar';
 
-// const rows: IBOLProcessingCellData[] = [
-//     {
-//         orderNumber: 'TRCG0089',
-//         deliveryNumber: 'TRCG0089',
-//         pilot: '',
-//         proNumber: 'NA',
-//         carrier: 'Not selected',
-//         freightTerms:'Prepaid (Genera Pay)',
-//         freightCharges:'',
-//         customerName: 'EXPRESS BODY PARTS',
-//         shipToCity:'N. HOLLYWOOD',
-//         shipToState: 'CA',
-//         boxes: 175,
-//         skid: 1,
-//         originalWeight: 228,
-//     },
-//     {
-//         orderNumber: 'TRCG0088',
-//         deliveryNumber: 'TRCG0088',
-//         pilot: '',
-//         proNumber: 'NA',
-//         carrier: 'Not selected',
-//         freightTerms:'Prepaid (Genera Pay)',
-//         freightCharges:'',
-//         customerName: 'EXPRESS BODY PARTS',
-//         shipToCity:'N. HOLLYWOOD',
-//         shipToState: 'CA',
-//         boxes: 175,
-//         skid: 1,
-//         originalWeight: 228,
-//     },
-// ];
 
-// function descendingComparator(a, b, orderBy) {
-    //   if (b[orderBy] < a[orderBy]) {
-        //     return -1;
-//   }
-//   if (b[orderBy] > a[orderBy]) {
-    //     return 1;
-    //   }
-    //   return 0;
-    // }
+const descendingComparator = (a: any, b: any, orderBy: string) => {
+  if (b[orderBy] < a[orderBy]) {
+    return -1;
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1;
+  }
+  return 0;
+}
     
-    // function getComparator(order, orderBy) {
-        //   return order === 'desc'
-        //     ? (a, b) => descendingComparator(a, b, orderBy)
-        //     : (a, b) => -descendingComparator(a, b, orderBy);
-        // }
+    
+const getComparator = (order: ETableHeaderOrder, orderBy: string) =>  {
+  return order === 'desc'
+    ? (a: any, b: any) => descendingComparator(a, b, orderBy)
+    : (a: any, b: any) => -descendingComparator(a, b, orderBy);
+}
         
-        // function stableSort(array, comparator) {
-            //   const stabilizedThis = array.map((el, index) => [el, index]);
-            //   stabilizedThis.sort((a, b) => {
-                //     const order = comparator(a[0], b[0]);
-//     if (order !== 0) return order;
-//     return a[1] - b[1];
-//   });
-//   return stabilizedThis.map(el => el[0]);
-// }
-
+const stableSort = (array: Array<any>, comparator: (a:any, b: any) => number) =>  {
+  const stabilizedThis = array.map((el, index) => [el, index]);
+  stabilizedThis.sort((a: any, b: any) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) {
+      return order;
+    }
+    return a[1] - b[1];
+  });
+  return stabilizedThis.map(el => el[0]);
+}
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -125,7 +83,8 @@ const DynamicTable = (props: IDynamicTable) => {
   const rows = props.rows;
   const [order, setOrder] = React.useState(ETableHeaderOrder.asc);
   const [orderBy, setOrderBy] = React.useState('calories');
-  const [selected, setSelected] = React.useState(['']);
+  const defaultSelected: string[] = [];
+  const [selected, setSelected] = React.useState(defaultSelected);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -204,9 +163,9 @@ const DynamicTable = (props: IDynamicTable) => {
             />
             <TableBody>
               {
-                // stableSort(rows, getComparator(order, orderBy))
-                rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index: number) => {
+                stableSort(rows, getComparator(order, orderBy))
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row: any, index: number) => {
                   const isItemSelected = isSelected(row[props.headerProperty]);
                   const labelId = 'enhanced-table-checkbox';
 
@@ -217,6 +176,8 @@ const DynamicTable = (props: IDynamicTable) => {
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
+                      draggable="true"
+                      title={row.remarks || ''}
                       key={row.orderNumber}
                       selected={isItemSelected}>
                       <TableCell padding="checkbox">
