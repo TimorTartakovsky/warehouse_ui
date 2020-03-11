@@ -5,7 +5,7 @@ export interface ILocationService {
     getLocationById: (locationId: number) => Promise<ILocation>;
 }
 
-export class LocationService extends HttpService implements ILocationService {
+class LocationService extends HttpService implements ILocationService {
 
     private httpService: HttpService;
     
@@ -14,7 +14,7 @@ export class LocationService extends HttpService implements ILocationService {
         this.httpService = new HttpService();
     }
 
-    getLocationById = async (locationId: number): Promise<ILocation> => {
+    public getLocationById = async (locationId: number): Promise<ILocation> => {
         try {
             const locationResponse = await this.httpService.get(`location/${locationId}`);
             return locationResponse;
@@ -23,7 +23,7 @@ export class LocationService extends HttpService implements ILocationService {
         }
     }
 
-    getLocations = async (): Promise<ILocation> => {
+    public getLocations = async (): Promise<ILocation> => {
         try {
             const locationResponse = await this.httpService.get(`location`);
             return locationResponse;

@@ -96,8 +96,6 @@ class LoginPage extends React.Component<LoginProps, LoginState> {
     private async sendToken() {
       await this.props.token(this.state.token);
       const { cookies, isTokenExist } = this.props;
-      console.log('cookies: ', cookies)
-      console.log('isTokenExist: ', isTokenExist)
       const isLogin = cookies.get(COOKIE_TOKEN_NAME) || isTokenExist;
       this.setState(p => ({
         ...p,

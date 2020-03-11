@@ -1,5 +1,6 @@
 import WareHouseDashboard from '../components/Dashboard/index';
 import BOL, { EBOLTypes } from '../components/BOL';
+import MonitoringPage from '../components/Monitoring';
 
 export interface IPath {
     path: string;
@@ -29,8 +30,8 @@ export const ROUTES: IPath[] = [
         component: WareHouseDashboard,
     },
     {
-        path: '/monitoring-page',
-        component: WareHouseDashboard,
+        path: '/monitoring',
+        component: MonitoringPage,
     },
     {
         path: '/container-processing',

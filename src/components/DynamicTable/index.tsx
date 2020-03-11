@@ -44,14 +44,20 @@ const stableSort = (array: Array<any>, comparator: (a:any, b: any) => number) =>
 
 const useStyles = makeStyles(theme => ({
     root: {
-        width: '100%'
+        width: '100%',
+        height: '100%',
+        maxHeight: '550px',
+        overflowX: 'hidden',
+        overflowY: 'auto'
     },
     paper: {
         width: '100%',
-    marginBottom: theme.spacing(2)
+        marginBottom: theme.spacing(2)
   },
   table: {
-      minWidth: 750
+      minWidth: 750,
+      height: '100%',
+      maxHeight: '650px',
     },
   visuallyHidden: {
       border: 0,
@@ -87,7 +93,7 @@ const DynamicTable = (props: IDynamicTable) => {
   const [selected, setSelected] = React.useState(defaultSelected);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(rows.length); //implement pagination
 
   const handleRequestSort = (event: any, property: string) => {
     const isAsc = orderBy === property && order === ETableHeaderOrder.asc;
@@ -149,7 +155,7 @@ const DynamicTable = (props: IDynamicTable) => {
           <Table
             className={classes.table}
             aria-labelledby="tableTitle"
-            size={dense ? 'small' : 'medium'}
+            size="small"
             aria-label="enhanced table">
             <TableHeader
               classes={classes}
@@ -178,7 +184,7 @@ const DynamicTable = (props: IDynamicTable) => {
                       tabIndex={-1}
                       draggable="true"
                       title={row.remarks || ''}
-                      key={row.orderNumber}
+                      key={index}
                       selected={isItemSelected}>
                       <TableCell padding="checkbox">
                         <Checkbox
@@ -190,12 +196,12 @@ const DynamicTable = (props: IDynamicTable) => {
                          <>
                             {
                                 Object.keys(row).map(
-                                    (k: string) => {
+                                    (k: string, index: number) => {
                                         const copyRow: any = row;
                                         const value = copyRow[k];
                                         return (
                                         <TableCell
-                                            key={k}
+                                            key={index}
                                             component="th"
                                             id={labelId}
                                             scope="row"
@@ -207,15 +213,6 @@ const DynamicTable = (props: IDynamicTable) => {
                                     }
                                 )
                             }
-                            <TableCell
-                                key={index}
-                                component="th"
-                                id={labelId}
-                                scope="row"
-                                padding="none"
-                            >
-                                Actions
-                            </TableCell>
                          </>
                       }
                     </TableRow>

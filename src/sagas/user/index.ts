@@ -58,9 +58,9 @@ function* watchUserToken() {
 }
 // WATCHERS END
 
-const loginSagas = [
+const userSagas = [
     fork(watchUserLogin),
     fork(watchUserToken),
 ];
 
-export default loginSagas;
+export default userSagas;

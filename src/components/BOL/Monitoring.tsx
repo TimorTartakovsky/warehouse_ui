@@ -41,7 +41,8 @@ class BOLMonitoring extends React.Component<IBOLMonitoringProps, IBOLMonitoringS
             skids: monitoring.skids, 
             revisedWeight: monitoring.revisedWeight,
             checkedDate: monitoring.checkedDate, 
-            bolStatus: monitoring.bolStatus, 
+            bolStatus: monitoring.bolStatus,
+            actions: 'actions',
         }))) || []
         return (
             <DynamicTable

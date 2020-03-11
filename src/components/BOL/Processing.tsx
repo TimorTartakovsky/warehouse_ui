@@ -69,6 +69,7 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                 boxes: process.boxes,
                 skid: process.skid,
                 originalWeight: process.originalWeight,
+                actions: 'actions',
             }
         })) || []
         return (

@@ -122,7 +122,7 @@ export default [
       {
         "label": "Monitoring Page",
         "description": "Monitoring Page",
-        "to": "/monitoring-page"
+        "to": "/monitoring"
       }
     ]
   },
