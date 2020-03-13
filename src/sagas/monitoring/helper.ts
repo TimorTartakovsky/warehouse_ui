@@ -15,13 +15,17 @@ export const getMonitoringMask = (option: EOrderTypeOptions, subOption: EOrderSu
                 case EOrderSubTypeOptions.fedx:
                     return ORDER_MASKS[EOrderTypeOptions.express][EOrderSubTypeOptions.fedx];
             }
-            break;
+            return ORDER_MASKS[EOrderTypeOptions.express][EOrderSubTypeOptions.ups];
         case EOrderTypeOptions.stockOrder:
             return ORDER_MASKS[EOrderTypeOptions.stockOrder][EOrderSubTypeOptions.stockOrder];
         case EOrderTypeOptions.rgaOrder:
             return ORDER_MASKS[EOrderTypeOptions.rgaOrder][EOrderSubTypeOptions.returns];
         case EOrderTypeOptions.transferOut:
             return null;
+        default: return {
+            type: 1,
+            subtype: 0,
+        }
     }
     return {
         type: 1,

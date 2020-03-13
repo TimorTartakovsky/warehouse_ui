@@ -5,7 +5,6 @@ import {
   TableRow,
   Checkbox,
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 
 export enum ETableHeaderOrder {

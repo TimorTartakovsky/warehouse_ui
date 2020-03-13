@@ -25,8 +25,10 @@ function* fetchMonitoringAndOrderType(a: IActionPayload) {
     try {
         yield put(ORDER_TYPE_ACTIONS.orderTypeStart());
         yield put(MONITORING_ACTIONS.monitoringStart());
+        console.log(a.payload);
         const { locationId, currentTab, currentSubTab, branchId} = a.payload || {};
         const mask = getMonitoringMask(currentTab, currentSubTab);
+        console.log(mask);
         const types = yield call(OrderTypeService.getOrderTypes, locationId);
         const monitoring = yield call(MonitoringService.getMonitoring, {
             locationId,

@@ -159,7 +159,7 @@ export const ORDER_MASKS: IOrderTypeMask = {
     },
     [EOrderTypeOptions.stockOrder]: {
         [EOrderSubTypeOptions.stockOrder]: {
-            type: 1,
+            type: 3,
             subtype: 0,
         }
     },

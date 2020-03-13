@@ -1,4 +1,4 @@
-import { takeLatest, put, call, fork, select } from 'redux-saga/effects';
+import { takeLatest, put, call, fork } from 'redux-saga/effects';
 import { BOL_ACTIONS, IActionPayload } from '../../actions';
 import BOLService from '../../api/BOLService';
 import { IBOLMonitoring, IBOLProcessing } from '../../store/bol/types';

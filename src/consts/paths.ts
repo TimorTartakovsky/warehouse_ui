@@ -1,6 +1,7 @@
 import WareHouseDashboard from '../components/Dashboard/index';
 import BOL, { EBOLTypes } from '../components/BOL';
 import MonitoringPage from '../components/Monitoring';
+import { EOrderTypeOptions } from '../store/order-type/types';
 
 export interface IPath {
     path: string;
@@ -32,6 +33,32 @@ export const ROUTES: IPath[] = [
     {
         path: '/monitoring',
         component: MonitoringPage,
+        props: { type: EOrderTypeOptions.willCall }
+    },
+    {
+        path: '/monitoring/willCall',
+        component: MonitoringPage,
+        props: { type: EOrderTypeOptions.willCall }
+    },
+    {
+        path: '/monitoring/express',
+        component: MonitoringPage,
+        props: { type: EOrderTypeOptions.express }
+    },
+    {
+        path: '/monitoring/stockOrder',
+        component: MonitoringPage,
+        props: { type: EOrderTypeOptions.stockOrder }
+    },
+    {
+        path: '/monitoring/rgaOrder',
+        component: MonitoringPage,
+        props: { type: EOrderTypeOptions.rgaOrder }
+    },
+    {
+        path: '/monitoring/transferOut',
+        component: MonitoringPage,
+        props: { type: EOrderTypeOptions.transferOut }
     },
     {
         path: '/container-processing',

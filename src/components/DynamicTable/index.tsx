@@ -6,12 +6,12 @@ import {
   TableContainer,
   TableRow,
   Paper,
-  Checkbox,
+  Checkbox
 } from '@material-ui/core';
+// import { AutoSizer, Column, Table, TableCellRenderer, TableHeaderProps } from 'react-virtualized';
 import { makeStyles } from '@material-ui/core/styles';
 import TableHeader, { ETableHeaderOrder } from './TableHeader';
 import TableToolbar from './TableHeaderToolbar';
-
 
 const descendingComparator = (a: any, b: any, orderBy: string) => {
   if (b[orderBy] < a[orderBy]) {
@@ -46,7 +46,6 @@ const useStyles = makeStyles(theme => ({
     root: {
         width: '100%',
         height: '100%',
-        maxHeight: '550px',
         overflowX: 'hidden',
         overflowY: 'auto'
     },
@@ -57,8 +56,7 @@ const useStyles = makeStyles(theme => ({
   table: {
       minWidth: 750,
       height: '100%',
-      maxHeight: '650px',
-    },
+  },
   visuallyHidden: {
       border: 0,
       clip: 'rect(0 0 0 0)',
@@ -93,7 +91,7 @@ const DynamicTable = (props: IDynamicTable) => {
   const [selected, setSelected] = React.useState(defaultSelected);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(rows.length); //implement pagination
+  const [rowsPerPage, setRowsPerPage] = React.useState(rows.length);
 
   const handleRequestSort = (event: any, property: string) => {
     const isAsc = orderBy === property && order === ETableHeaderOrder.asc;
@@ -151,12 +149,14 @@ const DynamicTable = (props: IDynamicTable) => {
     <div className={classes.root}>
       <Paper className={classes.paper}>
         <TableToolbar numSelected={selected.length} />
-        <TableContainer>
+        <TableContainer style={{ maxHeight: '650px' }}>
           <Table
             className={classes.table}
             aria-labelledby="tableTitle"
             size="small"
-            aria-label="enhanced table">
+            stickyHeader
+            aria-label="sticky table"
+          >
             <TableHeader
               classes={classes}
               numSelected={selected.length}
@@ -225,6 +225,7 @@ const DynamicTable = (props: IDynamicTable) => {
               )}
             </TableBody>
           </Table>
+          
         </TableContainer>
         {/* <TablePagination
           rowsPerPageOptions={[5, 10, 25]}

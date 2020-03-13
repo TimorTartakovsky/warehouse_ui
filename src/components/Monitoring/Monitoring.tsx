@@ -4,7 +4,6 @@ import { Card, CardContent } from '@material-ui/core';
 import { IRootState } from '../../store';
 import { IActionPayload, MONITORING_ACTIONS } from '../../actions';
 import { connect } from 'react-redux';
-import { stat } from 'fs';
 import { EOrderTypeOptions, EOrderSubTypeOptions } from '../../store/order-type/types';
 import { IMonitoring } from '../../store/monitoring/types';
 import { MonitoringRequestProps } from '../../actions/monitoring.action';
@@ -12,7 +11,7 @@ import { generateMonitoringRows, generateMonitoringHeaders } from './helper';
 import DynamicTable from '../DynamicTable';
 
 export interface IMonitoringProps {
-    currentTab?: EOrderTypeOptions;
+    type: EOrderTypeOptions;
     currentSubTab?: EOrderSubTypeOptions;
     monitoringArray?: IMonitoring[];
     isRequestFailed?: boolean;
@@ -23,14 +22,16 @@ export interface IMonitoringProps {
     monitoringRequestAction?: (props: MonitoringRequestProps) => void;
 }
 
-export interface IMonitoringState {}
+export interface IMonitoringState {
+    currentTab?: EOrderTypeOptions;
+}
 
 class Monitoring extends React.Component<IMonitoringProps, IMonitoringState> {
 
     componentDidMount() {
         const {
             monitoringRequestAction,
-            currentTab = EOrderTypeOptions.willCall,
+            type = EOrderTypeOptions.willCall,
             currentSubTab = EOrderSubTypeOptions.willCall,
             locationId = 0,
             branchId = 0,
@@ -38,14 +39,14 @@ class Monitoring extends React.Component<IMonitoringProps, IMonitoringState> {
         monitoringRequestAction && monitoringRequestAction({
             locationId,
             branchId,
-            currentTab,
+            currentTab: type,
             currentSubTab,
         })
     }
 
     public render(): React.ReactElement {
         const {
-            currentTab = EOrderTypeOptions.willCall,
+            type: currentTab = EOrderTypeOptions.willCall,
             currentSubTab = EOrderSubTypeOptions.willCall,
             monitoringArray,
             isRequestFailed,
@@ -60,19 +61,49 @@ class Monitoring extends React.Component<IMonitoringProps, IMonitoringState> {
             <>
                 <PageTitle
                     titleHeading="Monitoring Table"
-                    titleDescription="The buttons listed are tools to manage monitoring."
+                    titleDescription=""
+                    buttons={
+                        [
+                            {
+                                key: '1',
+                                label: EOrderTypeOptions.willCall,
+                                link: '/monitoring/willCall',
+                                iconName: 'icon',
+                            },
+                            {
+                                key: '2',
+                                label: EOrderTypeOptions.express,
+                                link: '/monitoring/express',
+                                iconName: 'icon',
+                            },
+                            {
+                                key: '3',
+                                label: EOrderTypeOptions.stockOrder,
+                                link: '/monitoring/stockOrder',
+                                iconName: 'icon',
+                            },
+                            {
+                                key: '4',
+                                label: EOrderTypeOptions.rgaOrder,
+                                link: '/monitoring/rgaOrder',
+                                iconName: 'icon',
+                            },
+                            {
+                                key: '5',
+                                label: EOrderTypeOptions.transferOut,
+                                link: '/monitoring/transferOut',
+                                iconName: 'icon',
+                            },
+                        ]
+                    }
                 />
                 <Card className="card-box mb-4-spacing overflow-visible">
-                    <div className="card-header">
-                        <div className="card-header--title font-size-md font-weight-bold py-2">
-                        </div>
-                    </div>
                     <CardContent className="p-3">
-                    <DynamicTable
-                        headerProperty={primaryColumn || ''}
-                        headers={headers || []}
-                        rows={rows || []}
-                    />
+                        <DynamicTable
+                            headerProperty={primaryColumn || ''}
+                            headers={headers || []}
+                            rows={rows || []}
+                        />
                     </CardContent>
                 </Card>
             </>
@@ -80,9 +111,9 @@ class Monitoring extends React.Component<IMonitoringProps, IMonitoringState> {
     }
 }
 
-const mapStateToProps = (state: IRootState) => {
+const mapStateToProps = (state: IRootState, props: IMonitoringProps) => {
     return {
-        currentTab: state.monitoring.currentTab,
+        type: props.type || state.monitoring.currentTab,
         currentSubTab: state.monitoring.currentSubTab,
         primaryColumn: state.monitoring.primaryColumn,
         monitoringArray: state.monitoring.monitoringArray,

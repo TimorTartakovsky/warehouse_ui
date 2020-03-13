@@ -40,7 +40,7 @@ const Sidebar = (props: ISidebarProps) => {
     sidebarToggleMobile,
     sidebarFixed,
     sidebarHover,
-    setSidebarHover,
+    // setSidebarHover,
     sidebarToggle,
     sidebarUserbox,
     sidebarShadow,

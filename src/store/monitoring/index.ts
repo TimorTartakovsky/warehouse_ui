@@ -13,7 +13,7 @@ const monitoringReducer = (state: IMonitoringState = initMonitoring, actions: IA
                 failRequestMessage: '',
                 monitoringArray: actions.payload && actions.payload.monitoringArray,
             };
-        case MONITORING_ACTIONS.MONITORING_ACTION_REQUEST_SUCCESS:
+        case MONITORING_ACTIONS.MONITORING_ACTION_REQUEST_FAILED:
             return {
                 isRequestFailed: true, 
                 failRequestMessage: actions.payload && actions.payload.error,

@@ -2,15 +2,6 @@ import React, { Dispatch }  from 'react';
 import { connect } from 'react-redux';
 import { BOL_ACTIONS, IActionPayload } from '../../actions'
 import { IRootState } from '../../store';
-import {
-    TableBody,
-    Table,
-    TableCell,
-    TableContainer,
-    TableRow,
-    IconButton,
-    Paper
-  } from '@material-ui/core';
 import { IBOLProcessing } from '../../store/bol/types';
 import { BOLRequestProps } from '../../actions/bol.action';
 import DynamicTable, { IHeaderCellType } from '../DynamicTable';
@@ -18,7 +9,7 @@ import DynamicTable, { IHeaderCellType } from '../DynamicTable';
 export interface IBOLProcessingProps {
     locationId?: number;
     branchId?: number;
-    processing?: IBOLProcessing[];
+    processing?: IBOLProcessing[] | null;
     processingTableHeaders?: IHeaderCellType[];
     fetchProcessing?: (p: BOLRequestProps) => void;
 }
@@ -83,10 +74,10 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
 }
 
 const mapStateToProps = (state: IRootState) => ({
-    locationId: state.user.locationId || 0,
+    locationId: state.user.locationId,
     branchId: state.user.location && state.user.location.branchId || 0,
-    processing: state.bol.processing || [],
-    processingTableHeaders: state.bol.processingTableHeaders || [],
+    processing: state.bol.processing,
+    processingTableHeaders: state.bol.processingTableHeaders,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch<IActionPayload>) => ({

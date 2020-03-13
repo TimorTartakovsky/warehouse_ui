@@ -75,7 +75,6 @@ const SidebarMenuListItem = (props: any) => {
         <NavLink to={href}>
           <Button
             color="primary"
-            disableFocusRipple
             variant="text"
             className={clsx('app-sidebar-button-wrapper', `depth-${depth}`)}
             style={style}
