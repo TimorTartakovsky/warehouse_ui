@@ -1,0 +1,1 @@
+export { RegularTypography } from './Regular';

@@ -2,8 +2,21 @@ import { EOrderTypeOptions, EOrderSubTypeOptions } from "../order-type/types";
 
 export interface IMonitoring {
     id: number;
+    firstName: string;
+    returnNumber: string;
+    lastName: string;
+    startDate: string;
+    endDate: string;
     oracleId: number;
+    masterBatchId: string;
+    receivedDate: string;
+    transferType: string;
+    inspectionWorker: string;
+    shelvingWorker: string;
+    dockNumber: string;
+    rgaStatus: string;
     overallRank: number;
+    trNumber: string;
     orderType: number;
     orderSubType: number;
     orderDate: string;
@@ -29,17 +42,60 @@ export interface IMonitoring {
     startDateTime: string;
     endDateTime: string;
     splitted: number;
+    shipperId: string;
     singleSplitUser: number;
     username: string;
     pickupTime: string;
     diff: number;
     markOrder: number;
+    createdDate: string;
+    toLocationCode: string;
     locationTime: string;
     orderDateOffset: string;
     orderDatePickup: string;
     orderDatePt:string;
     orderDateOd: string;
     exceptionAccess: boolean;
+}
+
+export interface IMonitoringTableColumnMap {
+    [EOrderTypeOptions.willCall]: {
+        [EOrderSubTypeOptions.willCall]: string;
+    };
+    [EOrderTypeOptions.express]: {
+        [EOrderSubTypeOptions.ups]: string;
+        [EOrderSubTypeOptions.onTrac]: string;
+        [EOrderSubTypeOptions.fedx]: string;
+    };
+    [EOrderTypeOptions.stockOrder]: {
+        [EOrderSubTypeOptions.stockOrder]: string;
+    };
+    [EOrderTypeOptions.rgaOrder]: {
+        [EOrderSubTypeOptions.returns]: string;
+    };
+    [EOrderTypeOptions.transferOut]: {
+        [EOrderSubTypeOptions.transferOut]: string;
+    };
+}
+
+export const PRIMARY_COLUMN_MAP: IMonitoringTableColumnMap = {
+    [EOrderTypeOptions.willCall]: {
+        [EOrderSubTypeOptions.willCall]: 'batchNumber'
+    },
+    [EOrderTypeOptions.express]: {
+        [EOrderSubTypeOptions.ups]: 'orderNumber', // oracleId
+        [EOrderSubTypeOptions.onTrac]: 'orderNumber', // oracleId
+        [EOrderSubTypeOptions.fedx]: 'batchNumber', // id oracleId
+    },
+    [EOrderTypeOptions.stockOrder]: {
+        [EOrderSubTypeOptions.stockOrder]: 'orderNumber',
+    },
+    [EOrderTypeOptions.rgaOrder]: {
+        [EOrderSubTypeOptions.returns]: 'masterBatchId',
+    },
+    [EOrderTypeOptions.transferOut]: {
+        [EOrderSubTypeOptions.transferOut]: 'trNumber',
+    } 
 }
 
 export interface IMonitoringState {

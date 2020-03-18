@@ -6,7 +6,8 @@ import {
   TableContainer,
   TableRow,
   Paper,
-  Checkbox
+  Checkbox,
+  TablePagination,
 } from '@material-ui/core';
 // import { AutoSizer, Column, Table, TableCellRenderer, TableHeaderProps } from 'react-virtualized';
 import { makeStyles } from '@material-ui/core/styles';
@@ -22,8 +23,7 @@ const descendingComparator = (a: any, b: any, orderBy: string) => {
   }
   return 0;
 }
-    
-    
+ 
 const getComparator = (order: ETableHeaderOrder, orderBy: string) =>  {
   return order === 'desc'
     ? (a: any, b: any) => descendingComparator(a, b, orderBy)
@@ -46,7 +46,7 @@ const useStyles = makeStyles(theme => ({
     root: {
         width: '100%',
         height: '100%',
-        overflowX: 'hidden',
+        overflowX: 'auto',
         overflowY: 'auto'
     },
     paper: {
@@ -55,7 +55,7 @@ const useStyles = makeStyles(theme => ({
   },
   table: {
       minWidth: 750,
-      height: '100%',
+      heigh: '100%',
   },
   visuallyHidden: {
       border: 0,
@@ -90,8 +90,7 @@ const DynamicTable = (props: IDynamicTable) => {
   const defaultSelected: string[] = [];
   const [selected, setSelected] = React.useState(defaultSelected);
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(rows.length);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   const handleRequestSort = (event: any, property: string) => {
     const isAsc = orderBy === property && order === ETableHeaderOrder.asc;
@@ -127,18 +126,14 @@ const DynamicTable = (props: IDynamicTable) => {
     setSelected(newSelected);
   };
 
-//   const handleChangePage = (event:, newPage) => {
-//     setPage(newPage);
-//   };
+  const handleChangePage = (event: any, newPage: number) => {
+    setPage(newPage);
+  };
 
-//   const handleChangeRowsPerPage = event => {
-//     setRowsPerPage(parseInt(event.target.value, 10));
-//     setPage(0);
-//   };
-
-//   const handleChangeDense = event => {
-//     setDense(event.target.checked);
-//   };
+  const handleChangeRowsPerPage = (event: any) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
 
@@ -149,7 +144,7 @@ const DynamicTable = (props: IDynamicTable) => {
     <div className={classes.root}>
       <Paper className={classes.paper}>
         <TableToolbar numSelected={selected.length} />
-        <TableContainer style={{ maxHeight: '650px' }}>
+        <TableContainer style={{ maxHeight: '50vh' }}>
           <Table
             className={classes.table}
             aria-labelledby="tableTitle"
@@ -205,7 +200,8 @@ const DynamicTable = (props: IDynamicTable) => {
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            padding="none"
+                                            size="medium"
+                                            padding="checkbox"
                                         >
                                             {value}
                                         </TableCell>
@@ -219,7 +215,7 @@ const DynamicTable = (props: IDynamicTable) => {
                   );
                 })}
               {emptyRows > 0 && (
-                <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+                <TableRow style={{ height: (33 * emptyRows) }}>
                   <TableCell colSpan={6} />
                 </TableRow>
               )}
@@ -227,20 +223,16 @@ const DynamicTable = (props: IDynamicTable) => {
           </Table>
           
         </TableContainer>
-        {/* <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+        <TablePagination
+          rowsPerPageOptions={[10, 50, 100, 200]}
           component="div"
           count={rows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}
           onChangeRowsPerPage={handleChangeRowsPerPage}
-        /> */}
+        />
       </Paper>
-      {/* <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      /> */}
     </div>
   );
 }

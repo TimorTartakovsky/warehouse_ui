@@ -301,16 +301,18 @@ sagaMiddleware.run(rootSaga);
 
 const ApplicationWarehouse = () => {
   return (
-    <Provider store={store} >
-      <PersistGate loading={null} persistor={persistor}>
-        <BrowserRouter basename="/">
-          <CssBaseline />
-            <ScrollToTop>
-              <ApplicationWarehouseRoutes />
-            </ScrollToTop>
-        </BrowserRouter>
-      </PersistGate>
-    </Provider>
+    <div className="ApplicationWarehouseMainContainer">
+      <Provider store={store} >
+        <PersistGate loading={null} persistor={persistor}>
+          <BrowserRouter basename="/">
+            <CssBaseline />
+              <ScrollToTop>
+                <ApplicationWarehouseRoutes />
+              </ScrollToTop>
+          </BrowserRouter>
+        </PersistGate>
+      </Provider>
+    </div>
   );
 }
 

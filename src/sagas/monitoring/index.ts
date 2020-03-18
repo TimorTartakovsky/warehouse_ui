@@ -2,7 +2,7 @@ import { takeLatest, put, call, fork } from 'redux-saga/effects';
 import { MONITORING_ACTIONS, ORDER_TYPE_ACTIONS, IActionPayload } from '../../actions';
 import MonitoringService from '../../api/MonitoringService';
 import OrderTypeService from '../../api/OrderTypeService';
-import { getMonitoringMask } from './helper';
+import { getMonitoringMask, getPrimaryColumn } from './helper';
 
 function* fetchMonitoring(a: IActionPayload) {
     try {
@@ -25,10 +25,10 @@ function* fetchMonitoringAndOrderType(a: IActionPayload) {
     try {
         yield put(ORDER_TYPE_ACTIONS.orderTypeStart());
         yield put(MONITORING_ACTIONS.monitoringStart());
-        console.log(a.payload);
         const { locationId, currentTab, currentSubTab, branchId} = a.payload || {};
         const mask = getMonitoringMask(currentTab, currentSubTab);
-        console.log(mask);
+        const primaryColumn = getPrimaryColumn(currentTab, currentSubTab);
+        yield put(MONITORING_ACTIONS.monitoringUpdatePrimaryColumn(primaryColumn));
         const types = yield call(OrderTypeService.getOrderTypes, locationId);
         const monitoring = yield call(MonitoringService.getMonitoring, {
             locationId,

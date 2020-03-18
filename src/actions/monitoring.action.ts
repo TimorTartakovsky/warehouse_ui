@@ -8,6 +8,9 @@ export const MONITORING_ACTION_REQUEST_SUCCESS = 'MONITORING_ACTION_REQUEST_SUCC
 export const MONITORING_ACTION_REQUEST_FAILED =  'MONITORING_ACTION_REQUEST_FAILED';
 export const MONITORING_AND_ORDER_TYPE_ACTION_START =  'MONITORING_AND_ORDER_TYPE_ACTION_START';
 
+export const MONITORING_UPDATE_CURRENT_TABS = 'MONITORING_UPDATE_CURRENT_TABS';
+export const MONITORING_UPDATE_PRIMARY_COLUMN = 'MONITORING_UPDATE_PRIMARY_COLUMN';
+
 export type MonitoringRequestProps = {
     type?: number;
     subtype?: number;
@@ -16,6 +19,23 @@ export type MonitoringRequestProps = {
     currentTab: EOrderTypeOptions;
     currentSubTab: EOrderSubTypeOptions;
 }
+
+export const monitoringUpdatePrimaryColumn = (primaryColumn: string)
+: IActionPayload => ({
+    type: MONITORING_UPDATE_PRIMARY_COLUMN,
+    payload: { primaryColumn },
+});
+
+export const monitoringUpdateCurrentTabs = (
+    currentTab: EOrderTypeOptions,
+    currentSubTab: EOrderSubTypeOptions
+): IActionPayload => ({
+    type: MONITORING_UPDATE_CURRENT_TABS,
+    payload: {
+        currentTab,
+        currentSubTab,
+    }
+});
 
 export const monitoringStart = (): IActionBasic => ({
     type: MONITORING_ACTION_START,

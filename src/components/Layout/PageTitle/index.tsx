@@ -112,7 +112,7 @@ const PageTitle = (props: IPageTitleProps) => {
                   key={b.key}
                   to={b.link || ''}
                 >
-                  <Button variant="contained" color="secondary">
+                  <Button style={{ marginLeft: '5px' }} variant="contained">
                     <span className="d-none d-xl-block">{ b.label }</span>
                     <span className="btn-wrapper--icon d-block d-xl-none">
                       { b.label }
