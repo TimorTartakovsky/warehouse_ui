@@ -40,7 +40,6 @@ const Sidebar = (props: ISidebarProps) => {
     sidebarToggleMobile,
     sidebarFixed,
     sidebarHover,
-    // setSidebarHover,
     sidebarToggle,
     sidebarUserbox,
     sidebarShadow,
@@ -53,10 +52,11 @@ const Sidebar = (props: ISidebarProps) => {
   const closeDrawer = () => setSidebarToggleMobile(!sidebarToggleMobile);
 
   const sidebarMenuContent = (
-    <div
-      className={clsx({
-        'app-sidebar-nav-close': sidebarToggle && !sidebarHover
-      })}>
+    // <div
+    //   className={clsx({
+    //     'app-sidebar-nav-close': sidebarToggle && !sidebarHover
+    //   })}>
+    <div>
       {navItems.map(list => (
         <SidebarMenu
           component="div"
@@ -89,16 +89,12 @@ const Sidebar = (props: ISidebarProps) => {
 
       <Hidden mdDown>
         <Paper
-          // onMouseEnter={toggleHoverOn}
-          // onMouseLeave={toggleHoverOff}
           className={clsx('app-sidebar-wrapper', {
             'app-sidebar-wrapper-close': sidebarToggle,
             'app-sidebar-wrapper-open': sidebarHover,
             'app-sidebar-wrapper-fixed': sidebarFixed
           })}
           square
-          // open={sidebarToggle}
-          // onClick={sidebarToggle}
           elevation={sidebarShadow ? 11 : 3}
         >
           <SidebarHeader />

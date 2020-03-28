@@ -93,40 +93,6 @@ class Monitoring extends React.Component<IMonitoringProps, IMonitoringState> {
                 <PageTitle
                     titleHeading="Monitoring Table"
                     titleDescription=""
-                    buttons={
-                        [
-                            {
-                                key: '1',
-                                label: EOrderTypeOptions.willCall,
-                                link: '/monitoring/willCall',
-                                iconName: 'icon',
-                            },
-                            {
-                                key: '2',
-                                label: EOrderTypeOptions.express,
-                                link: '/monitoring/express',
-                                iconName: 'icon',
-                            },
-                            {
-                                key: '3',
-                                label: EOrderTypeOptions.stockOrder,
-                                link: '/monitoring/stockOrder',
-                                iconName: 'icon',
-                            },
-                            {
-                                key: '4',
-                                label: EOrderTypeOptions.rgaOrder,
-                                link: '/monitoring/rgaOrder',
-                                iconName: 'icon',
-                            },
-                            {
-                                key: '5',
-                                label: EOrderTypeOptions.transferOut,
-                                link: '/monitoring/transferOut',
-                                iconName: 'icon',
-                            },
-                        ]
-                    }
                 />
                 <Card className="card-box mb-4-spacing overflow-visible">
                     <CardContent className="p-3">

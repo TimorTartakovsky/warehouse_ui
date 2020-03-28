@@ -14,7 +14,6 @@ import TableHeader, { ETableHeaderOrder } from './TableHeader';
 import TableToolbar from './TableHeaderToolbar';
 import CircleCheckedFilled from '@material-ui/icons/CheckCircle';
 import CircleUnchecked from '@material-ui/icons/RadioButtonUnchecked';
-import * as _ from 'lodash';
 
 const descendingComparator = (a: any, b: any, orderBy: string) => {
   if (b[orderBy] < a[orderBy]) {
@@ -82,7 +81,7 @@ const DynamicExpansionPanelTable = (props: IDynamicTable) => {
   const defaultSelected: string[] = [];
   const [selected, setSelected] = React.useState(defaultSelected);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(25);
 
   const handleRequestSort = (event: any, property: string) => {
     const isAsc = orderBy === property && order === ETableHeaderOrder.asc;
@@ -152,7 +151,7 @@ const DynamicExpansionPanelTable = (props: IDynamicTable) => {
     props.setRows([...rows]);
   }
 
-  const showRow = (index: number) => {
+  const showRow = (index: number) => {    
     Object.keys(rows[index]).filter(f=> f !== 'id').forEach(k => {
       rows[index][k].isFocused = true;
     });
@@ -166,7 +165,7 @@ const DynamicExpansionPanelTable = (props: IDynamicTable) => {
     <div className={classes.root}>
       <Paper className={classes.paper}>
         <TableToolbar numSelected={selected.length} />
-        <TableContainer style={{ maxHeight: '60vh' }}>
+        <TableContainer style={{ maxHeight: '50vh' }}>
           <Table
             className={classes.table}
             aria-labelledby="tableTitle"
@@ -263,7 +262,7 @@ const DynamicExpansionPanelTable = (props: IDynamicTable) => {
           
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[10, 50, 100, 200]}
+          rowsPerPageOptions={[25, 50, 100, 200]}
           component="div"
           count={rows.length}
           rowsPerPage={rowsPerPage}

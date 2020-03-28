@@ -120,9 +120,29 @@ export default [
     "icon": "DvrIcon",
     "content": [
       {
-        "label": "Monitoring Page",
+        "label": "Will Call",
         "description": "Monitoring Page",
-        "to": "/monitoring"
+        "to": "/monitoring/willCall"
+      },
+      {
+        "label": "Express",
+        "description": "Monitoring Page",
+        "to": "/monitoring/express"
+      },
+      {
+        "label": "Stock Order",
+        "description": "Monitoring Page",
+        "to": "/monitoring/stockOrder"
+      },
+      {
+        "label": "RGA",
+        "description": "Monitoring Page",
+        "to": "/monitoring/rgaOrder"
+      },
+      {
+        "label": "Transfer Out",
+        "description": "Monitoring Page",
+        "to": "/monitoring/transferOut"
       }
     ]
   },

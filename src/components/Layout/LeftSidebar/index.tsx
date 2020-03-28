@@ -42,7 +42,6 @@ const LeftSidebar = (props: ILeftSidebar) => {
             <div className="app-content--inner">
               <div className="app-content--inner__wrapper">{children}</div>
             </div>
-            <SidebarFooter />
           </div>
         </div>
       </div>

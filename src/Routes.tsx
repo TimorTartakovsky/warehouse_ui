@@ -133,6 +133,7 @@ import {
   faSignOutAlt,
   faLink
 } from '@fortawesome/free-solid-svg-icons';
+import MonitoringPage from './components/Monitoring';
 library.add(
   far,
   faSquare,
@@ -309,7 +310,6 @@ const ApplicationWarehouseRoutes = () => {
             
             <Route path={['/login']}>
               <MinimalLayout>
-                {/* <Switch location={location} key={location.pathname}> */}
                   <motion.div
                     initial="initial"
                     animate="in"
@@ -319,13 +319,12 @@ const ApplicationWarehouseRoutes = () => {
                     <Route path="/login" exact component={LoginPage}/>
                     {/* <Route path="/PagesError404" component={PagesError404} /> */}
                   </motion.div>
-                {/* </Switch> */}
               </MinimalLayout>
             </Route>
 
             <Route path={allRoutes}>
               <LeftSidebar>
-                {/* <Switch location={location} key={location.pathname}> */}
+                <Switch location={location} key={location.pathname}>
                   <motion.div
                     initial="initial"
                     animate="in"
@@ -340,7 +339,7 @@ const ApplicationWarehouseRoutes = () => {
                         )
                     }
                   </motion.div>
-                {/* </Switch> */}
+                </Switch>
               </LeftSidebar>
             </Route>
             <Redirect path="*" to="/login" />

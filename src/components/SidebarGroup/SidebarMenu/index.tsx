@@ -49,10 +49,14 @@ export interface IReduceChildRoutes {
 const reduceChildRoutes = (props: IReduceChildRoutes) => {
   const { router, items, page, depth } = props;
   if (page.content) {
+    console.log(router.location.pathname);
+    console.log(page);
     const open = matchPath(router.location.pathname, {
       path: page.to,
       exact: false
     });
+    const foundMatch = page.content.find(p => p.to === router.location.pathname);
+    const openChildren = !!foundMatch ? true : false;
 
     items.push(
       <SidebarMenuListItem
@@ -60,7 +64,7 @@ const reduceChildRoutes = (props: IReduceChildRoutes) => {
         icon={page.icon}
         key={page.label}
         label={page.badge}
-        open={Boolean(open)}
+        open={Boolean(open || openChildren)}
         title={page.label}>
         <div className="sidebar-menu-children py-2">
           <SidebarMenuList
