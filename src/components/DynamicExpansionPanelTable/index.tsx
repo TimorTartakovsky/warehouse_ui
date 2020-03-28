@@ -8,13 +8,12 @@ import {
   Paper,
   Checkbox,
   TablePagination,
-  TableHead,
-  Radio,
-  FormControlLabel,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import TableHeader, { ETableHeaderOrder } from './TableHeader';
 import TableToolbar from './TableHeaderToolbar';
+import CircleCheckedFilled from '@material-ui/icons/CheckCircle';
+import CircleUnchecked from '@material-ui/icons/RadioButtonUnchecked';
 import * as _ from 'lodash';
 
 const descendingComparator = (a: any, b: any, orderBy: string) => {
@@ -215,6 +214,8 @@ const DynamicExpansionPanelTable = (props: IDynamicTable) => {
                         /> */}
                         <Checkbox
                           checked={isItemSelected}
+                          icon={<CircleUnchecked />}
+                          checkedIcon={<CircleCheckedFilled />}
                           onClick={event => handleClick(event, row[props.headerProperty])}
                           inputProps={{ 'aria-labelledby': labelId }}
                         />

@@ -6,6 +6,17 @@ import moment from 'moment';
 const DATE_TIME_FORMAT = 'DD/MM HH:mm';
 const DATE_TIME_DB = 'YYYY-MM-DD HH:mm:ss';
 
+const getStatus = (s: number) => {
+   switch(s) {
+        case 1: return 'Picking';
+        case 2: return 'Packing';
+        case 3: return 'Wrapping';
+        case 4: return 'Ship Ready';
+        case 5: return 'Completed';
+        default: return 'Picking';
+   } 
+}
+
 const generateWillCallHeaders = (): any[] => {
     return [
         { id: 'orderNumber', numeric: false, disablePadding: true, label: 'Order' },
@@ -56,7 +67,9 @@ const generateWillCallRows = (arr: IMonitoring[]): any[] => {
             value2: ( <RegularTypography length="120px">Pieces: {m.pieces}</RegularTypography>) 
         },
         stage: {
-            value1: (<RegularTypography length="100px">{'?'}</RegularTypography>),
+        value1: (<RegularTypography length="100px">{
+            getStatus(m.orderType)
+        }</RegularTypography>),
             isFocused: false, 
         },
         username: {
@@ -73,7 +86,7 @@ const generateWillCallRows = (arr: IMonitoring[]): any[] => {
                 }</RegularTypography>) 
         },
         hold: {
-            value1: (<RegularTypography length="20px">{'?'}</RegularTypography>),
+            value1: (<RegularTypography length="20px"></RegularTypography>),
             isFocused: false, 
         },
     }));
