@@ -8,7 +8,8 @@ import { EOrderTypeOptions, EOrderSubTypeOptions } from '../../store/order-type/
 import { IMonitoring } from '../../store/monitoring/types';
 import { MonitoringRequestProps } from '../../actions/monitoring.action';
 import { generateMonitoringRows, generateMonitoringHeaders } from './helper';
-import DynamicTable from '../DynamicTable';
+// import DynamicTable from '../DynamicTable';
+import DynamicExpansionPanelTable from '../DynamicExpansionPanelTable';
 
 export interface IMonitoringProps {
     type: EOrderTypeOptions;
@@ -28,7 +29,8 @@ export interface IMonitoringProps {
 
 export interface IMonitoringState {
     currentTab?: EOrderTypeOptions;
-}
+    rows?: any[];
+};
 
 export const SUBTYPE_BUTTONS = [
     EOrderSubTypeOptions.ups,
@@ -37,6 +39,10 @@ export const SUBTYPE_BUTTONS = [
 ]
 
 class Monitoring extends React.Component<IMonitoringProps, IMonitoringState> {
+
+    state = {
+        rows: [],
+    };
 
     componentDidMount() {
         const {
@@ -65,6 +71,12 @@ class Monitoring extends React.Component<IMonitoringProps, IMonitoringState> {
         monitoringUpdateCurrentTabs && monitoringUpdateCurrentTabs(
             currentTab, currentSubTab,
         );
+    }
+
+    private updateRows = (rows: any[]) => {
+        this.setState({
+            rows: rows,
+        })
     }
 
     public render(): React.ReactElement {
@@ -138,11 +150,19 @@ class Monitoring extends React.Component<IMonitoringProps, IMonitoringState> {
                                 )) || null
                             }
                         </div>
-                        <DynamicTable
+                        {
+                            <DynamicExpansionPanelTable
+                                headerProperty={primaryColumn || ''}
+                                headers={headers || []}
+                                rows={this.state.rows.length ? this.state.rows : rows}
+                                setRows={this.updateRows}
+                            />
+                        }
+                        {/* <DynamicTable
                             headerProperty={primaryColumn || ''}
                             headers={headers || []}
                             rows={rows || []}
-                        />
+                        /> */}
                     </CardContent>
                 </Card>
             </>

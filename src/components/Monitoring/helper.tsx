@@ -2,24 +2,81 @@ import React from 'react';
 import { EOrderTypeOptions, EOrderSubTypeOptions } from '../../store/order-type/types';
 import { IMonitoring } from '../../store/monitoring/types';
 import {RegularTypography} from '../Shared/Typography'
+import moment from 'moment';
+const DATE_TIME_FORMAT = 'DD/MM HH:mm';
+const DATE_TIME_DB = 'YYYY-MM-DD HH:mm:ss';
 
 const generateWillCallHeaders = (): any[] => {
     return [
         { id: 'orderNumber', numeric: false, disablePadding: true, label: 'Order' },
-        { id: 'batchNumber', numeric: false, disablePadding: true, label: 'Batch Number' },
+        // { id: 'batchNumber', numeric: false, disablePadding: true, label: 'Batch Number' },
         { id: 'customerName', numeric: false, disablePadding: true, label: 'Customer Name' },
-        { id: 'shipToCity', numeric: false, disablePadding: true, label: 'City' },
-        { id: 'shipToState', numeric: false, disablePadding: true, label: 'State' },
+        // { id: 'shipToCity', numeric: false, disablePadding: true, label: 'City' },
+        // { id: 'shipToState', numeric: false, disablePadding: true, label: 'State' },
         { id: 'orderDate', numeric: false, disablePadding: true, label: 'Order Dt' },
-        { id: 'releasedDate', numeric: false, disablePadding: true, label: 'Release Dt' },
+        // { id: 'releasedDate', numeric: false, disablePadding: true, label: 'Release Dt' },
         { id: 'dueDate', numeric: false, disablePadding: true, label: 'Due Dt' },
-        { id: 'pieces', numeric: false, disablePadding: true, label: 'Pieces' },
+        // { id: 'pieces', numeric: false, disablePadding: true, label: 'Pieces' },
         { id: 'stage', numeric: false, disablePadding: true, label: 'Stage' },
         { id: 'username', numeric: false, disablePadding: true, label: 'Employee' },
         { id: 'startDateTime', numeric: false, disablePadding: true, label: 'Start Date' },
-        { id: 'endDateTime', numeric: false, disablePadding: true, label: 'End Date' },
+        // { id: 'endDateTime', numeric: false, disablePadding: true, label: 'End Date' },
         { id: 'hold', numeric: false, disablePadding: true, label: 'Hold'},
     ];
+}
+
+
+const generateWillCallRows = (arr: IMonitoring[]): any[] => {
+    return arr.map((m:IMonitoring) => ({
+        id: m.id,
+        orderNumber: {
+            value1: (<RegularTypography length="120px">{m.orderNumber}</RegularTypography>),
+            isFocused: false,
+            value2: (<RegularTypography length="120px">BN: {m.batchNumber}</RegularTypography>) 
+        },
+        customerName: {
+            value1: (<RegularTypography length="200px">{m.customerName}</RegularTypography>),
+            isFocused: false,
+            value2: (<RegularTypography length="200px">Address: {m.shipToCity}, {m.shipToState}, {m.shipToCountry}</RegularTypography>) 
+        },
+        orderDate: {
+            value1: (<RegularTypography length="120px">
+                {moment(m.orderDate, DATE_TIME_DB).format(DATE_TIME_FORMAT)}
+            </RegularTypography>),
+            isFocused: false,
+            value2: (<RegularTypography length="120px">{
+                moment(m.releasedDate, DATE_TIME_DB).format(DATE_TIME_FORMAT)
+            }</RegularTypography>) 
+        },
+        dueDate: {
+            value1: ( <RegularTypography length="120px">{
+                moment(m.dueDate, DATE_TIME_DB).format(DATE_TIME_FORMAT)
+               }</RegularTypography>),
+            isFocused: false,
+            value2: ( <RegularTypography length="120px">Pieces: {m.pieces}</RegularTypography>) 
+        },
+        stage: {
+            value1: (<RegularTypography length="100px">{'?'}</RegularTypography>),
+            isFocused: false, 
+        },
+        username: {
+            value1: (<RegularTypography length="100px">{m.username}</RegularTypography>),
+            isFocused: false, 
+        },
+        startDateTime: {
+            value1: (<RegularTypography length="120px">{
+                moment(m.startDateTime, DATE_TIME_DB).format(DATE_TIME_FORMAT)
+               }</RegularTypography>),
+            isFocused: false,
+            value2: ( <RegularTypography length="120px">{
+                moment(m.endDateTime, DATE_TIME_DB).format(DATE_TIME_FORMAT)
+                }</RegularTypography>) 
+        },
+        hold: {
+            value1: (<RegularTypography length="20px">{'?'}</RegularTypography>),
+            isFocused: false, 
+        },
+    }));
 }
 
 const generateTransferOutHeaders = (): any[] => {
@@ -143,25 +200,6 @@ const generateTransferOutRows = (arr: IMonitoring[]): any[] => {
         startDate: m.startDate,
         endDate: m.endDate,
         hold: '?',
-    }));
-}
-
-const generateWillCallRows = (arr: IMonitoring[]): any[] => {
-    return arr.map((m:IMonitoring) => ({
-        orderNumber: (<RegularTypography>{m.orderNumber}</RegularTypography>),
-        batchNumber: (<RegularTypography>{m.batchNumber}</RegularTypography>),
-        customerName: (<RegularTypography>{m.customerName}</RegularTypography>),
-        shipToCity: (<RegularTypography>{m.shipToCity}</RegularTypography>),
-        shipToState: (<RegularTypography>{m.shipToState}</RegularTypography>),
-        orderDate: (<RegularTypography>{m.orderDate}</RegularTypography>),
-        releasedDate: (<RegularTypography>{m.releasedDate}</RegularTypography>),
-        dueDate: (<RegularTypography>{m.dueDate}</RegularTypography>),
-        pieces: (<RegularTypography>{m.pieces}</RegularTypography>),
-        stage: (<RegularTypography>{'?'}</RegularTypography>),
-        username: (<RegularTypography>{m.username}</RegularTypography>),
-        startDateTime: (<RegularTypography>{m.startDateTime}</RegularTypography>),
-        endDateTime: (<RegularTypography>{m.endDateTime}</RegularTypography>),
-        hold: (<RegularTypography>{'?'}</RegularTypography>),
     }));
 }
 

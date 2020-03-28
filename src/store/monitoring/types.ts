@@ -3,6 +3,7 @@ import { EOrderTypeOptions, EOrderSubTypeOptions } from "../order-type/types";
 export interface IMonitoring {
     id: number;
     firstName: string;
+    shipToCountry: string;
     returnNumber: string;
     lastName: string;
     startDate: string;
@@ -80,7 +81,7 @@ export interface IMonitoringTableColumnMap {
 
 export const PRIMARY_COLUMN_MAP: IMonitoringTableColumnMap = {
     [EOrderTypeOptions.willCall]: {
-        [EOrderSubTypeOptions.willCall]: 'batchNumber'
+        [EOrderSubTypeOptions.willCall]: 'id'
     },
     [EOrderTypeOptions.express]: {
         [EOrderSubTypeOptions.ups]: 'orderNumber', // oracleId

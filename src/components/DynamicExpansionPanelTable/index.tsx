@@ -8,12 +8,14 @@ import {
   Paper,
   Checkbox,
   TablePagination,
+  TableHead,
+  Radio,
+  FormControlLabel,
 } from '@material-ui/core';
-// import { AutoSizer, Column, Table, TableCellRenderer, TableHeaderProps } from 'react-virtualized';
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import TableHeader, { ETableHeaderOrder } from './TableHeader';
 import TableToolbar from './TableHeaderToolbar';
+import * as _ from 'lodash';
 
 const descendingComparator = (a: any, b: any, orderBy: string) => {
   if (b[orderBy] < a[orderBy]) {
@@ -69,9 +71,11 @@ export interface IDynamicTable {
    rows: any[];
    headers: IHeaderCellType[];
    headerProperty: string;
+   isMultiSelectable?: boolean;
+   setRows: (rows: any[]) => void;
 }
 
-const DynamicTable = (props: IDynamicTable) => {
+const DynamicExpansionPanelTable = (props: IDynamicTable) => {
   const classes = useStyles();
   const rows = props.rows;
   const [order, setOrder] = React.useState(ETableHeaderOrder.asc);
@@ -96,23 +100,36 @@ const DynamicTable = (props: IDynamicTable) => {
     setSelected([]);
   };
 
-  const handleClick = (event: any, name: string) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected: string[] = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
+  const handleClick = (event: any, name: string): void => {
+    if (props.isMultiSelectable) {
+      const selectedIndex = selected.indexOf(name);
+      let newSelected: string[] = [];
+      if (selectedIndex === -1) {
+        newSelected = newSelected.concat(selected, name);
+      } else if (selectedIndex === 0) {
+        newSelected = newSelected.concat(selected.slice(1));
+      } else if (selectedIndex === selected.length - 1) {
+        newSelected = newSelected.concat(selected.slice(0, -1));
+      } else if (selectedIndex > 0) {
+        newSelected = newSelected.concat(
+          selected.slice(0, selectedIndex),
+          selected.slice(selectedIndex + 1)
+        );
+      }
+      setSelected(newSelected);
+    } else {
+      const indexOfPrevElement = rows.findIndex(r => r.id === selected[0]);
+      if (indexOfPrevElement !== -1) {
+        hideRow(indexOfPrevElement, true);
+      }
+      const indexOfElement = rows.findIndex(r => r.id === name);
+      setSelected([name]);
+      showRow(indexOfElement);
     }
-    setSelected(newSelected);
+  };
+
+  const handleClickExpand = (event: any, name: string): void => {
+    
   };
 
   const handleChangePage = (event: any, newPage: number) => {
@@ -125,6 +142,23 @@ const DynamicTable = (props: IDynamicTable) => {
   };
 
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
+
+  const hideRow = (index: number, flag?: boolean) => {
+    if (!flag && selected[0] === rows[index].id) {
+      return;
+    }
+    Object.keys(rows[index]).filter(f=> f !== 'id').forEach(k => {
+      rows[index][k].isFocused = false;
+    });
+    props.setRows([...rows]);
+  }
+
+  const showRow = (index: number) => {
+    Object.keys(rows[index]).filter(f=> f !== 'id').forEach(k => {
+      rows[index][k].isFocused = true;
+    });
+    props.setRows([...rows]);
+  }
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
@@ -162,8 +196,8 @@ const DynamicTable = (props: IDynamicTable) => {
                   return (
                     <TableRow
                       hover
-                      onClick={event => handleClick(event, row[props.headerProperty])}
-                      role="checkbox"
+                      onClick={event => handleClickExpand(event, row[props.headerProperty])}
+                      role="radio"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
                       draggable="true"
@@ -172,27 +206,42 @@ const DynamicTable = (props: IDynamicTable) => {
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
+                        {/* <Radio
+                          checked={isItemSelected}
+                          onChange={event => handleClick(event, row[props.headerProperty])}
+                          value={row.id}
+                          name="radio-button-demo"
+                          inputProps={{ 'aria-label': 'A' }}
+                        /> */}
                         <Checkbox
                           checked={isItemSelected}
+                          onClick={event => handleClick(event, row[props.headerProperty])}
                           inputProps={{ 'aria-labelledby': labelId }}
                         />
                       </TableCell>
                       {
                          <>
                             {
-                                Object.keys(row).map(
-                                    (k: string, index: number) => {
+                                Object.keys(row).filter(f=> f !== 'id').map(
+                                    (k: string, innerIndex: number) => {
                                         const copyRow: any = row;
                                         const value = copyRow[k];
                                         return (
                                         <TableCell
-                                            key={index}
+                                            key={innerIndex}
                                             component="th"
                                             id={labelId}
+                                            onMouseOver={event => showRow(index)}
+                                            onMouseOut={event => hideRow(index)}
                                             size="medium"
                                             padding="checkbox"
                                         >
-                                          {value}
+                                          {
+                                            value.value1
+                                          }
+                                          {
+                                            value.isFocused ? value.value2 : null
+                                          }
                                         </TableCell>
                                         )
                                     }
@@ -226,4 +275,4 @@ const DynamicTable = (props: IDynamicTable) => {
   );
 }
 
-export default DynamicTable;
+export default DynamicExpansionPanelTable;

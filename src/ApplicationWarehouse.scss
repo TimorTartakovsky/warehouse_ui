@@ -10,7 +10,8 @@ body, html {
   
   ::-webkit-scrollbar
   {
-      width: 10px;
+      width: 4px;
+      height: 4px;
       background-color: #F5F5F5;
   }
   
@@ -19,8 +20,6 @@ body, html {
       background-image: -webkit-gradient(
         linear, left bottom,  left top,
         color-stop(0.44, #3d4977),
-        color-stop(0.64, #f4f5fd),
-        color-stop(0.86, #3d4977)
       );
   }
 }

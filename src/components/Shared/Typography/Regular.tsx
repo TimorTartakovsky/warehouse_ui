@@ -13,7 +13,14 @@ const theme = createMuiTheme({
 export const RegularTypography = (props: any)  => {
     return (
       <ThemeProvider theme={theme}>
-        <Typography variant="subtitle1">
+        <Typography 
+                style={{ width: props.length || '100px' }}
+                align="left"
+                noWrap={props.noWrap || true}
+                color="textPrimary"
+                variant="inherit"
+                display="block"
+        >
             { props.children }
         </Typography>
       </ThemeProvider>
