@@ -52,10 +52,6 @@ const Sidebar = (props: ISidebarProps) => {
   const closeDrawer = () => setSidebarToggleMobile(!sidebarToggleMobile);
 
   const sidebarMenuContent = (
-    // <div
-    //   className={clsx({
-    //     'app-sidebar-nav-close': sidebarToggle && !sidebarHover
-    //   })}>
     <div>
       {navItems.map(list => (
         <SidebarMenu
