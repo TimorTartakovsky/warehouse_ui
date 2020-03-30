@@ -7,8 +7,8 @@ import { connect } from 'react-redux';
 import { EOrderTypeOptions, EOrderSubTypeOptions } from '../../store/order-type/types';
 import { IMonitoring } from '../../store/monitoring/types';
 import { MonitoringRequestProps } from '../../actions/monitoring.action';
-import { generateMonitoringRows, generateMonitoringHeaders } from './helper';
-// import DynamicTable from '../DynamicTable';
+import { generateMonitoringRows, generateMonitoringHeaders, isExpandableTable } from './helper';
+import DynamicTable from '../DynamicTable';
 import DynamicExpansionPanelTable from '../DynamicExpansionPanelTable';
 
 export interface IMonitoringProps {
@@ -40,11 +40,11 @@ export const SUBTYPE_BUTTONS = [
 
 class Monitoring extends React.Component<IMonitoringProps, IMonitoringState> {
 
-    state = {
+    public state = {
         rows: [],
     };
 
-    componentDidMount() {
+    public componentDidMount() {
         const {
             type = EOrderTypeOptions.willCall,
             currentSubTab = EOrderSubTypeOptions.willCall,
@@ -71,12 +71,12 @@ class Monitoring extends React.Component<IMonitoringProps, IMonitoringState> {
         monitoringUpdateCurrentTabs && monitoringUpdateCurrentTabs(
             currentTab, currentSubTab,
         );
+        // const rows = generateMonitoringRows(currentTab, currentSubTab, this.state.rows || []);
+        // this.updateRows(rows);
     }
 
     private updateRows = (rows: any[]) => {
-        this.setState({
-            rows: rows,
-        })
+        this.setState({ rows: rows });
     }
 
     public render(): React.ReactElement {
@@ -88,6 +88,7 @@ class Monitoring extends React.Component<IMonitoringProps, IMonitoringState> {
         } = this.props;
         const rows = generateMonitoringRows(currentTab, currentSubTab, monitoringArray || []);
         const headers = generateMonitoringHeaders(currentTab, currentSubTab);
+        const isExpTable = isExpandableTable(currentTab);
         return (
             <>
                 <PageTitle
@@ -118,12 +119,16 @@ class Monitoring extends React.Component<IMonitoringProps, IMonitoringState> {
                             }
                         </div>
                         {
-                            <DynamicExpansionPanelTable
+                           (isExpTable) ? (<DynamicExpansionPanelTable
                                 headerProperty={primaryColumn || ''}
                                 headers={headers || []}
                                 rows={this.state.rows.length ? this.state.rows : rows}
                                 setRows={this.updateRows}
-                            />
+                            />) : (<DynamicTable
+                                headerProperty={primaryColumn || ''}
+                                headers={headers || []}
+                                rows={this.state.rows.length ? this.state.rows : rows}
+                            />)
                         }
                         {/* <Dialog scroll="body" maxWidth="lg" open={modal1} onClose={toggle1}>
                             <Grid container spacing={0}>
@@ -146,11 +151,6 @@ class Monitoring extends React.Component<IMonitoringProps, IMonitoringState> {
                                 </Grid>
                             </Grid>
                             </Dialog> */}
-                        {/* <DynamicTable
-                            headerProperty={primaryColumn || ''}
-                            headers={headers || []}
-                            rows={rows || []}
-                        /> */}
                     </CardContent>
                 </Card>
             </>

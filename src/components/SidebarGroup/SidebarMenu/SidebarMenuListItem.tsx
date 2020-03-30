@@ -22,6 +22,7 @@ const SidebarMenuListItem = (props: any) => {
     className,
     open: openProp,
     label: Label,
+    selected,
     ...rest
   } = props;
 
@@ -37,8 +38,11 @@ const SidebarMenuListItem = (props: any) => {
     paddingLeft = 32 + 20 * depth;
   }
 
+  console.log(selected, href);
+
   const style = {
-    paddingLeft
+    paddingLeft,
+    color: (selected === href) ? '#5383ff' : '',
   };
 
   if (children) {
@@ -67,6 +71,7 @@ const SidebarMenuListItem = (props: any) => {
       </ListItem>
     );
   } else {
+    
     return (
       <ListItem
         {...rest}

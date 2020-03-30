@@ -50,6 +50,7 @@ const PageTitle = (props: IPageTitleProps) => {
     pageTitleShadow = false,
     pageTitleIconBox = false,
     pageTitleDescription = false,
+    customComponent = null,
   } = props;
 
   const [modal1, setModal1] = useState(false);
@@ -92,19 +93,7 @@ const PageTitle = (props: IPageTitleProps) => {
         {!open && (
           <div className="d-flex align-items-center">       
             {
-              // buttons && buttons.map((b: IPageTitleButtons) => (
-              //   <NavLink
-              //     key={b.key}
-              //     to={b.link || ''}
-              //   >
-              //     <Button style={{ marginLeft: '5px' }} variant="contained">
-              //       <span className="d-none d-xl-block">{ b.label }</span>
-              //       <span className="btn-wrapper--icon d-block d-xl-none">
-              //         { b.label }
-              //       </span>
-              //     </Button>
-              //   </NavLink>
-              // ))
+              customComponent
             }   
           </div>
         )}

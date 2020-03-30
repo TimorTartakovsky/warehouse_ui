@@ -48,14 +48,15 @@ export interface IReduceChildRoutes {
 
 const reduceChildRoutes = (props: IReduceChildRoutes) => {
   const { router, items, page, depth } = props;
+  let selected = null;
   if (page.content) {
-    console.log(router.location.pathname);
-    console.log(page);
     const open = matchPath(router.location.pathname, {
       path: page.to,
       exact: false
     });
     const foundMatch = page.content.find(p => p.to === router.location.pathname);
+    selected = foundMatch && foundMatch.to;
+    console.log('==== selected = ', selected)
     const openChildren = !!foundMatch ? true : false;
 
     items.push(
@@ -82,6 +83,7 @@ const reduceChildRoutes = (props: IReduceChildRoutes) => {
         href={page.to}
         icon={page.icon}
         key={page.label}
+        selected={selected}
         label={page.badge}
         title={page.label}
       />
