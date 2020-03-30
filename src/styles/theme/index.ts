@@ -1,4 +1,4 @@
-import { createMuiTheme, Theme, ThemeOptions } from '@material-ui/core';
+import { createMuiTheme, Theme } from '@material-ui/core';
 import typography from './typography';
 
 // const vars = require('../../assets/core/_variables-mui.scss');

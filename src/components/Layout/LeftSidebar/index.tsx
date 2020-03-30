@@ -1,15 +1,23 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import clsx from 'clsx';
+import { connect } from 'react-redux';
+import { Sidebar, SidebarHeader, SidebarFooter } from '../../SidebarGroup/';
+import { IRootState } from '../../../store';
 
-// import { connect } from 'react-redux';
+export interface ILeftSidebar {
+  children?: React.ReactElement | React.ReactElement[];
+  sidebarToggle?: boolean;
+  sidebarToggleMobile?: boolean;
+  sidebarFixed?: boolean;
+  headerFixed?: boolean;
+  headerSearchHover?: boolean;
+  footerFixed?: boolean;
+  contentBackground?: string;
+}
 
-import { Sidebar } from '../../SidebarGroup';
-import { Header } from '../../HeaderGroup';
-import { Footer } from '../../FooterGroup'
-
-const LeftSidebar = (props: any) => {
+const LeftSidebar = (props: ILeftSidebar) => {
   const {
-    children,
+    children = null,
     sidebarToggle,
     sidebarFixed,
     footerFixed,
@@ -19,7 +27,7 @@ const LeftSidebar = (props: any) => {
   return (
     <>
       <div className={clsx('app-wrapper', contentBackground)}>
-        <Header />
+        <SidebarHeader />
         <div
           className={clsx('app-main', {
             'app-main-sidebar-static': !sidebarFixed
@@ -34,7 +42,6 @@ const LeftSidebar = (props: any) => {
             <div className="app-content--inner">
               <div className="app-content--inner__wrapper">{children}</div>
             </div>
-            <Footer />
           </div>
         </div>
       </div>
@@ -42,20 +49,15 @@ const LeftSidebar = (props: any) => {
   );
 };
 
-// const mapStateToProps = state => ({
-//   sidebarToggle: state.ThemeOptions.sidebarToggle,
-//   sidebarToggleMobile: state.ThemeOptions.sidebarToggleMobile,
-//   sidebarFixed: state.ThemeOptions.sidebarFixed,
 
-//   headerFixed: state.ThemeOptions.headerFixed,
-//   headerSearchHover: state.ThemeOptions.headerSearchHover,
-//   headerDrawerToggle: state.ThemeOptions.headerDrawerToggle,
+const mapStateToProps = (state: IRootState) => ({
+  sidebarToggle: state.theme.sidebarToggle,
+  sidebarToggleMobile: state.theme.sidebarToggleMobile,
+  sidebarFixed: state.theme.sidebarFixed,
+  headerFixed: state.theme.headerFixed,
+  headerSearchHover: state.theme.headerSearchHover,
+  footerFixed: state.theme.footerFixed,
+  contentBackground: state.theme.contentBackground
+});
 
-//   footerFixed: state.ThemeOptions.footerFixed,
-
-//   contentBackground: state.ThemeOptions.contentBackground
-// });
-
-// export default connect(mapStateToProps)(LeftSidebar);
-
-export default LeftSidebar;
+export default connect(mapStateToProps)(LeftSidebar);

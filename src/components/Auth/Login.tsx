@@ -6,9 +6,10 @@ import {
 import logo from '../../assets/images/illustrations/login.svg';
 import EmailIcon from '@material-ui/icons/MailOutlineTwoTone';
 import LockIcon from '@material-ui/icons/LockTwoTone';
+import Code from '@material-ui/icons/Code';
 import { connect } from 'react-redux';
 import { LOGIN_ACTIONS, IActionPayload } from '../../actions'
-import { RootState } from '../../store';
+import { IRootState } from '../../store';
 import { withCookies, Cookies } from 'react-cookie';
 import { COOKIE_TOKEN_NAME } from '../../api/HttpService';
 import { RouteChildrenProps } from 'react-router';
@@ -49,7 +50,7 @@ class LoginPage extends React.Component<LoginProps, LoginState> {
     }
 
     private async login(): Promise<void> {
-      const { username, cookies, isLoginSucceeded } = this.props;
+      const { username } = this.props;
       const { password } = this.state;
       if (!username) {
         // show exception
@@ -95,8 +96,6 @@ class LoginPage extends React.Component<LoginProps, LoginState> {
     private async sendToken() {
       await this.props.token(this.state.token);
       const { cookies, isTokenExist } = this.props;
-      console.log('cookies: ', cookies)
-      console.log('isTokenExist: ', isTokenExist)
       const isLogin = cookies.get(COOKIE_TOKEN_NAME) || isTokenExist;
       this.setState(p => ({
         ...p,
@@ -119,10 +118,10 @@ class LoginPage extends React.Component<LoginProps, LoginState> {
                           <Grid
                             item
                             xs={12}
-                            lg={3}
+                            lg={5}
                             className="d-none d-xl-flex align-items-center">
                             <img
-                              style={{ height: '55px', width: '55px'}}
+                              // style={{ height: '55px', width: '55px'}}
                               alt="warehouse-login-logo"
                               className="w-100 mx-auto d-block img-fluid"
                               src={logo}
@@ -131,7 +130,7 @@ class LoginPage extends React.Component<LoginProps, LoginState> {
                           <Grid
                             item
                             xs={12}
-                            lg={6}
+                            lg={7}
                             className="d-flex flex-column align-items-center">
                             <span className="w-100 text-center text-md-center pb-4">
                               <Typography style={{ paddingTop: '15px', paddingBottom: '15px' }} variant="h4" color="primary">
@@ -210,7 +209,7 @@ class LoginPage extends React.Component<LoginProps, LoginState> {
                                             onChange={e => this.setToken(e.target.value)}
                                             startAdornment={
                                               <InputAdornment position="start">
-                                                {/* <EmailIcon /> */}
+                                                <Code />
                                               </InputAdornment>
                                             }
                                           />
@@ -247,7 +246,7 @@ class LoginPage extends React.Component<LoginProps, LoginState> {
    
 } 
 
-const mapStateToProps = (state: RootState) => {
+const mapStateToProps = (state: IRootState) => {
   return {
     username: state.login.username || '',
     isWaiting: state.login.isWaiting,

@@ -1,5 +1,5 @@
-import React, { Fragment } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
@@ -52,7 +52,7 @@ const SidebarCollapsed = (props: any) => {
   const { setSidebarToggleMobile, sidebarToggleMobile } = props;
 
   return (
-    <Fragment>
+    <>
       <Hidden lgUp>
         <Drawer
           anchor="left"
@@ -75,7 +75,7 @@ const SidebarCollapsed = (props: any) => {
               <Box
                 className="header-logo-wrapper"
                 title="Carolina React Admin Dashboard with Material-UI PRO">
-                <Link
+                <NavLink
                   to="/DashboardDefault"
                   className="header-logo-wrapper-link">
                   <IconButton
@@ -88,7 +88,7 @@ const SidebarCollapsed = (props: any) => {
                       src={projectLogo}
                     />
                   </IconButton>
-                </Link>
+                </NavLink>
               </Box>
             </div>
           </AppBar>
@@ -216,7 +216,7 @@ const SidebarCollapsed = (props: any) => {
           </div>
         </Paper>
       </Hidden>
-    </Fragment>
+    </>
   );
 };
 

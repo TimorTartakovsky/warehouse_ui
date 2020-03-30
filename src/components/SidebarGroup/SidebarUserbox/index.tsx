@@ -1,7 +1,5 @@
-import React, { Fragment } from 'react';
-
+import React from 'react';
 import clsx from 'clsx';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
@@ -16,11 +14,16 @@ import {
 } from '@material-ui/core';
 
 import avatar2 from '../../../assets/images/avatars/avatar2.jpg';
-// import { connect } from 'react-redux';
-
+import { connect } from 'react-redux';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { IRootState } from '../../../store';
 
-const SidebarUserbox = (props: any) => {
+export interface ISidebarUserboxProps {
+  sidebarToggle: boolean;
+  sidebarHover: boolean;
+}
+
+const SidebarUserbox = (props: ISidebarUserboxProps) => {
   const { sidebarToggle, sidebarHover } = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -33,8 +36,9 @@ const SidebarUserbox = (props: any) => {
   }
 
   return (
-    <Fragment>
+    <>
       <Box
+        style={{ marginTop: '74px' }}
         className={clsx('app-sidebar-userbox', {
           'app-sidebar-userbox--collapsed': sidebarToggle && !sidebarHover
         })}>
@@ -128,10 +132,10 @@ const SidebarUserbox = (props: any) => {
         />
         <Box className="app-sidebar-userbox-name">
           <Box>
-            <b>Emma Taylor</b>
+            <b>Anders Suarez</b>
           </Box>
           <Box className="app-sidebar-userbox-description">
-            Senior Web Developer
+            CEO
           </Box>
           <Box className="app-sidebar-userbox-btn-profile">
             <Button
@@ -145,15 +149,13 @@ const SidebarUserbox = (props: any) => {
           </Box>
         </Box>
       </Box>
-    </Fragment>
+    </>
   );
 };
 
-// const mapStateToProps = state => ({
-//   sidebarToggle: state.ThemeOptions.sidebarToggle,
-//   sidebarHover: state.ThemeOptions.sidebarHover
-// });
+const mapStateToProps = (state: IRootState) => ({
+  sidebarToggle: state.theme.sidebarToggle,
+  sidebarHover: state.theme.sidebarHover
+});
 
-// export default connect(mapStateToProps)(SidebarUserbox);
-
-export default SidebarUserbox;
+export default connect(mapStateToProps)(SidebarUserbox);

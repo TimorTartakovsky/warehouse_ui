@@ -36,7 +36,7 @@ const loginReducer = (state: ILogin = initialLoginState, actions: IActionPayload
         case LOGIN_ACTIONS.LOGIN_TO_WAREHOUSE_SET_USERNAME:
             return {
                 ...state,
-                username: actions.payload.username,
+                username: actions.payload && actions.payload.username,
             };
         case LOGIN_ACTIONS.LOGIN_TO_WAREHOUSE_SUCCESS:
             return {

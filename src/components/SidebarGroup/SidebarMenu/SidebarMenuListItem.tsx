@@ -1,15 +1,16 @@
-import React, { useState, forwardRef } from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import { ListItem, Button, Collapse } from '@material-ui/core';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-const CustomRouterLink = forwardRef(function CustomLink(props, ref) {
-  return (
-    <div ref={ref as any} style={{ flexGrow: 1 }}>
-      <NavLink to="#" {...props} />
-    </div>
-  );
-});
+import { NavLink } from 'react-router-dom';
+
+// const CustomRouterLink = forwardRef(function CustomLink(props, ref) {
+//   return (
+//     <div ref={ref as any} style={{ flexGrow: 1 }}>
+//       <NavLink to="#" {...props} />
+//     </div>
+//   );
+// });
 
 const SidebarMenuListItem = (props: any) => {
   const {
@@ -71,25 +72,22 @@ const SidebarMenuListItem = (props: any) => {
         {...rest}
         className={clsx('app-sidebar-item', className)}
         disableGutters>
-        <Button
-        //   activeClassName="active-item"
-        //   color="primary"
-        //   disableRipple
-        //   variant="text"
-        //   className={clsx('app-sidebar-button-wrapper', `depth-${depth}`)}
-        //   component={CustomRouterLink}
-        //   exact
-          style={style}
-          href={href}
-        >
-          {Icon && <Icon className="app-sidebar-icon" />}
-          {title}
-          {Label && (
-            <span className="menu-item-label">
-              <Label />
-            </span>
-          )}
-        </Button>
+        <NavLink to={href}>
+          <Button
+            color="primary"
+            variant="text"
+            className={clsx('app-sidebar-button-wrapper', `depth-${depth}`)}
+            style={style}
+          >
+            {Icon && <Icon className="app-sidebar-icon" />}
+            {title}
+            {Label && (
+              <span className="menu-item-label">
+                <Label />
+              </span>
+            )}
+          </Button>
+        </NavLink>
       </ListItem>
     );
   }
