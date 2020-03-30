@@ -11,10 +11,14 @@ export const COOKIE_TOKEN_NAME = 'logedin';
 class HttpService implements IHttpService {
     protected readonly instance: AxiosInstance;
     private cookies: cookies.Cookies;
-    private host = process.env.UIHOST || 'http://dev.netvisionllc.com:9001';
+    private host = 'http://dev.netvisionllc.com:9001/';
     private token: string = '';
     
     constructor() {
+        if (process.env.NODE_ENV === "development") {
+            this.host = 'http://localhost:9001/'   
+        }
+        console.log(`HttpService -> host ${this.host}`);
         this.cookies = new cookies.Cookies();
         this.token = this.cookies.get(COOKIE_TOKEN_NAME);
         this.instance = axios.create({
