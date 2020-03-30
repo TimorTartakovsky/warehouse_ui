@@ -21,6 +21,7 @@ export interface ITableHeader {
     orderBy: string;
     rowCount: number;
     headCells: any[];
+    isCheckbox?: boolean;
 }
 
 const TableHeader = (props: ITableHeader) => {
@@ -32,7 +33,8 @@ const TableHeader = (props: ITableHeader) => {
       numSelected,
       rowCount,
       onRequestSort,
-      headCells
+      headCells,
+      isCheckbox
     } = props;
   
     const createSortHandler = (property: string) => (event: any) => {
@@ -43,12 +45,15 @@ const TableHeader = (props: ITableHeader) => {
       <TableHead>
         <TableRow>
           <TableCell padding="checkbox">
-            <Checkbox
-              indeterminate={numSelected > 0 && numSelected < rowCount}
-              checked={rowCount > 0 && numSelected === rowCount}
-              onChange={onSelectAllClick}
-              inputProps={{ 'aria-label': 'select all desserts' }}
-            />
+            {
+              isCheckbox ? (
+                <Checkbox
+                  indeterminate={numSelected > 0 && numSelected < rowCount}
+                  checked={rowCount > 0 && numSelected === rowCount}
+                  onChange={onSelectAllClick}
+                  inputProps={{ 'aria-label': 'select all desserts' }}
+                />) : null
+            }
           </TableCell>
           {headCells.map(headCell => (
             <TableCell

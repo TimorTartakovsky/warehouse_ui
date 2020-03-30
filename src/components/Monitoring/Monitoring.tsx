@@ -93,6 +93,7 @@ class Monitoring extends React.Component<IMonitoringProps, IMonitoringState> {
                 <PageTitle
                     titleHeading="Monitoring Table"
                     titleDescription=""
+                    // customComponent={() => { console.log(``) }}
                 />
                 <Card className="card-box mb-4-spacing overflow-visible">
                     <CardContent className="p-3">
@@ -124,6 +125,27 @@ class Monitoring extends React.Component<IMonitoringProps, IMonitoringState> {
                                 setRows={this.updateRows}
                             />
                         }
+                        {/* <Dialog scroll="body" maxWidth="lg" open={modal1} onClose={toggle1}>
+                            <Grid container spacing={0}>
+                                <Grid item xs={12} lg={12}>
+                                <div className="bg-white ">
+                                    <Tabs
+                                    value={value}
+                                    indicatorColor="primary"
+                                    textColor="primary"
+                                    variant="fullWidth"
+                                    onChange={handleChange}>
+                                    <Tab className="py-3" label="Timeline" />
+                                    </Tabs>
+                                    <TabPanel value={value} index={0}>
+                                    <Grid item md={12} lg={12}>
+                                        Content
+                                    </Grid>
+                                    </TabPanel>
+                                </div>
+                                </Grid>
+                            </Grid>
+                            </Dialog> */}
                         {/* <DynamicTable
                             headerProperty={primaryColumn || ''}
                             headers={headers || []}

@@ -64,7 +64,7 @@ const reduceChildRoutes = (props: IReduceChildRoutes) => {
         icon={page.icon}
         key={page.label}
         label={page.badge}
-        open={Boolean(open || )}
+        open={Boolean(open || openChildren)}
         title={page.label}>
         <div className="sidebar-menu-children py-2">
           <SidebarMenuList

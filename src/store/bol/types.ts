@@ -100,20 +100,20 @@ const processingHeaderCells: IHeaderCellType[] = [
 ];
 
 const monitoringHeaderCells: IHeaderCellType[] = [
-    { id: 'bolNumber', numeric: false, disablePadding: true, label: 'Order' },
-    { id: 'orderNumbers', numeric: false, disablePadding: true, label: 'Delivery' },
-    { id: 'proNumber', numeric: false, disablePadding: true, label: 'Pilot' },
-    { id: 'customerName', numeric: false, disablePadding: true, label: 'Pro Number' },
+    { id: 'bolNumber', numeric: false, disablePadding: true, label: 'BOL' },
+    { id: 'orderNumbers', numeric: false, disablePadding: true, label: 'Order' },
+    { id: 'proNumber', numeric: false, disablePadding: true, label: 'Pro Number' },
+    { id: 'customerName', numeric: false, disablePadding: true, label: 'Customer Name' },
     { id: 'carrier', numeric: false, disablePadding: true, label: 'Carrier' },
-    { id: 'deliveryDays', numeric: false, disablePadding: true, label: 'Terms' },
+    { id: 'deliveryDays', numeric: false, disablePadding: true, label: 'D Days' },
     { id: 'freightCharges', numeric: false, disablePadding: true, label: 'Charge' },
-    { id: 'freightTerms', numeric: false, disablePadding: true, label: 'Customer Name' },
-    { id: 'boxes', numeric: false, disablePadding: true, label: 'City' },
+    { id: 'freightTerms', numeric: false, disablePadding: true, label: 'Terms' },
+    { id: 'boxes', numeric: false, disablePadding: true, label: 'Boxes' },
+    { id: 'checkedDate', numeric: false, disablePadding: true, label: 'Skids' },
+    { id: 'bolStatus', numeric: false, disablePadding: true, label: 'Weight' },
     { id: 'skids', numeric: false, disablePadding: true, label: 'State' },
-    { id: 'revisedWeight', numeric: false, disablePadding: true, label: '# Boxes' },
-    { id: 'checkedDate', numeric: false, disablePadding: true, label: '# Skids' },
-    { id: 'bolStatus', numeric: false, disablePadding: true, label: 'Actual Weight' },
-    { id: 'actions', numeric: false, disablePadding: true, label: 'Actions' },
+    { id: 'checkedDate', numeric: false, disablePadding: true, label: 'Ship Date' },
+    { id: 'actions', numeric: false, disablePadding: true, label: 'Status' },
 ];
 
 export const initBOLState: IBOLState = {

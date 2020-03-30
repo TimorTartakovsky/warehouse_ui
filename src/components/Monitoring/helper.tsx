@@ -13,6 +13,8 @@ const getStatus = (s: number) => {
         case 3: return 'Wrapping';
         case 4: return 'Ship Ready';
         case 5: return 'Completed';
+        case 9: return 'Canceled';
+        case 6: return 'We dont have it yet';
         default: return 'Picking';
    } 
 }

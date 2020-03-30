@@ -5,11 +5,7 @@ import {
   Paper,
   Box,
   Typography,
-  Dialog,
-  Tabs,
-  Tab,
   Button,
-  ButtonGroup
 } from '@material-ui/core';
 import DashboardTwoToneIcon from '@material-ui/icons/DashboardTwoTone';
 import { connect } from 'react-redux';
@@ -35,14 +31,6 @@ const TabPanel = (props: ITabPanel) => {
   );
 }
 
-export interface IPageTitleButtons {
-  link?: string;
-  label: string;
-  key: string;
-  iconName: string;
-  dialogContent?: any;
-}
-
 export interface IPageTitleProps {
     pageTitleStyle?: string;
     pageTitleBackground?: string;
@@ -52,7 +40,7 @@ export interface IPageTitleProps {
     pageTitleDescription?: boolean;
     titleHeading?: string;
     titleDescription?: string;
-    buttons?: IPageTitleButtons[];
+    customComponent?: React.ReactElement | React.ReactElement[];
 }
 
 const PageTitle = (props: IPageTitleProps) => {
@@ -60,10 +48,8 @@ const PageTitle = (props: IPageTitleProps) => {
     pageTitleStyle = '',
     pageTitleBackground = '',
     pageTitleShadow = false,
-    // pageTitleBreadcrumb = false,
     pageTitleIconBox = false,
     pageTitleDescription = false,
-    buttons,
   } = props;
 
   const [modal1, setModal1] = useState(false);
@@ -76,8 +62,7 @@ const PageTitle = (props: IPageTitleProps) => {
   };
 
   const [open, setOpen] = useState(false);
-  // const [dialogContent, setDialogContent] = useState(''); 
-
+  
   return (
     <Fragment>
       <Paper
@@ -107,41 +92,20 @@ const PageTitle = (props: IPageTitleProps) => {
         {!open && (
           <div className="d-flex align-items-center">       
             {
-              buttons && buttons.map((b: IPageTitleButtons) => (
-                <NavLink
-                  key={b.key}
-                  to={b.link || ''}
-                >
-                  <Button style={{ marginLeft: '5px' }} variant="contained">
-                    <span className="d-none d-xl-block">{ b.label }</span>
-                    <span className="btn-wrapper--icon d-block d-xl-none">
-                      { b.label }
-                    </span>
-                  </Button>
-                </NavLink>
-              ))
+              // buttons && buttons.map((b: IPageTitleButtons) => (
+              //   <NavLink
+              //     key={b.key}
+              //     to={b.link || ''}
+              //   >
+              //     <Button style={{ marginLeft: '5px' }} variant="contained">
+              //       <span className="d-none d-xl-block">{ b.label }</span>
+              //       <span className="btn-wrapper--icon d-block d-xl-none">
+              //         { b.label }
+              //       </span>
+              //     </Button>
+              //   </NavLink>
+              // ))
             }   
-            {/* <Dialog scroll="body" maxWidth="lg" open={modal1} onClose={toggle1}>
-              <Grid container spacing={0}>
-                <Grid item xs={12} lg={12}>
-                  <div className="bg-white ">
-                    <Tabs
-                      value={value}
-                      indicatorColor="primary"
-                      textColor="primary"
-                      variant="fullWidth"
-                      onChange={handleChange}>
-                      <Tab className="py-3" label="Timeline" />
-                    </Tabs>
-                    <TabPanel value={value} index={0}>
-                      <Grid item md={12} lg={12}>
-                        Content
-                      </Grid>
-                    </TabPanel>
-                  </div>
-                </Grid>
-              </Grid>
-            </Dialog> */}
           </div>
         )}
       </Paper>

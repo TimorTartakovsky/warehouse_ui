@@ -70,6 +70,7 @@ export interface IDynamicTable {
    headers: IHeaderCellType[];
    headerProperty: string;
    isMultiSelectable?: boolean;
+   isToolbarShown?: boolean;
    setRows: (rows: any[]) => void;
 }
 
@@ -164,7 +165,7 @@ const DynamicExpansionPanelTable = (props: IDynamicTable) => {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <TableToolbar numSelected={selected.length} />
+        { props.isToolbarShown ? (<TableToolbar numSelected={selected.length} />) : null}
         <TableContainer style={{ maxHeight: '50vh' }}>
           <Table
             className={classes.table}
