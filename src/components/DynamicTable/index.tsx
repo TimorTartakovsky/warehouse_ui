@@ -14,6 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import TableHeader, { ETableHeaderOrder } from './TableHeader';
 import TableToolbar from './TableHeaderToolbar';
+import { IBOLMonitoring } from '../../store/bol/types';
 
 const descendingComparator = (a: any, b: any, orderBy: string) => {
   if (b[orderBy] < a[orderBy]) {
@@ -66,9 +67,11 @@ export interface IHeaderCellType {
     label: string;
 }
 export interface IDynamicTable {
+   onSelectedCallBack?: (monitoring: IBOLMonitoring, selected: string[], pk: string) => void;
    rows: any[];
    headers: IHeaderCellType[];
    headerProperty: string;
+   isMultiSelectable?: boolean;
 }
 
 const DynamicTable = (props: IDynamicTable) => {
@@ -97,22 +100,25 @@ const DynamicTable = (props: IDynamicTable) => {
   };
 
   const handleClick = (event: any, name: string) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected: string[] = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
+    if (props.isMultiSelectable) {
+      const selectedIndex = selected.indexOf(name);
+      let newSelected: string[] = [];
+      if (selectedIndex === -1) {
+        newSelected = newSelected.concat(selected, name);
+      } else if (selectedIndex === 0) {
+        newSelected = newSelected.concat(selected.slice(1));
+      } else if (selectedIndex === selected.length - 1) {
+        newSelected = newSelected.concat(selected.slice(0, -1));
+      } else if (selectedIndex > 0) {
+        newSelected = newSelected.concat(
+          selected.slice(0, selectedIndex),
+          selected.slice(selectedIndex + 1)
+        );
+      }
+      setSelected(newSelected);
+    } else {
+      setSelected([name]);
     }
-    setSelected(newSelected);
   };
 
   const handleChangePage = (event: any, newPage: number) => {
@@ -132,7 +138,11 @@ const DynamicTable = (props: IDynamicTable) => {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <TableToolbar numSelected={selected.length} />
+        {
+          props.isMultiSelectable ? (
+            <TableToolbar numSelected={selected.length} />
+          ) : null
+        }
         <TableContainer style={{ maxHeight: '60vh' }}>
           <Table
             className={classes.table}
@@ -143,6 +153,7 @@ const DynamicTable = (props: IDynamicTable) => {
           >
             <TableHeader
               classes={classes}
+              isMultiSelectable={props.isMultiSelectable}
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
@@ -162,7 +173,10 @@ const DynamicTable = (props: IDynamicTable) => {
                   return (
                     <TableRow
                       hover
-                      onClick={event => handleClick(event, row[props.headerProperty])}
+                      onClick={event => {
+                        handleClick(event, row[props.headerProperty]);
+                        props.onSelectedCallBack && props.onSelectedCallBack(row, selected, props.headerProperty);
+                      }}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
@@ -180,7 +194,9 @@ const DynamicTable = (props: IDynamicTable) => {
                       {
                          <>
                             {
-                                Object.keys(row).map(
+                                Object.keys(row)
+                                .filter((k: string) => k !== props.headerProperty)
+                                .map(
                                     (k: string, index: number) => {
                                         const copyRow: any = row;
                                         const value = copyRow[k];

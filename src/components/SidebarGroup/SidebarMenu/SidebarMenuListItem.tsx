@@ -22,6 +22,8 @@ const SidebarMenuListItem = (props: any) => {
     className,
     open: openProp,
     label: Label,
+    selected,
+    current,
     ...rest
   } = props;
 
@@ -37,8 +39,10 @@ const SidebarMenuListItem = (props: any) => {
     paddingLeft = 32 + 20 * depth;
   }
 
+  const isSelected = current && current.to === href;
   const style = {
-    paddingLeft
+    paddingLeft,
+    color: (isSelected) ? '#5383ff' : '',
   };
 
   if (children) {
@@ -74,7 +78,7 @@ const SidebarMenuListItem = (props: any) => {
         disableGutters>
         <NavLink to={href}>
           <Button
-            color="primary"
+            color={isSelected ? 'primary' : 'default'}
             variant="text"
             className={clsx('app-sidebar-button-wrapper', `depth-${depth}`)}
             style={style}

@@ -47,6 +47,7 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
         this.props.processing.length &&
         this.props.processing.map((process: IBOLProcessing) => {
             return {
+                orderNumberId: process.orderNumber,
                 orderNumber: process.orderNumber,
                 deliveryNumber: process.deliveryNumber,
                 pilot: process.pilot,
@@ -65,7 +66,7 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
         })) || []
         return (
             <DynamicTable
-                headerProperty={'orderNumber'}
+                headerProperty={'orderNumberId'}
                 headers={this.props.processingTableHeaders || []}
                 rows={parsedProcessingArray}
             />

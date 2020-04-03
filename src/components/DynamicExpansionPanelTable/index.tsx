@@ -76,7 +76,6 @@ export interface IDynamicTable {
 
 const DynamicExpansionPanelTable = (props: IDynamicTable) => {
   const classes = useStyles();
-  const rows = props.rows;
   const [order, setOrder] = React.useState(ETableHeaderOrder.asc);
   const [orderBy, setOrderBy] = React.useState('calories');
   const defaultSelected: string[] = [];
@@ -92,7 +91,7 @@ const DynamicExpansionPanelTable = (props: IDynamicTable) => {
 
   const handleSelectAllClick = (event: any) => {
     if (event.target.checked) {
-      const selectedColumns = rows.map((n: any) => n[props.headerProperty]) || [''];
+      const selectedColumns = props.rows.map((n: any) => n[props.headerProperty]) || [''];
       setSelected(selectedColumns);
       return;
     }
@@ -117,11 +116,11 @@ const DynamicExpansionPanelTable = (props: IDynamicTable) => {
       }
       setSelected(newSelected);
     } else {
-      const indexOfPrevElement = rows.findIndex(r => r.id === selected[0]);
+      const indexOfPrevElement = props.rows.findIndex(r => r.id === selected[0]);
       if (indexOfPrevElement !== -1) {
         hideRow(indexOfPrevElement, true);
       }
-      const indexOfElement = rows.findIndex(r => r.id === name);
+      const indexOfElement = props.rows.findIndex(r => r.id === name);
       setSelected([name]);
       showRow(indexOfElement);
     }
@@ -143,24 +142,32 @@ const DynamicExpansionPanelTable = (props: IDynamicTable) => {
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
 
   const hideRow = (index: number, flag?: boolean) => {
-    if (!flag && selected[0] === rows[index].id) {
+    if (!Array.isArray(props.rows) || !props.rows[index]) {
       return;
     }
-    Object.keys(rows[index]).filter(f=> f !== 'id').forEach(k => {
-      rows[index][k].isFocused = false;
+    if (!flag && selected[0] === props.rows[index].id) {
+      return;
+    }
+    Object.keys(props.rows[index]).filter(f=> f !== 'id').forEach(k => {
+      props.rows[index][k].isFocused = false;
     });
-    props.setRows([...rows]);
+    props.setRows([...props.rows]);
   }
 
-  const showRow = (index: number) => {    
-    Object.keys(rows[index]).filter(f=> f !== 'id').forEach(k => {
-      rows[index][k].isFocused = true;
+  const showRow = (index: number) => {  
+    console.log(index);  
+    console.log(props.rows);  
+    if (!Array.isArray(props.rows) || !props.rows[index]) {
+      return;
+    }
+    Object.keys(props.rows[index]).filter(f=> f !== 'id').forEach(k => {
+      props.rows[index][k].isFocused = true;
     });
-    props.setRows([...rows]);
+    props.setRows([...props.rows]);
   }
 
   const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+    rowsPerPage - Math.min(rowsPerPage, props.rows.length - page * rowsPerPage);
 
   return (
     <div className={classes.root}>
@@ -181,12 +188,12 @@ const DynamicExpansionPanelTable = (props: IDynamicTable) => {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={props.rows.length}
               headCells={props.headers}
             />
             <TableBody>
               {
-                stableSort(rows, getComparator(order, orderBy))
+                stableSort(props.rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row: any, index: number) => {
                   const isItemSelected = isSelected(row[props.headerProperty]);
@@ -205,13 +212,6 @@ const DynamicExpansionPanelTable = (props: IDynamicTable) => {
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
-                        {/* <Radio
-                          checked={isItemSelected}
-                          onChange={event => handleClick(event, row[props.headerProperty])}
-                          value={row.id}
-                          name="radio-button-demo"
-                          inputProps={{ 'aria-label': 'A' }}
-                        /> */}
                         <Checkbox
                           checked={isItemSelected}
                           icon={<CircleUnchecked />}
@@ -265,7 +265,7 @@ const DynamicExpansionPanelTable = (props: IDynamicTable) => {
         <TablePagination
           rowsPerPageOptions={[25, 50, 100, 200]}
           component="div"
-          count={rows.length}
+          count={props.rows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}

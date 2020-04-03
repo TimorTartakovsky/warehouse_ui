@@ -19,7 +19,7 @@ const getStatus = (s: number) => {
    } 
 }
 
-const generateWillCallHeaders = (): any[] => {
+const generateExpressHeaders = (): any[] => {
     return [
         { id: 'orderNumber', numeric: false, disablePadding: true, label: 'Order' },
         { id: 'customerName', numeric: false, disablePadding: true, label: 'Customer Name' },
@@ -32,6 +32,18 @@ const generateWillCallHeaders = (): any[] => {
     ];
 }
 
+const generateWillCallHeaders = (): any[] => {
+    return [
+        { id: 'orderNumber', numeric: false, disablePadding: true, label: 'Order' },
+        { id: 'customerName', numeric: false, disablePadding: true, label: 'Customer Name' },
+        { id: 'orderDate', numeric: false, disablePadding: true, label: 'Order Dt' },
+        { id: 'dueDate', numeric: false, disablePadding: true, label: 'Due Dt' },
+        { id: 'stage', numeric: false, disablePadding: true, label: 'Stage' },
+        { id: 'username', numeric: false, disablePadding: true, label: 'Employee' },
+        { id: 'startDateTime', numeric: false, disablePadding: true, label: 'Start Date' },
+        { id: 'hold', numeric: false, disablePadding: true, label: 'Hold'},
+    ];
+}
 
 const generateWillCallRows = (arr: IMonitoring[]): any[] => {
     return arr.map((m:IMonitoring) => ({
@@ -88,6 +100,76 @@ const generateWillCallRows = (arr: IMonitoring[]): any[] => {
     }));
 }
 
+const generateStockOrderHeaders = (): any[] => {
+    return [
+        { id: 'orderNumber', numeric: false, disablePadding: true, label: 'Order' },
+        { id: 'customerName', numeric: false, disablePadding: true, label: 'Customer Name' },
+        { id: 'orderDate', numeric: false, disablePadding: true, label: 'Order Dt' },
+        { id: 'dueDate', numeric: false, disablePadding: true, label: 'Due Dt' },
+        { id: 'stage', numeric: false, disablePadding: true, label: 'Stage' },
+        { id: 'username', numeric: false, disablePadding: true, label: 'Employee' },
+        { id: 'startDateTime', numeric: false, disablePadding: true, label: 'Start Date' },
+        { id: 'hold', numeric: false, disablePadding: true, label: 'Hold' },
+    ];
+}
+
+const generateStockOrderRows = (arr: IMonitoring[]): any[] => {
+    return arr.map(m => ({
+        id: m.id,
+        orderNumber: {
+            value1: (<RegularTypography length="120px">{m.orderNumber}</RegularTypography>),
+            isFocused: false,
+            value2: (<RegularTypography length="120px">BN: {m.batchNumber}</RegularTypography>) 
+        },
+        customerName: {
+            value1: (<RegularTypography length="200px">{m.customerName}</RegularTypography>),
+            isFocused: false,
+            value2: (<RegularTypography length="200px">Address: {m.shipToCity}, {m.shipToState}, {m.shipToCountry}</RegularTypography>) 
+        },
+        orderDate: {
+            value1: (<RegularTypography length="120px">
+                {moment(m.orderDate, DATE_TIME_DB).format(DATE_TIME_FORMAT)}
+            </RegularTypography>),
+            isFocused: false,
+            value2: (<RegularTypography length="120px">{
+                moment(m.releasedDate, DATE_TIME_DB).format(DATE_TIME_FORMAT)
+            }</RegularTypography>) 
+        },
+        dueDate: {
+            value1: ( <RegularTypography length="120px">{
+                moment(m.dueDate, DATE_TIME_DB).format(DATE_TIME_FORMAT)
+               }</RegularTypography>),
+            isFocused: false,
+            value2: ( <RegularTypography length="120px">Pieces: {m.pieces}</RegularTypography>) 
+        },
+        stage: {
+        value1: (<RegularTypography length="100px">{
+            getStatus(m.orderType)
+        }</RegularTypography>),
+            isFocused: false, 
+        },
+        username: {
+            value1: (<RegularTypography length="100px">{m.username}</RegularTypography>),
+            isFocused: false, 
+        },
+        startDateTime: {
+            value1: (<RegularTypography length="120px">{
+                moment(m.startDateTime, DATE_TIME_DB).format(DATE_TIME_FORMAT)
+               }</RegularTypography>),
+            isFocused: false,
+            value2: ( <RegularTypography length="120px">{
+                moment(m.endDateTime, DATE_TIME_DB).format(DATE_TIME_FORMAT)
+                }</RegularTypography>) 
+        },
+        hold: {
+            value1: (<RegularTypography length="20px"></RegularTypography>),
+            isFocused: false, 
+        },
+    }));
+}
+
+
+
 const generateTransferOutHeaders = (): any[] => {
     return [
         { id: 'trNumber', numeric: false, disablePadding: true, label: 'TR Number' },
@@ -121,56 +203,6 @@ const generateRGAOrderHeaders = (): any[] => {
     ];
 }
 
-const generateStockOrderHeaders = (): any[] => {
-    return [
-        { id: 'orderNumber', numeric: false, disablePadding: true, label: 'Order' },
-        { id: 'batchNumber', numeric: false, disablePadding: true, label: 'Batch Number' },
-        { id: 'customerName', numeric: false, disablePadding: true, label: 'Customer Name' },
-        { id: 'shipToCity', numeric: false, disablePadding: true, label: 'City' },
-        { id: 'shipToState', numeric: false, disablePadding: true, label: 'State' },
-        { id: 'orderDate', numeric: false, disablePadding: true, label: 'Order Dt' },
-        { id: 'dueDate', numeric: false, disablePadding: true, label: 'Due Dt' },
-        { id: 'pieces', numeric: false, disablePadding: true, label: 'Pieces' },
-        { id: 'stage', numeric: false, disablePadding: true, label: 'Stage' },
-        { id: 'username', numeric: false, disablePadding: true, label: 'Employee' },
-        { id: 'startDateTime', numeric: false, disablePadding: true, label: 'Start Date' },
-        { id: 'endDateTime', numeric: false, disablePadding: true, label: 'End Date' },
-        { id: 'hold', numeric: false, disablePadding: true, label: 'Hold' },
-    ];
-}
-
-
-const generateExpressHeaders = (): any[] => {
-    return [
-        { id: 'orderNumber', numeric: false, disablePadding: true, label: 'Order' },
-        { id: 'customerName', numeric: false, disablePadding: true, label: 'Customer Name' },
-        { id: 'orderDate', numeric: false, disablePadding: true, label: 'Order Dt' },
-        { id: 'dueDate', numeric: false, disablePadding: true, label: 'Due Dt' },
-        { id: 'stage', numeric: false, disablePadding: true, label: 'Stage' },
-        { id: 'username', numeric: false, disablePadding: true, label: 'Employee' },
-        { id: 'startDateTime', numeric: false, disablePadding: true, label: 'Start Date' },
-        { id: 'hold', numeric: false, disablePadding: true, label: 'Hold'},
-    ];
-}
-
-const generateStockOrderRows = (arr: IMonitoring[]): any[] => {
-    return arr.map(m => ({
-        orderNumber: m.orderNumber,
-        batchNumber: m.batchNumber,
-        customerName: m.customerName,
-        shipToCity: m.shipToCity,
-        shipToState: m.shipToState,
-        orderDate: m.orderDate,
-        dueDate: m.dueDate,
-        pieces: m.pieces,
-        stage: 'Picked / Completed',
-        username: m.username,
-        startDateTime: m.startDateTime,
-        endDateTime: m.endDateTime,
-        hold: '?',
-    }));
-}
-
 const generateRGAOrderRows = (arr: IMonitoring[]): any[] => {
     return arr.map(m => ({
         returnNumber: m.returnNumber,
@@ -178,8 +210,8 @@ const generateRGAOrderRows = (arr: IMonitoring[]): any[] => {
         masterBatchId: m.masterBatchId,
         customerNumber: m.customerNumber,
         shipToCity: m.shipToCity,
-        createdDate: m.createdDate,
-        receivedDate: m.receivedDate,
+        createdDate: moment(m.createdDate, DATE_TIME_DB).format(DATE_TIME_FORMAT),
+        receivedDate: moment(m.receivedDate, DATE_TIME_DB).format(DATE_TIME_FORMAT),
         pieces: m.pieces,
         inspectionWorker: m.inspectionWorker,
         shelvingWorker: m.shelvingWorker,
@@ -193,17 +225,47 @@ const generateTransferOutRows = (arr: IMonitoring[]): any[] => {
     return arr.map((m:IMonitoring) => ({
         trNumber: m.trNumber,
         transferType: m.transferType,
-        createdDate: m.createdDate,
+        createdDate: moment(m.createdDate, DATE_TIME_DB).format(DATE_TIME_FORMAT),
         toLocationCode: m.toLocationCode,
         shipperId: m.shipperId,
         pieces: m.pieces,
-        releasedDate: m.releasedDate,
-        stage: 'Picked / Completed',
+        releasedDate: moment(m.releasedDate, DATE_TIME_DB).format(DATE_TIME_FORMAT),
+        stage: getStatus(m.orderType),
         employee: `${m.firstName} ${m.lastName}`,
-        startDate: m.startDate,
-        endDate: m.endDate,
-        hold: '?',
+        startDate: moment(m.startDate, DATE_TIME_DB).format(DATE_TIME_FORMAT),
+        endDate: moment(m.endDate, DATE_TIME_DB).format(DATE_TIME_FORMAT),
+        hold: '',
     }));
+}
+
+export const isExpandableTable = (option: EOrderTypeOptions): boolean => {
+    switch (option) {
+        case EOrderTypeOptions.willCall:
+        case EOrderTypeOptions.express:
+        case EOrderTypeOptions.stockOrder:
+            return true;
+        case EOrderTypeOptions.rgaOrder:
+        case EOrderTypeOptions.transferOut:
+            return false;
+        default: return false;
+    }
+}
+
+export const willCallToolbar = () => {
+    
+}
+
+export const generateToolbar = (
+    option: EOrderTypeOptions,
+    subOption: EOrderSubTypeOptions,
+) => {
+    switch (option) {
+        case EOrderTypeOptions.willCall:
+        case EOrderTypeOptions.express:
+        case EOrderTypeOptions.stockOrder:
+        case EOrderTypeOptions.rgaOrder:
+        case EOrderTypeOptions.transferOut:
+    }
 }
 
 export const generateMonitoringHeaders = (

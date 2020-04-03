@@ -84,12 +84,12 @@ export const PRIMARY_COLUMN_MAP: IMonitoringTableColumnMap = {
         [EOrderSubTypeOptions.willCall]: 'id'
     },
     [EOrderTypeOptions.express]: {
-        [EOrderSubTypeOptions.ups]: 'orderNumber', // oracleId
-        [EOrderSubTypeOptions.onTrac]: 'orderNumber', // oracleId
-        [EOrderSubTypeOptions.fedx]: 'batchNumber', // id oracleId
+        [EOrderSubTypeOptions.ups]: 'id', // oracleId
+        [EOrderSubTypeOptions.onTrac]: 'id', // oracleId
+        [EOrderSubTypeOptions.fedx]: 'id', // id oracleId
     },
     [EOrderTypeOptions.stockOrder]: {
-        [EOrderSubTypeOptions.stockOrder]: 'orderNumber',
+        [EOrderSubTypeOptions.stockOrder]: 'id',
     },
     [EOrderTypeOptions.rgaOrder]: {
         [EOrderSubTypeOptions.returns]: 'masterBatchId',

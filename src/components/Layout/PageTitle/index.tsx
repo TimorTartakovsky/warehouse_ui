@@ -1,35 +1,33 @@
 import React, { Fragment, useState } from 'react';
 import clsx from 'clsx';
 import {
-  Grid,
   Paper,
   Box,
   Typography,
-  Button,
 } from '@material-ui/core';
 import DashboardTwoToneIcon from '@material-ui/icons/DashboardTwoTone';
 import { connect } from 'react-redux';
 import { IRootState } from '../../../store';
-import { NavLink } from 'react-router-dom';
+// import { NavLink } from 'react-router-dom';
 
-export interface ITabPanel {
-    children: React.ReactElement | React.ReactElement[],
-    index: number,
-    value: number,
-}
+// export interface ITabPanel {
+//     children: React.ReactElement | React.ReactElement[],
+//     index: number,
+//     value: number,
+// }
 
-const TabPanel = (props: ITabPanel) => {
-  const { children, value, index, ...other } = props;
-  return (
-    <Typography
-      component="div"
-      role="tabpanel"
-      hidden={value !== index}
-      {...other}>
-      {value === index && <Box p={4}>{children}</Box>}
-    </Typography>
-  );
-}
+// const TabPanel = (props: ITabPanel) => {
+//   const { children, value, index, ...other } = props;
+//   return (
+//     <Typography
+//       component="div"
+//       role="tabpanel"
+//       hidden={value !== index}
+//       {...other}>
+//       {value === index && <Box p={4}>{children}</Box>}
+//     </Typography>
+//   );
+// }
 
 export interface IPageTitleProps {
     pageTitleStyle?: string;
@@ -50,18 +48,8 @@ const PageTitle = (props: IPageTitleProps) => {
     pageTitleShadow = false,
     pageTitleIconBox = false,
     pageTitleDescription = false,
+    customComponent = null,
   } = props;
-
-  const [modal1, setModal1] = useState(false);
-  const toggle1 = () => setModal1(!modal1);
-
-  const [value, setValue] = React.useState(0);
-
-  const handleChange = (event: any, newValue: number) => {
-    setValue(newValue);
-  };
-
-  const [open, setOpen] = useState(false);
   
   return (
     <Fragment>
@@ -89,22 +77,10 @@ const PageTitle = (props: IPageTitleProps) => {
           </Box>
         </div>
 
-        {!open && (
+        {customComponent && (
           <div className="d-flex align-items-center">       
             {
-              // buttons && buttons.map((b: IPageTitleButtons) => (
-              //   <NavLink
-              //     key={b.key}
-              //     to={b.link || ''}
-              //   >
-              //     <Button style={{ marginLeft: '5px' }} variant="contained">
-              //       <span className="d-none d-xl-block">{ b.label }</span>
-              //       <span className="btn-wrapper--icon d-block d-xl-none">
-              //         { b.label }
-              //       </span>
-              //     </Button>
-              //   </NavLink>
-              // ))
+              customComponent
             }   
           </div>
         )}
