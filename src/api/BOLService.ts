@@ -1,11 +1,11 @@
 import HttpService from "./HttpService";
-import { BOLRequestProps } from '../actions/bol.action';
+import { BOLRequestProps, RecallMonitoringProps } from '../actions/bol.action';
 import { IBOLMonitoring, IBOLProcessing } from "../store/bol/types";
 
 export interface IBOLService {
-    // getLocationById: (locationId: number) => Promise<ILocationResponse>;
     getBOLMonitoring: (p: BOLRequestProps) => Promise<IBOLMonitoring[]>;
     getBOLProcessing: (p: BOLRequestProps) => Promise<IBOLProcessing[]>;
+    recallMonitoring: (p: RecallMonitoringProps) => Promise<void>;
 }
 
 export class BOLService extends HttpService implements IBOLService {
@@ -15,6 +15,14 @@ export class BOLService extends HttpService implements IBOLService {
     constructor() {
         super();
         this.httpService = new HttpService();
+    }
+
+    recallMonitoring = async (props: RecallMonitoringProps): Promise<void> => {
+        try {
+            // code
+        } catch (e) {
+            throw new Error(`IBOLService -> recallMonitoring -> monitoring cannot be fetched.`);
+        }
     }
 
     getBOLMonitoring = async (p: BOLRequestProps): Promise<IBOLMonitoring[]> => {

@@ -109,11 +109,10 @@ const monitoringHeaderCells: IHeaderCellType[] = [
     { id: 'freightCharges', numeric: false, disablePadding: true, label: 'Charge' },
     { id: 'freightTerms', numeric: false, disablePadding: true, label: 'Terms' },
     { id: 'boxes', numeric: false, disablePadding: true, label: 'Boxes' },
-    { id: 'checkedDate', numeric: false, disablePadding: true, label: 'Skids' },
-    { id: 'bolStatus', numeric: false, disablePadding: true, label: 'Weight' },
-    { id: 'skids', numeric: false, disablePadding: true, label: 'State' },
+    { id: 'skids', numeric: false, disablePadding: true, label: 'Skids' },
+    { id: 'revisedWeight', numeric: false, disablePadding: true, label: 'Weight' },
     { id: 'checkedDate', numeric: false, disablePadding: true, label: 'Ship Date' },
-    { id: 'actions', numeric: false, disablePadding: true, label: 'Status' },
+    { id: 'status', numeric: false, disablePadding: true, label: 'Status' },
 ];
 
 export const initBOLState: IBOLState = {
