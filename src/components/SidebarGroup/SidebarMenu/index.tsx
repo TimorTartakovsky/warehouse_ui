@@ -24,8 +24,6 @@ export interface IPageContent {
 
 export interface ISidebarMenuListProps {
   pages: Array<Page | IPageContent>;
-  current: IPageContent;
-  setCurrent: (a: IPageContent) => void; 
   depth: number;
   router: any;
 }
@@ -45,17 +43,13 @@ const SidebarMenuList = (props: ISidebarMenuListProps) => {
 export interface IReduceChildRoutes {
   depth: number;
   page: Page;
-  current: IPageContent;
-  setCurrent: (a: IPageContent) => void; 
   items: React.ReactElement[];
   router: any;
   
 }
 
-const defaultCurrentPage = { label: '', description: '', to: '' };
-
 const reduceChildRoutes = (props: IReduceChildRoutes) => {
-  const { router, items, page, depth, current, setCurrent } = props;
+  const { router, items, page, depth } = props;
   let selected = null;
   if (page.content) {
     const open = matchPath(router.location.pathname, {
@@ -63,9 +57,6 @@ const reduceChildRoutes = (props: IReduceChildRoutes) => {
       exact: false
     });
     const foundMatch = page.content.find(p => p.to === router.location.pathname);
-    if (foundMatch) {
-      setCurrent(foundMatch);
-    }
     selected = foundMatch && foundMatch.to;
     const openChildren = !!foundMatch ? true : false;
 
@@ -79,8 +70,6 @@ const reduceChildRoutes = (props: IReduceChildRoutes) => {
         title={page.label}>
         <div className="sidebar-menu-children py-2">
           <SidebarMenuList
-            current={current}
-            setCurrent={setCurrent}
             depth={depth + 1}
             pages={page.content}
             router={router}
@@ -89,6 +78,7 @@ const reduceChildRoutes = (props: IReduceChildRoutes) => {
       </SidebarMenuListItem>
     );
   } else {
+    selected = page && page.to === router.location.pathname;
     items.push(
       <SidebarMenuListItem
         depth={depth}
@@ -98,8 +88,7 @@ const reduceChildRoutes = (props: IReduceChildRoutes) => {
         selected={selected}
         label={page.badge}
         title={page.label}
-        current={current}
-        setCurrent={setCurrent}
+        current={page}
       />
     );
   }
@@ -115,19 +104,20 @@ export interface ISidebarMenuProps {
 }
 
 const SidebarMenu = (props: ISidebarMenuProps) => {
-  const [current, setCurrent] = useState(defaultCurrentPage);
   const { title, pages, className = '', component: Component, ...rest } = props;
   const router = useRouter();
+
   return (
     <Component {...rest} className={className}>
       {title && (
         <Typography className="app-sidebar-heading">{title}</Typography>
       )}
       <SidebarMenuList
-        depth={0} pages={pages || []}
+        depth={0}
+        pages={pages || []}
         router={router}
-        current={current}
-        setCurrent={setCurrent}
+        // current={current}
+        // setCurrent={pages && setCurrentState }
       />
     </Component>
   );

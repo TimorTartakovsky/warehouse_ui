@@ -5,7 +5,8 @@ import { IBOLMonitoring, IBOLProcessing } from "../store/bol/types";
 export interface IBOLService {
     getBOLMonitoring: (p: BOLRequestProps) => Promise<IBOLMonitoring[]>;
     getBOLProcessing: (p: BOLRequestProps) => Promise<IBOLProcessing[]>;
-    recallMonitoring: (p: RecallMonitoringProps) => Promise<void>;
+    recallMonitoringReSign: (p: RecallMonitoringProps) => Promise<void>;
+    recallMonitoringChangeStatus: (p: RecallMonitoringProps) => Promise<void>;
 }
 
 export class BOLService extends HttpService implements IBOLService {
@@ -17,9 +18,19 @@ export class BOLService extends HttpService implements IBOLService {
         this.httpService = new HttpService();
     }
 
-    recallMonitoring = async (props: RecallMonitoringProps): Promise<void> => {
+    recallMonitoringReSign = async (props: RecallMonitoringProps): Promise<void> => {
         try {
-            // code
+            const processing = await this.httpService.post(`/bol/reSignBol`, props);
+            return processing;
+        } catch (e) {
+            throw new Error(`IBOLService -> recallMonitoring -> monitoring cannot be fetched.`);
+        }
+    }
+
+    recallMonitoringChangeStatus = async (props: RecallMonitoringProps): Promise<void> => {
+        try {
+            const processing = await this.httpService.post(`/bol/changeStatus`, props);
+            return processing;
         } catch (e) {
             throw new Error(`IBOLService -> recallMonitoring -> monitoring cannot be fetched.`);
         }
@@ -28,7 +39,7 @@ export class BOLService extends HttpService implements IBOLService {
     getBOLMonitoring = async (p: BOLRequestProps): Promise<IBOLMonitoring[]> => {
         try {
             const { locationId, branchId } = p;
-            const monitorings = this.httpService
+            const monitorings = await this.httpService
                 .get(`bol/monitoring?locationId=${locationId}&branchId=${branchId}`); 
             return monitorings;
         } catch(e) {
@@ -39,7 +50,7 @@ export class BOLService extends HttpService implements IBOLService {
     getBOLProcessing = async (p: BOLRequestProps): Promise<IBOLProcessing[]> => {
         try {
             const { locationId, branchId } = p;
-            const processing = this.httpService
+            const processing = await this.httpService
                 .get(`bol/processing?locationId=${locationId}&branchId=${branchId}`);
             return processing;
         } catch(e) {

@@ -17,11 +17,15 @@ export const BOL_MONITORING_RECALL_SUCCESS_ACTION = 'BOL_MONITORING_RECALL_SUCCE
 export const BOL_MONITORING_RECALL_FAILED_ACTION = 'BOL_MONITORING_RECALL_FAILED_ACTION';
 
 
+
 export type RecallMonitoringProps = {
-    orderNumber: string[];
-    bolWorkIds: string[];
+    orderNumbers: string[];
+    taskId: number;
+    bolNumbers: string;
+    bolWorkIds: number[];
     carrier: string;
     locationId: number;
+    status: number;
 }
 
 export const bolMonitoringRecallStart = (): IActionBasic => ({
@@ -29,10 +33,10 @@ export const bolMonitoringRecallStart = (): IActionBasic => ({
 });
 
 // TODO: understand what is returned and how it should be used after....
-export const bolMonitoringRecallRequestSuccess = (monitoring: IBOLMonitoring[])
+export const bolMonitoringRecallRequestSuccess = (recall: RecallMonitoringProps)
 : IActionPayload => ({
     type: BOL_MONITORING_RECALL_SUCCESS_ACTION,
-    payload: { monitoring }
+    payload: { recall }
 });
 
 export const bolMonitoringRecallRequestFailed = (error: Error)

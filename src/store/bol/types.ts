@@ -28,6 +28,13 @@ export interface IBOLMonitoring {
     apiCarrierId: number;
 }
 
+export interface ICarrier {
+    carrierNumber: string;
+    carrierName: string;
+    scacCode: string;
+    cnt: number;
+}
+
 export interface IBOLProcessing {
     id: number;
     bolNumber: null
@@ -35,6 +42,7 @@ export interface IBOLProcessing {
     proNumber: string;
     freightTerms: string;
     carrier: string;
+    carriers: ICarrier[];
     orderNumber:string;
     pilot?: string;
     deliveryNumber: string;

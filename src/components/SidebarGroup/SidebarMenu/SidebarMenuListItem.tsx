@@ -4,14 +4,6 @@ import { ListItem, Button, Collapse } from '@material-ui/core';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import { NavLink } from 'react-router-dom';
 
-// const CustomRouterLink = forwardRef(function CustomLink(props, ref) {
-//   return (
-//     <div ref={ref as any} style={{ flexGrow: 1 }}>
-//       <NavLink to="#" {...props} />
-//     </div>
-//   );
-// });
-
 const SidebarMenuListItem = (props: any) => {
   const {
     title,
@@ -39,10 +31,9 @@ const SidebarMenuListItem = (props: any) => {
     paddingLeft = 32 + 20 * depth;
   }
 
-  const isSelected = current && current.to === href;
   const style = {
     paddingLeft,
-    color: (isSelected) ? '#5383ff' : '',
+    color: (selected) ? '#5383ff' : '',
   };
 
   if (children) {
@@ -78,7 +69,7 @@ const SidebarMenuListItem = (props: any) => {
         disableGutters>
         <NavLink to={href}>
           <Button
-            color={isSelected ? 'primary' : 'default'}
+            color={selected ? 'primary' : 'default'}
             variant="text"
             className={clsx('app-sidebar-button-wrapper', `depth-${depth}`)}
             style={style}

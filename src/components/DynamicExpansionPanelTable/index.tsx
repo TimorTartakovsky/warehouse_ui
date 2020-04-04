@@ -16,10 +16,10 @@ import CircleCheckedFilled from '@material-ui/icons/CheckCircle';
 import CircleUnchecked from '@material-ui/icons/RadioButtonUnchecked';
 
 const descendingComparator = (a: any, b: any, orderBy: string) => {
-  if (b[orderBy] < a[orderBy]) {
+  if (b[orderBy] && b[orderBy].source < a[orderBy] && a[orderBy].source) {
     return -1;
   }
-  if (b[orderBy] > a[orderBy]) {
+  if (b[orderBy] && b[orderBy].source > a[orderBy] && a[orderBy].source) {
     return 1;
   }
   return 0;

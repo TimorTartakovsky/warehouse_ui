@@ -17,10 +17,10 @@ import TableToolbar from './TableHeaderToolbar';
 import { IBOLMonitoring } from '../../store/bol/types';
 
 const descendingComparator = (a: any, b: any, orderBy: string) => {
-  if (b[orderBy] < a[orderBy]) {
+  if (b[orderBy] && b[orderBy].source < a[orderBy] && a[orderBy].source) {
     return -1;
   }
-  if (b[orderBy] > a[orderBy]) {
+  if (b[orderBy] && b[orderBy].source > a[orderBy] && a[orderBy].source) {
     return 1;
   }
   return 0;
@@ -72,6 +72,7 @@ export interface IDynamicTable {
    headers: IHeaderCellType[];
    headerProperty: string;
    isMultiSelectable?: boolean;
+   isSelectionRestricted?: (monitoring: IBOLMonitoring, selected: string[], pk: string) => boolean;
 }
 
 const DynamicTable = (props: IDynamicTable) => {
@@ -174,6 +175,9 @@ const DynamicTable = (props: IDynamicTable) => {
                     <TableRow
                       hover
                       onClick={event => {
+                        if (props.isSelectionRestricted && props.isSelectionRestricted(row, selected, props.headerProperty)) {
+                          return;
+                        }
                         handleClick(event, row[props.headerProperty]);
                         props.onSelectedCallBack && props.onSelectedCallBack(row, selected, props.headerProperty);
                       }}
@@ -199,7 +203,7 @@ const DynamicTable = (props: IDynamicTable) => {
                                 .map(
                                     (k: string, index: number) => {
                                         const copyRow: any = row;
-                                        const value = copyRow[k];
+                                        const rowItem = copyRow[k];
                                         return (
                                         <TableCell
                                             key={index}
@@ -208,7 +212,7 @@ const DynamicTable = (props: IDynamicTable) => {
                                             size="medium"
                                             padding="checkbox"
                                         >
-                                          {value}
+                                          {rowItem.value}
                                         </TableCell>
                                         )
                                     }

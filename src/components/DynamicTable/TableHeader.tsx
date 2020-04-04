@@ -66,11 +66,11 @@ const TableHeader = (props: ITableHeader) => {
                 direction={orderBy === headCell.id ? order : 'asc'}
                 onClick={createSortHandler(headCell.id)}>
                 {headCell.label}
-                {orderBy === headCell.id ? (
+                {/* {orderBy === headCell.id ? (
                   <span className={classes.visuallyHidden}>
                     {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                   </span>
-                ) : null}
+                ) : null} */}
               </TableSortLabel>
             </TableCell>
           ))}

@@ -28,6 +28,27 @@ const bolReducer = (state: IBOLState = initBOLState, actions: IActionPayload) =>
                 isProcessingBolRequestFailed: true,
                 processingBolRequestErrorMessage: actions.payload && actions.payload.error,
             }
+        case BOL_ACTIONS.BOL_MONITORING_RECALL_SUCCESS_ACTION:
+            const recall = actions.payload && actions.payload.recall;
+            console.log(recall);
+            if (!recall) {
+                return state;
+            }
+            const foundIndex = state.monitoring ? state.monitoring
+            .findIndex(m => m.orderNumbers[0] === recall.orderNumbers[0]) : -1;
+            if (foundIndex === -1 || !state.monitoring || !state.monitoring[foundIndex]) {
+                return state;
+            } else {
+                if (recall.status === 4) {
+                    state.monitoring[foundIndex].bolStatus = 6;
+                } else {
+                    state.monitoring[foundIndex].bolStatus = 4;
+                }
+                return {
+                    ...state,
+                    monitoring: [...state.monitoring],
+                }
+            }
         default: return state;
     }
 }

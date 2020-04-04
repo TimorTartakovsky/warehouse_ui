@@ -17,8 +17,14 @@ function* monitoringAsync(action: IActionPayload) {
 function* monitoringRecallAsync(action: IActionPayload) {
     try {
         const { props } = action.payload || {};
-        const monitoring: IBOLMonitoring[] = yield call(BOLService.recallMonitoring, props);
-        // yield put(BOL_ACTIONS.bolMonitoringRequestSuccess(monitoring));
+        if (props && props.status === 4) {
+            yield call(BOLService.recallMonitoringChangeStatus, props);
+            yield put(BOL_ACTIONS.bolMonitoringRecallRequestSuccess(props));
+            
+        } else {
+            yield call(BOLService.recallMonitoringReSign, props);
+            yield put(BOL_ACTIONS.bolMonitoringRecallRequestSuccess(props));
+        }
     } catch(e) {
         yield put(BOL_ACTIONS.bolMonitoringRecallRequestFailed(e));
     }
