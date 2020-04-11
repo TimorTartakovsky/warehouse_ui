@@ -3,16 +3,16 @@ import { connect } from 'react-redux';
 import { BOL_ACTIONS, IActionPayload } from '../../actions'
 import { IRootState } from '../../store';
 import { IBOLProcessing, ICarrier } from '../../store/bol/types';
-import { BOLRequestProps, UpdateProcessProps, ConflictAddressType } from '../../actions/bol.action';
+import { BOLRequestProps, UpdateProcessProps, ConflictAddressType, UpdateAddress } from '../../actions/bol.action';
 import DynamicTable, { IHeaderCellType } from '../DynamicTable';
 import { RegularTypography } from '../Shared/Typography';
 import {
     TextField, MenuItem, Dialog, Grid, Button, DialogTitle, DialogContent, 
     List, ListItemIcon, ListItemText, ListItemSecondaryAction, IconButton, ListItem,
-    Checkbox, Paper, FormControl, InputLabel, Select, DialogActions,
+    Checkbox, Paper, FormControl, InputLabel, Select, DialogActions, Card, FormLabel, RadioGroup,
+    FormControlLabel, Radio,
 } from '@material-ui/core';
-import { CommentRounded} from '@material-ui/icons';
-import { whichDocPrefix } from '../helper';
+import * as _ from 'lodash';
 
 export interface IBOLProcessingProps {
     locationId?: number;
@@ -20,6 +20,7 @@ export interface IBOLProcessingProps {
     processing?: IBOLProcessing[] | null;
     conflictAddress?: ConflictAddressType[] | null;
     processingTableHeaders?: IHeaderCellType[];
+    updateAddressRequest?: (p: UpdateAddress) => void;
     fetchProcessing?: (p: BOLRequestProps) => void;
     fetchConflictingAddress?: (p: number[]) => void;
     onSelected?: (m: UpdateProcessProps) => void;
@@ -32,7 +33,9 @@ export interface IBOLProcessingState {
     selectedAddressMap: Map<number, number>;
     selectedAddress: ConflictAddressType;
     selectedTermConflict: string;
+    selectedSkipProcess: Partial<IBOLProcessing>;
     isOpenDialogAddressConflict: boolean;
+    isOpenDialogSkid: boolean;
 }
 
 export interface IBOLProcessingCellData {
@@ -62,8 +65,28 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
         selectedTermConflict: '',
         selectedAddress: {
             shipToAddress1: '',
+            shipToCountry: '',
+            shipToCustomerId: '',
+            shipToCustomerName: '',
+            shipToCustomerNumber: '',
+            shipToAddressId: '',
+        },
+        selectedSkipProcess: {
+            customerName: '',
+            proNumber: '',
+            orderNumber: '',
+            deliveryNumber: '',
+            skid: 0,
+            boxes: 0,
+            revisedWeight: '',
+            orderDate: new Date(),
+            releasedDate: new Date(),
+            dueDate: new Date(),
+            freightTerms: '',
+            carrier: '',
         },
         isOpenDialogAddressConflict: false,
+        isOpenDialogSkid: false,
     }
 
     componentDidMount() {
@@ -154,8 +177,33 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
         }));
     }
 
-    private onSkidClick = (p: IBOLProcessing) => {
+    private doUpdateAddress = () => {
+        const bolIds = [...this.state.selectedProcesses.keys()];
+        this.props.updateAddressRequest && this.props.updateAddressRequest({
+            bolIds,
+            locationId: this.props.locationId || 0,
+            shipToCountry: this.state.selectedAddress.shipToCountry,
+            newAddressBolId: '',
+            updateParams: {
+                shipToAddressId: this.state.selectedAddress.shipToAddressId,
+                shipToCustomerName: this.state.selectedAddress.shipToCustomerName,
+                shipToCustomerNumber: this.state.selectedAddress.shipToCustomerNumber,
+                shipToCustomerId: this.state.selectedAddress.shipToCustomerId,
+                freightTerms: this.state.selectedTermConflict,
+            }
+        });
+        this.setState(prev => ({
+            ...prev,
+            isOpenDialogAddressConflict: false,
+        }));
+    }
 
+    private onSkidClick = (p: IBOLProcessing) => {
+        this.setState(prev => ({
+            ...prev,
+            selectedSkipProcess: p,
+            isOpenDialogSkid: true,
+        }))
     }
 
     private onSelectedAddressToProcess = (p: ConflictAddressType) => {
@@ -243,7 +291,21 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                 },
                 freightCharges: {
                     source: process.freightCharges,
-                    value: <RegularTypography length="60px">{process.freightCharges}</RegularTypography>
+                    value: (process.freightTerms === 'Prepaid (Genera Pay)' ?(
+                    <RegularTypography length="100px">
+
+                    </RegularTypography>
+                    ) : (
+                        <TextField
+                            style={{ width: '100px' }}
+                            onClick={() => this.onClickProNumber(process)}
+                            fullWidth
+                            type="number"
+                            className="m-2"
+                            id="outlined-basic"
+                            variant="outlined"
+                        />
+                    ) )
                 },
                 customerName: {
                     source: process.customerName,
@@ -263,7 +325,9 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                 },
                 skid: {
                     source: process.skid,
-                    value: <RegularTypography onClick={() => this.onSkidClick(process)} length="60px">{process.skid}</RegularTypography>
+                    value: <RegularTypography onClick={() => {
+                        this.onSkidClick(process);
+                    }} length="60px">{process.skid}</RegularTypography>
                 },
                 originalWeight: {
                     source: process.originalWeight,
@@ -291,6 +355,7 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                         <DialogTitle id="join-process-title">Combine BOL's Conflict</DialogTitle>
                         <DialogContent>
                             <Paper elevation={3} >
+                                <DialogTitle id="join-process-title-inner">Available Addresses from Orders in this Shipment:*</DialogTitle>
                                 <List style={{
                                         width: '600px',
                                         maxWidth: '100%',
@@ -364,7 +429,13 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                                     }
                                 </Select>
                             </FormControl>
-                            <Button color="primary">
+                            <Button
+                                color="primary"
+                                onClick={e => {
+                                    e.stopPropagation();
+                                    this.doUpdateAddress()
+                                }}
+                            >
                                 SELECT
                             </Button>
                             <Button
@@ -382,6 +453,186 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                                 OTHER LOCATION
                             </Button>
                         </DialogActions>
+                    </Dialog>
+                ) : null
+            }
+            {
+                this.state.isOpenDialogSkid ? (
+                    <Dialog
+                        scroll="body"
+                        maxWidth="lg"
+                        open={this.state.isOpenDialogSkid}
+                        onClose={() => {
+                            this.setState(prev => ({
+                                ...prev,
+                                isOpenDialogSkid: false,
+                            }))
+                        }}>
+                        <DialogTitle id="skid-process-dialog">Split Shipment Window</DialogTitle>
+                        <DialogContent>
+                            <Paper elevation={3}>
+                                <DialogTitle id="skid-process-dialog-inner">Order Information</DialogTitle>
+                                <Grid container spacing={4}>
+                                    <Grid item xs={6} lg={6}>
+                                        <FormControl variant="outlined" style={{
+                                            minWidth: '350px',
+                                            margin: '1%',
+                                            padding: '10px',
+                                        }}> 
+                                            {
+                                                this.state.selectedSkipProcess ? (
+                                                    <>
+                                                        <div className="p-2">
+                                                            <RegularTypography length="300px">
+                                                                {`Customer Name: ${this.state.selectedSkipProcess.customerName}`}
+                                                            </RegularTypography>
+                                                        </div>
+                                                        <div className="p-2">
+                                                            <RegularTypography length="300px">
+                                                                {`Pro Number: ${this.state.selectedSkipProcess.proNumber}`}
+                                                            </RegularTypography>
+                                                        </div>
+                                                        <div className="p-2">
+                                                            <RegularTypography length="300px">
+                                                                {`Order Number: ${this.state.selectedSkipProcess.orderNumber}`}
+                                                            </RegularTypography>
+                                                        </div>
+                                                        <div className="p-2">
+                                                            <RegularTypography length="300px">
+                                                                {`Delivery Number: ${this.state.selectedSkipProcess.deliveryNumber}`}
+                                                            </RegularTypography>
+                                                        </div>
+                                                        <div className="p-2">
+                                                            <RegularTypography length="300px">
+                                                                {`Number Of Skids: ${this.state.selectedSkipProcess.skid}`}
+                                                            </RegularTypography>
+                                                        </div>
+                                                        <div className="p-2">
+                                                            <RegularTypography length="300px">
+                                                                {`Number Of Packages: ${this.state.selectedSkipProcess.boxes}`}
+                                                            </RegularTypography>
+                                                        </div>
+                                                        <div className="p-2">
+                                                            <RegularTypography length="300px">
+                                                                {`Weight: ${this.state.selectedSkipProcess.revisedWeight}`}
+                                                            </RegularTypography>
+                                                        </div>
+                                                    </>
+                                                ): null
+                                            }
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={6} lg={6}>
+                                        <FormControl variant="outlined" style={{
+                                            minWidth: '350px',
+                                            margin: '1%',
+                                            padding: '10px',
+                                        }}> 
+                                            {
+                                                this.state.selectedSkipProcess ? (
+                                                    <>
+                                                        <div className="p-2">
+                                                            <RegularTypography length="300px" />
+                                                        </div>
+                                                        <div className="p-2">
+                                                            <RegularTypography length="300px" />
+                                                        </div>
+                                                        <div className="p-2">
+                                                            <RegularTypography length="300px">
+                                                                {`Order Date: ${this.state.selectedSkipProcess.orderDate}`}
+                                                            </RegularTypography>
+                                                        </div>
+                                                        <div className="p-2">
+                                                            <RegularTypography length="300px">
+                                                                {`Released Date: ${this.state.selectedSkipProcess.releasedDate}`}
+                                                            </RegularTypography>
+                                                        </div>
+                                                        <div className="p-2">
+                                                            <RegularTypography length="300px">
+                                                                {`Due Date: ${this.state.selectedSkipProcess.dueDate}`}
+                                                            </RegularTypography>
+                                                        </div>
+                                                        <div className="p-2">
+                                                            <RegularTypography length="300px">
+                                                                {`Terms: ${this.state.selectedSkipProcess.freightTerms}`}
+                                                            </RegularTypography>
+                                                        </div>
+                                                        <div className="p-2">
+                                                            <RegularTypography length="300px">
+                                                                {`Carrier: ${this.state.selectedSkipProcess.carrier}`}
+                                                            </RegularTypography>
+                                                        </div>
+                                                    </>
+                                                ): null
+                                            }
+                                        </FormControl>
+                                    </Grid>
+                                </Grid>
+                            </Paper>
+                            <Grid container spacing={4}>
+
+                                <Grid item xs={9} lg={9}>
+                                    <FormControl variant="outlined" style={{
+                                        minWidth: '500px',
+                                        marginTop: '35px'
+                                    }}>
+                                        <InputLabel id="demo-simple-select-outlined-label">
+                                            How many containers this order is going to need?
+                                        </InputLabel>
+                                        <Select
+                                            labelId="demo-simple-select-outlined-label"
+                                            id="demo-simple-select-outlined"
+                                            label="How many containers this order is going to need?"
+                                        >
+                                            {
+                                                
+                                                _.times((this.state.selectedSkipProcess.skid + 1))
+                                                .filter(p => p)
+                                                .map((k: number) => (
+                                                    <MenuItem
+                                                        key={k}
+                                                        value={k}
+                                                        // onClick={e => {
+                                                        //     e.stopPropagation();
+                                                        //     this.onSelectTermConflict(k);
+                                                        // }}
+                                                    >
+                                                        {k}
+                                                    </MenuItem>
+                                                ))
+                                            }
+                                        </Select>
+                                    </FormControl>
+                                    <FormControl component="fieldset" style={{
+                                        minWidth: '500px',
+                                        marginTop: '35px'
+                                    }}>
+                                        <FormLabel component="legend">
+                                            Even number of Skids?
+                                        </FormLabel>
+                                        <RadioGroup
+                                            aria-label="even-skids"
+                                            name="even-skids"
+                                            row
+                                            // value={value}
+                                            // onChange={handleRadioChange}
+                                        >
+                                            <FormControlLabel value="YES" control={<Radio />} label="YES" />
+                                            <FormControlLabel value="NO" control={<Radio />} label="NO" />
+                                        </RadioGroup>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={3} lg={3}>
+                                    <Button
+                                        style={{
+                                            marginTop: '50px',
+                                        }}
+                                        color="default">
+                                            Custom Configuration
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </DialogContent>
                     </Dialog>
                 ) : null
             }
@@ -407,6 +658,9 @@ const mapDispatchToProps = (dispatch: Dispatch<IActionPayload>) => ({
     },
     updateProcessingRequest: (p: UpdateProcessProps) => {
         dispatch(BOL_ACTIONS.bolProcessingUpdateRequest(p));
+    },
+    updateAddressRequest: (p: UpdateAddress) => {
+        dispatch(BOL_ACTIONS.bolProcessingUpdateAddressRequest(p));
     }
 })
 

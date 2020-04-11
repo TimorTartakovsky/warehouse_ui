@@ -59,7 +59,7 @@ export interface IBOLProcessing {
     customerNumber: string;
     skid: number;
     originalWeight: number;
-    revisedWeight: null
+    revisedWeight: string;
     boxes: number;
     brokerApi: number;
     customerShipToAddress1: string;

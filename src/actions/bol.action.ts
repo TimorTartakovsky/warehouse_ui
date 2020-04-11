@@ -26,6 +26,42 @@ export const BOL_PROCESSING_GET_CONFLICTING_ADDRESS_UPDATE_ACTION_REQUEST = 'BOL
 export const BOL_PROCESSING_GET_CONFLICTING_ADDRESS_UPDATE_ACTION_REQUEST_SUCCESS = 'BOL_PROCESSING_GET_CONFLICTING_ADDRESS_UPDATE_ACTION_REQUEST_SUCCESS';
 export const BOL_PROCESSING_GET_CONFLICTING_ADDRESS_UPDATE_ACTION_REQUEST_FAILED = 'BOL_PROCESSING_GET_CONFLICTING_ADDRESS_UPDATE_ACTION_REQUEST_FAILED';
 
+export const BOL_PROCESSING_UPDATE_ADDRESS_ACTION_REQUEST = 'BOL_PROCESSING_UPDATE_ADDRESS_ACTION_REQUEST';
+export const BOL_PROCESSING_UPDATE_ADDRESS_ACTION_REQUEST_SUCCESS = 'BOL_PROCESSING_UPDATE_ADDRESS_ACTION_REQUEST_SUCCESS';
+export const BOL_PROCESSING_UPDATE_ADDRESS_ACTION_REQUEST_FAILED = 'BOL_PROCESSING_UPDATE_ADDRESS_ACTION_REQUEST_FAILED';
+
+export type UpdateAddress = {
+    bolIds: string[];
+    shipToCountry: string;
+    locationId: number;
+    newAddressBolId: string;
+    updateParams: {
+        shipToAddressId: string;
+        shipToCustomerName: string;
+        shipToCustomerNumber: string;
+        shipToCustomerId: string;
+        freightTerms: string;
+    }
+}
+
+export const bolProcessingUpdateAddressRequest = (props: UpdateAddress)
+: IActionPayload => ({
+    type: BOL_PROCESSING_UPDATE_ADDRESS_ACTION_REQUEST,
+    payload: { props }
+});
+
+export const bolProcessingUpdateAddressRequestSuccess = (props: IBOLProcessing[])
+: IActionPayload => ({
+    type: BOL_PROCESSING_UPDATE_ADDRESS_ACTION_REQUEST_SUCCESS,
+    payload: { props }
+});
+
+export const bolProcessingUpdateAddressRequestFail = (error: Error)
+: IActionPayload => ({
+    type: BOL_PROCESSING_UPDATE_ADDRESS_ACTION_REQUEST_FAILED,
+    payload: { error }
+});
+
 export type ConflictAddressType = {
     id?: number;
     shipToLocation?: string;

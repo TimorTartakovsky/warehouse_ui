@@ -1,5 +1,5 @@
 import HttpService from "./HttpService";
-import { BOLRequestProps, RecallMonitoringProps, UpdateProcessProps, ConflictAddressType } from '../actions/bol.action';
+import { BOLRequestProps, RecallMonitoringProps, UpdateProcessProps, ConflictAddressType, UpdateAddress } from '../actions/bol.action';
 import { IBOLMonitoring, IBOLProcessing } from "../store/bol/types";
 
 export interface IBOLService {
@@ -30,6 +30,15 @@ export class BOLService extends HttpService implements IBOLService {
             return conflictAddress;
         } catch(e) {
             throw new Error(`IBOLService -> getProcessConflictAddress -> get conflict address failed.`);
+        }
+    }
+
+    updateAddress = async (props: UpdateAddress): Promise<IBOLProcessing[]> => {
+        try {
+            const processing = await this.httpService.post(`/bol/updateAddress`, props);
+            return processing;
+        } catch (e) {
+            throw new Error(`IBOLService -> updateAddress -> update address failed.`);
         }
     }
 
