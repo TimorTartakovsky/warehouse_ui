@@ -1,4 +1,5 @@
 import { IHeaderCellType } from "../../components/DynamicTable";
+import { ConflictAddressType } from "../../actions/bol.action";
 
 export interface IBOLMonitoring {
     bolIds: Array<number>;
@@ -82,6 +83,7 @@ export interface IBOLProcessing {
 export interface IBOLState {
     monitoring?: IBOLMonitoring[] | null;
     monitoringTableHeaders: IHeaderCellType[];
+    conflictAddress: ConflictAddressType[] | null;
     processing?: IBOLProcessing[] | null;
     processingTableHeaders: IHeaderCellType[];
     isMonitoringBolRequestFailed: boolean;
@@ -128,6 +130,7 @@ export const initBOLState: IBOLState = {
     processingTableHeaders: processingHeaderCells,
     monitoringTableHeaders: monitoringHeaderCells,
     processing: null,
+    conflictAddress: null,
     isMonitoringBolRequestFailed: false,
     isProcessingBolRequestFailed: false,
     monitoringBolRequestErrorMessage: '',

@@ -40,6 +40,36 @@ function* processingAsync(action: IActionPayload) {
     }
 }
 
+function* processingUpdateAsync(action: IActionPayload) {
+    try {
+        const { props } = action.payload || {};
+        const conflicts = yield call(BOLService.getProcessConflictAddress, props);
+        yield put(BOL_ACTIONS.bolProcessingUpdateRequestSuccess(conflicts));
+    } catch(e) {
+        yield put(BOL_ACTIONS.bolProcessingUpdateRequestFail(e));
+    }
+}
+
+function* processingConflictAddress(action: IActionPayload) {
+    try {
+        const { props } = action.payload || {};
+        const conflicts = yield call(BOLService.getProcessConflictAddress, props);
+        yield put(BOL_ACTIONS.bolProcessingConflictingAddressRequestSuccess(conflicts));
+    } catch(e) {
+        yield put(BOL_ACTIONS.bolProcessingConflictingAddressRequestFail(e));
+    }
+}
+
+function* watchBOLProcessingConflictAddressRequest() {
+    yield takeLatest(
+        BOL_ACTIONS.BOL_PROCESSING_GET_CONFLICTING_ADDRESS_UPDATE_ACTION_REQUEST,
+        processingConflictAddress)
+}
+
+function* watchBOLProcessingUpdateRequests() {
+    yield takeLatest(BOL_ACTIONS.BOL_PROCESSING_UPDATE_ACTION_REQUEST, processingUpdateAsync);
+}
+
 function* watchBOLMonitoringRequests() {
     yield takeLatest(BOL_ACTIONS.BOL_MONITORING_ACTION_REQUEST, monitoringAsync);
 }
@@ -51,6 +81,8 @@ function* watchBOLProcessingRequests() {
 }
 
 const bolSagas = [
+    fork(watchBOLProcessingConflictAddressRequest),
+    fork(watchBOLProcessingUpdateRequests),
     fork(watchBOLMonitoringRequests),
     fork(watchBOLProcessingRequests),
     fork(watchBOLMonitoringRecallRequests),

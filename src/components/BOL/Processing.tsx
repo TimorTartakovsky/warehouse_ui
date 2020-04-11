@@ -3,22 +3,36 @@ import { connect } from 'react-redux';
 import { BOL_ACTIONS, IActionPayload } from '../../actions'
 import { IRootState } from '../../store';
 import { IBOLProcessing, ICarrier } from '../../store/bol/types';
-import { BOLRequestProps } from '../../actions/bol.action';
+import { BOLRequestProps, UpdateProcessProps, ConflictAddressType } from '../../actions/bol.action';
 import DynamicTable, { IHeaderCellType } from '../DynamicTable';
 import { RegularTypography } from '../Shared/Typography';
-import { TextField, MenuItem } from '@material-ui/core';
+import {
+    TextField, MenuItem, Dialog, Grid, Button, DialogTitle, DialogContent, 
+    List, ListItemIcon, ListItemText, ListItemSecondaryAction, IconButton, ListItem,
+    Checkbox, Paper, FormControl, InputLabel, Select, DialogActions,
+} from '@material-ui/core';
+import { CommentRounded} from '@material-ui/icons';
+import { whichDocPrefix } from '../helper';
 
 export interface IBOLProcessingProps {
     locationId?: number;
     branchId?: number;
     processing?: IBOLProcessing[] | null;
+    conflictAddress?: ConflictAddressType[] | null;
     processingTableHeaders?: IHeaderCellType[];
     fetchProcessing?: (p: BOLRequestProps) => void;
-    onSelected?: (m: any,  selected: string[], pk: string) => void;
+    fetchConflictingAddress?: (p: number[]) => void;
+    onSelected?: (m: UpdateProcessProps) => void;
 }
 
 export interface IBOLProcessingState {
-    selectedCarriesMap: Map<string, ICarrier>
+    selectedCarriesMap: Map<number, ICarrier>;
+    selectedProcesses: Map<string, IBOLProcessing>;
+    selectedTermsMap: Map<string, number>;
+    selectedAddressMap: Map<number, number>;
+    selectedAddress: ConflictAddressType;
+    selectedTermConflict: string;
+    isOpenDialogAddressConflict: boolean;
 }
 
 export interface IBOLProcessingCellData {
@@ -37,10 +51,19 @@ export interface IBOLProcessingCellData {
     originalWeight: number;
 }
 
+
 class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingState> {
     
     state = {
-        selectedCarriesMap: new Map(),
+        selectedCarriesMap: new Map<number, ICarrier>(),
+        selectedProcesses: new Map<string, IBOLProcessing>(),
+        selectedTermsMap: new Map<string, number>(),
+        selectedAddressMap: new Map<number, number>(),
+        selectedTermConflict: '',
+        selectedAddress: {
+            shipToAddress1: '',
+        },
+        isOpenDialogAddressConflict: false,
     }
 
     componentDidMount() {
@@ -52,13 +75,94 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
     }
 
     private onProcessSelected = (m: any,  selected: string[], pk: string) => {
-        this.props.onSelected && this.props.onSelected(m, selected, pk);
+        if (!Array.isArray(this.props.processing)) {
+            return;
+        } else {
+            const sourceProcessing = this.props.processing.find(p => p.id === m[pk]);
+            const selectedProcesses = this.state.selectedProcesses;
+            const termsMap = this.state.selectedTermsMap;
+            const addressMap = this.state.selectedAddressMap;
+            if (!sourceProcessing) {
+                return;
+            }
+
+            let termsCount = termsMap.get(sourceProcessing.freightTerms) || 0;
+            let addressCount = addressMap.get(sourceProcessing.shipToAddressId) || 0;
+            if (!!selectedProcesses.get(m.id)) {
+                console.log(`Unchecked item....`);
+                selectedProcesses.delete(m.id);
+                // reset terms
+                (termsCount === 1) ? termsMap.delete(sourceProcessing.freightTerms) :
+                termsMap.set(sourceProcessing.freightTerms, (termsCount - 1));
+                
+                // reset address
+                (addressCount === 1) ? addressMap.delete(sourceProcessing.shipToAddressId) :
+                addressMap.set(sourceProcessing.shipToAddressId, (addressCount - 1));
+                this.setState(prev => ({
+                    ...prev,
+                    selectedProcesses,
+                    selectedTermsMap: termsMap,
+                    selectedAddressMap: addressMap,
+                }));
+            } else {
+                const termsIncremented  = termsCount + 1;
+                const addressIncremented  = addressCount + 1;
+                termsMap.set(sourceProcessing.freightTerms, termsIncremented);
+                addressMap.set(sourceProcessing.shipToAddressId, addressIncremented);
+                selectedProcesses.set(m.id, sourceProcessing);
+                // temp
+                if ((termsMap.size > 1 || addressMap.size > 1)) {
+                    const ids = [...addressMap.keys()];
+                    this.props.fetchConflictingAddress && this.props.fetchConflictingAddress(ids);
+                    this.setState(prev => ({
+                        ...prev,
+                        selectedProcesses,
+                        selectedTermsMap: termsMap,
+                        selectedAddressMap: addressMap,
+                        isOpenDialogAddressConflict: true,
+                    }));
+                } else {
+                    this.setState(prev => ({
+                        ...prev,
+                        selectedProcesses,
+                        selectedTermsMap: termsMap,
+                        selectedAddressMap: addressMap,
+                    }));
+                }
+            }
+            this.props.onSelected && this.props.onSelected(m);
+        }
+    }
+
+    private onSelectTermConflict = (p: string): void => {
+        this.setState(prev => ({
+            ...prev,
+            selectedTermConflict: p,
+        }))
     }
 
     private onClickProNumber = (p: IBOLProcessing) => {
         if (!p.brokerApi) {
             // call 
         }
+    }
+
+    private triggerDialog = (isOpenDialog: boolean): void => {
+        this.setState(prev => ({
+            ...prev,
+            isOpenDialogAddressConflict: isOpenDialog,
+        }));
+    }
+
+    private onSkidClick = (p: IBOLProcessing) => {
+
+    }
+
+    private onSelectedAddressToProcess = (p: ConflictAddressType) => {
+        this.setState(prev => ({
+            ...prev,
+            selectedAddress: p,
+        }))
     }
 
     public render(): React.ReactElement {
@@ -70,7 +174,9 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                 const carrierNumber = e.target.value;
                 const selectedCarriersMap = this.state.selectedCarriesMap;
                 const selectedCarrier = process.carriers.find(c => c.carrierNumber === carrierNumber);
-                selectedCarriersMap.set(process.id, selectedCarrier);
+                if (selectedCarrier) {
+                    selectedCarriersMap.set(process.id, selectedCarrier);
+                }
                 this.setState(prev => ({
                     ...prev,
                     selectedCarriesMap: selectedCarriersMap,
@@ -95,6 +201,7 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                 proNumber: {
                     source: process.proNumber,
                     value:  (<TextField
+                                style={{ width: '60px' }}
                                 placeholder={process.proNumber}
                                 onClick={() => this.onClickProNumber(process)}
                                 fullWidth
@@ -107,23 +214,27 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                 carrier: {
                     source: process.carrier,
                     value: (
-                        <TextField fullWidth className="m-2"
-                            id="outlined-select-currency"
-                            style={{ width: '120px' }}
-                            select
-                            // label="Select Carrier"
-                            value={cs && cs.carrierNumber || defCs || ''}
-                            defaultValue={process.carrier}
-                            onChange={handleProcessCarrierChange}
-                            disabled={!process.carriers || !process.carriers.length}
-                            variant="outlined"
-                        >
-                        {process.carriers.map(option => (
-                            <MenuItem key={option.carrierNumber} value={option.carrierNumber}>
-                                {option.carrierName}
-                            </MenuItem>
-                        ))}
-                    </TextField>
+                        process.brokerApi ? (
+                            <RegularTypography length="120px">Auto-select</RegularTypography>
+                        ) : (
+                            <TextField fullWidth className="m-2"
+                                id="outlined-select-currency"
+                                style={{ width: '120px' }}
+                                select
+                                value={cs && cs.carrierNumber || defCs || ''}
+                                defaultValue={process.carrier}
+                                onChange={handleProcessCarrierChange}
+                                disabled={!process.carriers || !process.carriers.length}
+                                variant="outlined"
+                            >
+                                {process.carriers.map(option => (
+                                    <MenuItem key={option.carrierNumber} value={option.carrierNumber}>
+                                        {option.carrierName}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        )
+                        
                     )
                 },
                 freightTerms: {
@@ -152,7 +263,7 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                 },
                 skid: {
                     source: process.skid,
-                    value: <RegularTypography length="60px">{process.skid}</RegularTypography>
+                    value: <RegularTypography onClick={() => this.onSkidClick(process)} length="60px">{process.skid}</RegularTypography>
                 },
                 originalWeight: {
                     source: process.originalWeight,
@@ -164,14 +275,117 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                 },
             }
         })) || []
+        
         return (
-            <DynamicTable
+            <>
+                <DynamicTable
                 headerProperty={'id'}
                 isMultiSelectable
                 onSelectedCallBack={this.onProcessSelected}
                 headers={this.props.processingTableHeaders || []}
                 rows={parsedProcessingArray}
             />
+            {
+                (this.state.isOpenDialogAddressConflict && this.props.conflictAddress) ? (
+                    <Dialog scroll="body" maxWidth="lg" open={this.state.isOpenDialogAddressConflict} onClose={() => this.triggerDialog(false)}>
+                        <DialogTitle id="join-process-title">Combine BOL's Conflict</DialogTitle>
+                        <DialogContent>
+                            <Paper elevation={3} >
+                                <List style={{
+                                        width: '600px',
+                                        maxWidth: '100%',
+                                }}>
+                                    {this.props.conflictAddress && this.props.conflictAddress.map((value) => {
+                                        const labelId = `checkbox-list-label-${value.id}`;
+                                        const isSelected = this.state.selectedAddress.shipToAddress1 === value.shipToAddress1;
+                                    
+                                        return (
+                                        <ListItem 
+                                            key={value.id}
+                                            role={undefined}
+                                            dense
+                                            button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                this.onSelectedAddressToProcess(value)
+                                            }}
+                                        >
+                                            <ListItemIcon>
+                                                <Checkbox
+                                                    edge="start"
+                                                    checked={isSelected}
+                                                    tabIndex={-1}
+                                                    disableRipple
+                                                    inputProps={{ 'aria-labelledby': labelId }}
+                                                />
+                                            </ListItemIcon>
+                                            <ListItemText id={labelId} primary={value.shipToAddress1} />
+                                            <ListItemText id={labelId} primary={value.shipToCity} />
+                                            <ListItemText id={labelId} primary={value.shipToState} />
+                                            <ListItemText id={labelId} primary={value.shipToCountry} />
+                                            <ListItemText id={labelId} primary={value.shipToZip} />
+                                        </ListItem>
+                                        );
+                                    })}
+                                </List>
+                            </Paper>
+                        </DialogContent>
+                        <DialogActions>
+                            <FormControl variant="outlined" style={{
+                                minWidth: '250px',
+                                margin: '1%'
+                            }}>
+                                <InputLabel id="demo-simple-select-outlined-label">
+                                    Set combined freight Terms*
+                                </InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-outlined-label"
+                                    id="demo-simple-select-outlined"
+                                    // value={age}
+                                    label="Set combined freight Terms*"
+                                >
+                                    {
+                                        [
+                                            'Prepay & Charge (Charge Buyer)',
+                                            'Prepaid (Genera Pay)',
+                                            'Collect (Buyer Arrange and Pay)',
+                                        ].map((k: string, i: number) => (
+                                            <MenuItem
+                                                key={i}
+                                                value={k}
+                                                onClick={e => {
+                                                    e.stopPropagation();
+                                                    this.onSelectTermConflict(k);
+                                                }}
+                                            >
+                                                {k}
+                                            </MenuItem>
+                                        ))
+                                    }
+                                </Select>
+                            </FormControl>
+                            <Button color="primary">
+                                SELECT
+                            </Button>
+                            <Button
+                                onClick={e => {
+                                    e.stopPropagation();
+                                    this.setState(prev => ({
+                                        ...prev,
+                                        isOpenDialogAddressConflict: false,
+                                    }))
+                                }}
+                                color="default">
+                                CANCEL
+                            </Button>
+                            <Button color="default">
+                                OTHER LOCATION
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                ) : null
+            }
+            </>
         )
     }
 }
@@ -180,12 +394,19 @@ const mapStateToProps = (state: IRootState) => ({
     locationId: state.user.locationId,
     branchId: state.user.location && state.user.location.branchId || 0,
     processing: state.bol.processing,
+    conflictAddress: state.bol.conflictAddress,
     processingTableHeaders: state.bol.processingTableHeaders,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch<IActionPayload>) => ({
     fetchProcessing: (p: BOLRequestProps) => {
         dispatch(BOL_ACTIONS.bolProcessingRequest(p));
+    },
+    fetchConflictingAddress: (p: number[]) => {
+        dispatch(BOL_ACTIONS.bolProcessingConflictingAddressRequest(p));
+    },
+    updateProcessingRequest: (p: UpdateProcessProps) => {
+        dispatch(BOL_ACTIONS.bolProcessingUpdateRequest(p));
     }
 })
 

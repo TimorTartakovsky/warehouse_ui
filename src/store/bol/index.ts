@@ -49,6 +49,11 @@ const bolReducer = (state: IBOLState = initBOLState, actions: IActionPayload) =>
                     monitoring: [...state.monitoring],
                 }
             }
+        case BOL_ACTIONS.BOL_PROCESSING_GET_CONFLICTING_ADDRESS_UPDATE_ACTION_REQUEST_SUCCESS:
+            return {
+                ...state,
+                conflictAddress: actions.payload && actions.payload.conflictAddress
+            }
         default: return state;
     }
 }

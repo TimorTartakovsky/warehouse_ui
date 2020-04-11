@@ -1,5 +1,5 @@
 import HttpService from "./HttpService";
-import { BOLRequestProps, RecallMonitoringProps } from '../actions/bol.action';
+import { BOLRequestProps, RecallMonitoringProps, UpdateProcessProps, ConflictAddressType } from '../actions/bol.action';
 import { IBOLMonitoring, IBOLProcessing } from "../store/bol/types";
 
 export interface IBOLService {
@@ -7,6 +7,7 @@ export interface IBOLService {
     getBOLProcessing: (p: BOLRequestProps) => Promise<IBOLProcessing[]>;
     recallMonitoringReSign: (p: RecallMonitoringProps) => Promise<void>;
     recallMonitoringChangeStatus: (p: RecallMonitoringProps) => Promise<void>;
+    getProcessConflictAddress: (p: number[]) => Promise<ConflictAddressType[]>;
 }
 
 export class BOLService extends HttpService implements IBOLService {
@@ -16,6 +17,29 @@ export class BOLService extends HttpService implements IBOLService {
     constructor() {
         super();
         this.httpService = new HttpService();
+    }
+
+    getProcessConflictAddress = async (props: number[]): Promise<ConflictAddressType[]> => {
+        try {
+            const length = props.length - 1;
+            const queryParams = props.reduce((acc: string, id: number, i: number) => {
+                acc += `shipToIds=${id}${(length === i) ? '' : '&' }`;
+                return acc;
+            }, '');
+            const conflictAddress = await this.httpService.get(`/bol/getConflictedShipToAddresses?${queryParams}`);
+            return conflictAddress;
+        } catch(e) {
+            throw new Error(`IBOLService -> getProcessConflictAddress -> get conflict address failed.`);
+        }
+    }
+
+    updateProcess = async (props: UpdateProcessProps): Promise<void> => {
+        try {
+            const processing = await this.httpService.post(`/bol/update`, props);
+            // possible continue
+        } catch (e) {
+            throw new Error(`IBOLService -> recallMonitoring -> updateProcess failed.`);
+        }
     }
 
     recallMonitoringReSign = async (props: RecallMonitoringProps): Promise<void> => {

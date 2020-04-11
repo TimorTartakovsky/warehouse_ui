@@ -78,7 +78,15 @@ const BOL = (props: IBOL): React.ReactElement => {
         locationId: 0,
     });
     const [isOpen, setOpen] = useState(false);
-    const [isOpenDialog, setOpenDialog] = useState(false);
+    const [selectedProcessing, setSelectedProcessing] = useState({
+        bolNumbers: [''],
+        branchId: 0,
+        brokerApi: 0,
+        locationId: 0,
+        orders: [0],
+        status: 0,
+        taskType: 0,
+    });
     const [agreedCB, setAgreedCB] = useState({})
     const [confirmBodyText, setConfirmBodyText] = useState('');
     const [confirmHeaderText, setConfirmHeaderText] = useState('');
@@ -122,13 +130,16 @@ const BOL = (props: IBOL): React.ReactElement => {
     }
 
     const onProcessingSelected = (
-        processing: any,
-        selected: string[],
-        pk: string
-    ) => {
+        processing: bolActions.UpdateProcessProps,
+    ): void => {
         if (processing) {
-            setOpenDialog(true);
+            setSelectedProcessing(processing);
         }
+        setBtnProcessingGroupStatus({
+            [BOLProcessingBtnType.delete]: false,
+            [BOLProcessingBtnType.process]: false,
+            [BOLProcessingBtnType.shipConfirm]: false,
+        });
     }
 
     const onMonitoringSelectedItem = (
@@ -278,53 +289,6 @@ const BOL = (props: IBOL): React.ReactElement => {
                         }}
                     />
                 ): null
-            }
-            {
-                isOpenDialog ? (
-                    <Dialog scroll="body" maxWidth="lg" open={isOpenDialog} onClose={() => console.log('closed')}>
-                        <Grid container spacing={0}>
-                            <Grid item xs={12} lg={12}>
-                                <div className="hero-wrapper bg-composed-wrapper bg-grow-early h-100 rounded-left">
-                                    <div className="flex-grow-1 w-100 d-flex align-items-center">
-                                        <div className="bg-composed-wrapper--content text-center p-5">
-                                            <div className="text-white">
-                                                <h1 className="display-3 my-3 font-weight-bold">
-                                                    Wonderful serenity has possession
-                                                </h1>
-                                                <p className="font-size-lg mb-0 text-white-50">
-                                                    A free hour, when our power of choice is untrammelled and when nothing prevents.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="hero-footer pb-4">
-                                        <Button color="primary" variant="contained" size="large" className="px-4">
-                                            <span className="btn-wrapper--label">
-                                               Select
-                                            </span>
-                                        </Button>
-                                        <Button
-                                            color="primary"
-                                            variant="contained"
-                                            size="large"
-                                            className="px-4"
-                                            onClick={() => setOpenDialog(false)}
-                                        >
-                                            <span className="btn-wrapper--label">
-                                               Cancel
-                                            </span>
-                                        </Button>
-                                        <Button color="primary" variant="contained" size="large" className="px-4">
-                                            <span className="btn-wrapper--label">
-                                               Other Location
-                                            </span>
-                                        </Button>
-                                    </div>
-                                </div>
-                            </Grid>
-                        </Grid>
-                    </Dialog>
-                ) : null
             }
         </>
     );
