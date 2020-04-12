@@ -70,6 +70,20 @@ function* processingUpdateAddress(action: IActionPayload) {
     }
 }
 
+function* processingGetInfo(action: IActionPayload) {
+    try {
+        const { props } = action.payload || {};
+        const processInfo = yield call(BOLService.getInfo, props);
+        yield put(BOL_ACTIONS.bolProcessingGetInfoRequestSuccess(processInfo));
+    } catch(e) {
+        yield put(BOL_ACTIONS.bolProcessingGetInfoRequestFail(e));
+    }
+}
+
+function* watchBOLProcessingGetInfo() {
+    yield takeLatest(BOL_ACTIONS.BOL_PROCESSING_GET_iNFO_REQUEST, processingGetInfo);
+}
+
 function* watchBOLProcessingUpdateAddressRequest() {
     yield takeLatest(BOL_ACTIONS.BOL_PROCESSING_UPDATE_ADDRESS_ACTION_REQUEST, processingUpdateAddress);
 }
@@ -95,6 +109,7 @@ function* watchBOLProcessingRequests() {
 }
 
 const bolSagas = [
+    fork(watchBOLProcessingGetInfo),
     fork(watchBOLProcessingUpdateAddressRequest),
     fork(watchBOLProcessingConflictAddressRequest),
     fork(watchBOLProcessingUpdateRequests),

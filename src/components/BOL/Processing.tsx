@@ -3,25 +3,31 @@ import { connect } from 'react-redux';
 import { BOL_ACTIONS, IActionPayload } from '../../actions'
 import { IRootState } from '../../store';
 import { IBOLProcessing, ICarrier } from '../../store/bol/types';
-import { BOLRequestProps, UpdateProcessProps, ConflictAddressType, UpdateAddress } from '../../actions/bol.action';
+import {
+    BOLRequestProps, UpdateProcessProps, ConflictAddressType, UpdateAddress,
+    ProcessingGetInfo, ProcessingInfo,
+} from '../../actions/bol.action';
 import DynamicTable, { IHeaderCellType } from '../DynamicTable';
 import { RegularTypography } from '../Shared/Typography';
 import {
     TextField, MenuItem, Dialog, Grid, Button, DialogTitle, DialogContent, 
     List, ListItemIcon, ListItemText, ListItemSecondaryAction, IconButton, ListItem,
     Checkbox, Paper, FormControl, InputLabel, Select, DialogActions, Card, FormLabel, RadioGroup,
-    FormControlLabel, Radio,
+    FormControlLabel, Radio, FormGroup, Typography, Fab
 } from '@material-ui/core';
+import { Menu } from '@material-ui/icons';
 import * as _ from 'lodash';
 
 export interface IBOLProcessingProps {
     locationId?: number;
     branchId?: number;
     processing?: IBOLProcessing[] | null;
+    processInfo?: ProcessingInfo | null;
     conflictAddress?: ConflictAddressType[] | null;
     processingTableHeaders?: IHeaderCellType[];
     updateAddressRequest?: (p: UpdateAddress) => void;
     fetchProcessing?: (p: BOLRequestProps) => void;
+    fetchProcessInfo?: (p: ProcessingGetInfo) => void;
     fetchConflictingAddress?: (p: number[]) => void;
     onSelected?: (m: UpdateProcessProps) => void;
 }
@@ -36,6 +42,8 @@ export interface IBOLProcessingState {
     selectedSkipProcess: Partial<IBOLProcessing>;
     isOpenDialogAddressConflict: boolean;
     isOpenDialogSkid: boolean;
+    isOpenDialogAdditional: boolean;
+    selectedProcessAdditional: Partial<IBOLProcessing>;
 }
 
 export interface IBOLProcessingCellData {
@@ -85,8 +93,12 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
             freightTerms: '',
             carrier: '',
         },
+        selectedProcessAdditional: {
+            billToCustomerName: '',
+        },
         isOpenDialogAddressConflict: false,
         isOpenDialogSkid: false,
+        isOpenDialogAdditional: false,
     }
 
     componentDidMount() {
@@ -198,7 +210,7 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
         }));
     }
 
-    private onSkidClick = (p: IBOLProcessing) => {
+    private onSkidClick = (p: IBOLProcessing): void => {
         this.setState(prev => ({
             ...prev,
             selectedSkipProcess: p,
@@ -206,11 +218,26 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
         }))
     }
 
-    private onSelectedAddressToProcess = (p: ConflictAddressType) => {
+    private onSelectedAddressToProcess = (p: ConflictAddressType): void => {
         this.setState(prev => ({
             ...prev,
             selectedAddress: p,
         }))
+    }
+
+    private onAdditionalClicked = (p: IBOLProcessing): void => {
+        console.log(p);
+        this.props.fetchProcessInfo && this.props.fetchProcessInfo({
+            billToAddressId: p.billToAddressId,
+            bolId: p.id,
+            bolIds: [p.id],
+            shipToAddressId: p.shipToAddressId,
+        });
+        this.setState(prev => ({
+            ...prev,
+            selectedProcessAdditional: p,
+            isOpenDialogAdditional: true,
+        }));
     }
 
     public render(): React.ReactElement {
@@ -335,20 +362,47 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                 },
                 actions: {
                     source: '***',
-                    value: <RegularTypography length="60px">{'***'}</RegularTypography>
+                    value:  (<Fab
+                                size="small"
+                                color="secondary"
+                                aria-label="additional"
+                                onClick={e => {
+                                    e.stopPropagation();
+                                    this.onAdditionalClicked(process);
+                                }}
+                            >
+                                <Menu />
+                            </Fab>)
                 },
             }
         })) || []
+
+        const processingHeaderCells: IHeaderCellType[] = [
+            { id: 'orderNumber', numeric: false, disablePadding: true, label: 'Order', isFilter: true },
+            { id: 'deliveryNumber', numeric: false, disablePadding: true, label: 'Delivery', isFilter: true },
+            { id: 'pilot', numeric: false, disablePadding: true, label: 'Pilot' },
+            { id: 'proNumber', numeric: false, disablePadding: true, label: 'Pro Number', isFilter: true },
+            { id: 'carrier', numeric: false, disablePadding: true, label: 'Carrier' },
+            { id: 'freightTerms', numeric: false, disablePadding: true, label: 'Terms', isFilter: true },
+            { id: 'freightCharges', numeric: false, disablePadding: true, label: 'Charge', isFilter: true },
+            { id: 'customerName', numeric: false, disablePadding: true, label: 'Customer Name' },
+            { id: 'shipToCity', numeric: false, disablePadding: true, label: 'City', isFilter: true },
+            { id: 'shipToState', numeric: false, disablePadding: true, label: 'State', isFilter: true },
+            { id: 'boxes', numeric: false, disablePadding: true, label: '# Boxes', isFilter: true },
+            { id: 'skid', numeric: false, disablePadding: true, label: '# Skids', isFilter: true },
+            { id: 'originalWeight', numeric: false, disablePadding: true, label: 'Actual Weight' },
+            { id: 'actions', numeric: false, disablePadding: true, label: 'Actions' },
+        ];
         
         return (
             <>
                 <DynamicTable
-                headerProperty={'id'}
-                isMultiSelectable
-                onSelectedCallBack={this.onProcessSelected}
-                headers={this.props.processingTableHeaders || []}
-                rows={parsedProcessingArray}
-            />
+                    headerProperty={'id'}
+                    isMultiSelectable
+                    onSelectedCallBack={this.onProcessSelected}
+                    headers={processingHeaderCells}
+                    rows={parsedProcessingArray}
+                />
             {
                 (this.state.isOpenDialogAddressConflict && this.props.conflictAddress) ? (
                     <Dialog scroll="body" maxWidth="lg" open={this.state.isOpenDialogAddressConflict} onClose={() => this.triggerDialog(false)}>
@@ -570,7 +624,6 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                                 </Grid>
                             </Paper>
                             <Grid container spacing={4}>
-
                                 <Grid item xs={9} lg={9}>
                                     <FormControl variant="outlined" style={{
                                         minWidth: '500px',
@@ -636,6 +689,106 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                     </Dialog>
                 ) : null
             }
+            {
+                (this.state.isOpenDialogAdditional && this.props.processInfo) ? (
+                    <Dialog
+                        scroll="body"
+                        maxWidth="lg"
+                        open={this.state.isOpenDialogAdditional}
+                        onClose={() => {
+                           this.setState(prev => ({
+                               ...prev,
+                               isOpenDialogAdditional: false,
+                           }));
+                        }}>
+                            <DialogTitle id="skid-process-dialog">Shipping Information</DialogTitle>
+                            <DialogContent>
+                                <Paper elevation={3}>
+                                    <Grid item xs={6} lg={6}>
+                                        <FormGroup 
+                                            row
+                                            style={{
+                                                minWidth: '350px',
+                                                margin: '1%',
+                                                padding: '10px',
+                                            }}
+                                        >
+                                            <Grid item xs={4} lg={4}>
+                                                <Typography>Ship Form:</Typography>
+                                            </Grid>
+                                            <Grid item xs={8} lg={8}>
+                                                <Typography>
+                                                    {
+                                                        `${this.state.selectedProcessAdditional.billToCustomerName}
+                                                        ${this.props.processInfo.billToState}
+                                                        ${this.props.processInfo.billToCity}
+                                                        ${this.props.processInfo.billToAddress1}
+                                                        ${this.props.processInfo.billToPhone}
+                                                        `
+                                                    }
+                                                </Typography>
+                                            </Grid>
+                                        </FormGroup>
+                                        <FormGroup 
+                                            row
+                                            style={{
+                                                minWidth: '350px',
+                                                margin: '1%',
+                                                padding: '10px',
+                                            }}
+                                        >
+                                            <Grid item xs={4} lg={4}>
+                                                <Typography>Bill To:</Typography>
+                                            </Grid>
+                                            <Grid item xs={8} lg={8}>
+                                                <Typography>
+                                                    {
+                                                        `${this.state.selectedProcessAdditional.billToCustomerName}
+                                                        ${this.props.processInfo.billToState}
+                                                        ${this.props.processInfo.billToCity}
+                                                        ${this.props.processInfo.billToAddress1}
+                                                        ${this.props.processInfo.billToPhone}
+                                                        `
+                                                    }
+                                                </Typography>
+                                            </Grid>
+                                        </FormGroup>
+                                        <FormGroup 
+                                            row
+                                            style={{
+                                                minWidth: '350px',
+                                                margin: '1%',
+                                                padding: '10px',
+                                            }}
+                                        >
+                                            <Grid item xs={4} lg={4}>
+                                                <Typography>Change Bill To Address to Customer:</Typography>
+                                            </Grid>
+                                            <Grid item xs={8} lg={8}>
+                                               
+                                            </Grid>
+                                        </FormGroup>
+                                        <FormGroup row>
+
+                                        </FormGroup>
+                                        <FormGroup row>
+
+                                        </FormGroup>
+                                        <FormGroup row>
+
+                                        </FormGroup>
+                                        <FormGroup row>
+
+                                        </FormGroup>
+                                    </Grid>
+                                    <Grid item xs={6} lg={6}>
+                                        
+                                    </Grid>
+                                </Paper>
+                            </DialogContent>
+                    </Dialog>
+                ) : null
+            }
             </>
         )
     }
@@ -647,6 +800,7 @@ const mapStateToProps = (state: IRootState) => ({
     processing: state.bol.processing,
     conflictAddress: state.bol.conflictAddress,
     processingTableHeaders: state.bol.processingTableHeaders,
+    processInfo: state.bol.processInfo,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch<IActionPayload>) => ({
@@ -655,6 +809,9 @@ const mapDispatchToProps = (dispatch: Dispatch<IActionPayload>) => ({
     },
     fetchConflictingAddress: (p: number[]) => {
         dispatch(BOL_ACTIONS.bolProcessingConflictingAddressRequest(p));
+    },
+    fetchProcessInfo: (p: ProcessingGetInfo) => {
+        dispatch(BOL_ACTIONS.bolProcessingGetInfoRequest(p));
     },
     updateProcessingRequest: (p: UpdateProcessProps) => {
         dispatch(BOL_ACTIONS.bolProcessingUpdateRequest(p));

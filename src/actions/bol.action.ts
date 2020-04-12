@@ -30,6 +30,66 @@ export const BOL_PROCESSING_UPDATE_ADDRESS_ACTION_REQUEST = 'BOL_PROCESSING_UPDA
 export const BOL_PROCESSING_UPDATE_ADDRESS_ACTION_REQUEST_SUCCESS = 'BOL_PROCESSING_UPDATE_ADDRESS_ACTION_REQUEST_SUCCESS';
 export const BOL_PROCESSING_UPDATE_ADDRESS_ACTION_REQUEST_FAILED = 'BOL_PROCESSING_UPDATE_ADDRESS_ACTION_REQUEST_FAILED';
 
+export const BOL_PROCESSING_GET_iNFO_REQUEST = 'BOL_PROCESSING_GET_iNFO_REQUEST';
+export const BOL_PROCESSING_GET_iNFO_REQUEST_SUCCESS = 'BOL_PROCESSING_GET_iNFO_REQUEST_SUCCESS';
+export const BOL_PROCESSING_GET_iNFO_REQUEST_FAIL = 'BOL_PROCESSING_GET_iNFO_REQUEST_FAIL';
+
+export type ProcessingInfo = {
+    id: number;
+    quoteAmount: number;
+    classRate: number;
+    description: string;
+    internalRemark: string;
+    quoteNumber: string;
+    shipperName: string;
+    specialInstruction: string;
+    eta: string;
+    revisedWeight: string;
+    billToAddress1: string;
+    billToAddress2: string;
+    billToAddress3: string;
+    billToAddress4: string;
+    billToCity: string;
+    billToState: string;
+    billToZip: string;
+    billToCountry: string;
+    billToPhone: string;
+    shipToAddress1: string;
+    shipToAddress2: string;
+    shipToAddress3: string;
+    shipToAddress4: string;
+    shipToCity: string;
+    shipToState: string;
+    shipToZip: string;
+    shipToCountry: string;
+    shipToPhone: string;
+}
+
+export type ProcessingGetInfo = {
+    bolId: number;
+    bolIds: number[];
+    billToAddressId: number;
+    shipToAddressId: number;
+}
+
+export const bolProcessingGetInfoRequest = (props: ProcessingGetInfo)
+: IActionPayload => ({
+    type: BOL_PROCESSING_GET_iNFO_REQUEST,
+    payload: { props }
+});
+
+export const bolProcessingGetInfoRequestSuccess = (processInfo: ProcessingInfo)
+: IActionPayload => ({
+    type: BOL_PROCESSING_GET_iNFO_REQUEST_SUCCESS,
+    payload: { processInfo }
+});
+
+export const bolProcessingGetInfoRequestFail = (error: Error)
+: IActionPayload => ({
+    type: BOL_PROCESSING_GET_iNFO_REQUEST_FAIL,
+    payload: { error }
+});
+
 export type UpdateAddress = {
     bolIds: string[];
     shipToCountry: string;

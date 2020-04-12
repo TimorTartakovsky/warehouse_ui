@@ -1,5 +1,8 @@
 import HttpService from "./HttpService";
-import { BOLRequestProps, RecallMonitoringProps, UpdateProcessProps, ConflictAddressType, UpdateAddress } from '../actions/bol.action';
+import {
+    BOLRequestProps, RecallMonitoringProps, UpdateProcessProps, ConflictAddressType, UpdateAddress,
+    ProcessingGetInfo, ProcessingInfo,
+} from '../actions/bol.action';
 import { IBOLMonitoring, IBOLProcessing } from "../store/bol/types";
 
 export interface IBOLService {
@@ -8,6 +11,7 @@ export interface IBOLService {
     recallMonitoringReSign: (p: RecallMonitoringProps) => Promise<void>;
     recallMonitoringChangeStatus: (p: RecallMonitoringProps) => Promise<void>;
     getProcessConflictAddress: (p: number[]) => Promise<ConflictAddressType[]>;
+    getInfo: (p: ProcessingGetInfo) => Promise<ProcessingInfo>;
 }
 
 export class BOLService extends HttpService implements IBOLService {
@@ -28,6 +32,21 @@ export class BOLService extends HttpService implements IBOLService {
             }, '');
             const conflictAddress = await this.httpService.get(`/bol/getConflictedShipToAddresses?${queryParams}`);
             return conflictAddress;
+        } catch(e) {
+            throw new Error(`IBOLService -> getProcessConflictAddress -> get conflict address failed.`);
+        }
+    }
+
+    getInfo = async (p: ProcessingGetInfo): Promise<ProcessingInfo> => {
+        try {
+            const queryParams = p.bolIds.reduce((acc: string, id: number) => {
+                acc += `&bolIds=${id}`;
+                return acc;
+            }, '');
+            const processInfo = await this.httpService.get(
+                `/bol/bolLocationInfo?bolId=${p.bolId}${queryParams}&billToAddressId=${p.billToAddressId}&shipToAddressId=${p.shipToAddressId}`
+            );
+            return processInfo;
         } catch(e) {
             throw new Error(`IBOLService -> getProcessConflictAddress -> get conflict address failed.`);
         }

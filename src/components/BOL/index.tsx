@@ -78,7 +78,7 @@ const BOL = (props: IBOL): React.ReactElement => {
         locationId: 0,
     });
     const [isOpen, setOpen] = useState(false);
-    const [selectedProcessing, setSelectedProcessing] = useState({
+    const [selectedProcessing, setSelectedProcessing] = useState([{
         bolNumbers: [''],
         branchId: 0,
         brokerApi: 0,
@@ -86,7 +86,7 @@ const BOL = (props: IBOL): React.ReactElement => {
         orders: [0],
         status: 0,
         taskType: 0,
-    });
+    }]);
     const [agreedCB, setAgreedCB] = useState({})
     const [confirmBodyText, setConfirmBodyText] = useState('');
     const [confirmHeaderText, setConfirmHeaderText] = useState('');
@@ -101,7 +101,19 @@ const BOL = (props: IBOL): React.ReactElement => {
         }
     }
 
-    const handleMonitoringEvents = (e: any, type: string) => {
+    const handleProcessingEvents = (e: any, type: string): void => {
+        switch(type) {
+            case BOLProcessingBtnType.delete:
+                break;
+            case BOLProcessingBtnType.process:
+                // Process 
+                break;
+            case BOLProcessingBtnType.shipConfirm:
+                break;
+        }
+    }
+
+    const handleMonitoringEvents = (e: any, type: string): void => {
         switch (type) {
             case BOLMonitoringBtnType.detail:
                 break;
@@ -133,7 +145,8 @@ const BOL = (props: IBOL): React.ReactElement => {
         processing: bolActions.UpdateProcessProps,
     ): void => {
         if (processing) {
-            setSelectedProcessing(processing);
+            // selectedProcessing
+            setSelectedProcessing([processing]);
         }
         setBtnProcessingGroupStatus({
             [BOLProcessingBtnType.delete]: false,
@@ -235,7 +248,7 @@ const BOL = (props: IBOL): React.ReactElement => {
                                         text: 'Process BOL',
                                         isDisabled: btnProcessingGroupStatus.process,
                                         onButtonClicked: (e: any, btnType: string): void => {
-                                            handleMonitoringEvents(e, btnType);
+                                            handleProcessingEvents(e, btnType);
                                         }
                                     },
                                     {
@@ -244,7 +257,7 @@ const BOL = (props: IBOL): React.ReactElement => {
                                         text: 'Ship Confirm BOL /W/O BOL',
                                         isDisabled: btnProcessingGroupStatus.shipConfirm,
                                         onButtonClicked: (e: any, btnType: string): void => {
-                                            handleMonitoringEvents(e, btnType);
+                                            handleProcessingEvents(e, btnType);
                                         }
                                     },
                                     {
@@ -253,7 +266,7 @@ const BOL = (props: IBOL): React.ReactElement => {
                                         text: 'Delete BOL Info',
                                         isDisabled: btnProcessingGroupStatus.delete,
                                         onButtonClicked: (e: any, btnType: string): void => {
-                                            handleMonitoringEvents(e, btnType);
+                                            handleProcessingEvents(e, btnType);
                                         }
                                     }
                                 ]}

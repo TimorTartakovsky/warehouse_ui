@@ -9,7 +9,6 @@ import {
   Checkbox,
   TablePagination,
 } from '@material-ui/core';
-// import { AutoSizer, Column, Table, TableCellRenderer, TableHeaderProps } from 'react-virtualized';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import TableHeader, { ETableHeaderOrder } from './TableHeader';
@@ -65,6 +64,8 @@ export interface IHeaderCellType {
     numeric: boolean;
     disablePadding: boolean;
     label: string;
+    isFilter?: boolean;
+    filterCB?: (id: string, value: string) => void;
 }
 export interface IDynamicTable {
    onSelectedCallBack?: (monitoring: IBOLMonitoring, selected: string[], pk: string) => void;
@@ -73,6 +74,20 @@ export interface IDynamicTable {
    headerProperty: string;
    isMultiSelectable?: boolean;
    isSelectionRestricted?: (monitoring: IBOLMonitoring, selected: string[], pk: string) => boolean;
+}
+
+const doTableItemsList = (len: number): number[] => {
+  if (len < 10) {
+    return [10];
+  } else if (len < 50) {
+    return [10, len];
+  } else if (len < 100) {
+    return [10, 50, len];
+  } else if (len < 200) {
+    return [10, 50, 100, len];
+  } else {
+    return [10, 50, 100, 200];
+  }
 }
 
 const DynamicTable = (props: IDynamicTable) => {
@@ -139,11 +154,11 @@ const DynamicTable = (props: IDynamicTable) => {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        {
+        {/* {
           props.isMultiSelectable ? (
             <TableToolbar numSelected={selected.length} />
           ) : null
-        }
+        } */}
         <TableContainer style={{ maxHeight: '60vh' }}>
           <Table
             className={classes.table}
@@ -233,7 +248,7 @@ const DynamicTable = (props: IDynamicTable) => {
           
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[10, 50, 100, 200]}
+          rowsPerPageOptions={doTableItemsList(rows.length)}
           component="div"
           count={rows.length}
           rowsPerPage={rowsPerPage}

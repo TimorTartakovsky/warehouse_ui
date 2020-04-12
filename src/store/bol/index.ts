@@ -54,6 +54,11 @@ const bolReducer = (state: IBOLState = initBOLState, actions: IActionPayload) =>
                 ...state,
                 conflictAddress: actions.payload && actions.payload.conflictAddress
             }
+        case BOL_ACTIONS.BOL_PROCESSING_GET_iNFO_REQUEST_SUCCESS:
+            return {
+                ...state,
+                processInfo: actions.payload && actions.payload.processInfo
+            }
         default: return state;
     }
 }
