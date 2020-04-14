@@ -378,18 +378,18 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
         })) || []
 
         const processingHeaderCells: IHeaderCellType[] = [
-            { id: 'orderNumber', numeric: false, disablePadding: true, label: 'Order', isFilter: true },
-            { id: 'deliveryNumber', numeric: false, disablePadding: true, label: 'Delivery', isFilter: true },
+            { id: 'orderNumber', numeric: false, disablePadding: true, label: 'Order' },
+            { id: 'deliveryNumber', numeric: false, disablePadding: true, label: 'Delivery' },
             { id: 'pilot', numeric: false, disablePadding: true, label: 'Pilot' },
-            { id: 'proNumber', numeric: false, disablePadding: true, label: 'Pro Number', isFilter: true },
+            { id: 'proNumber', numeric: false, disablePadding: true, label: 'Pro Number' },
             { id: 'carrier', numeric: false, disablePadding: true, label: 'Carrier' },
-            { id: 'freightTerms', numeric: false, disablePadding: true, label: 'Terms', isFilter: true },
-            { id: 'freightCharges', numeric: false, disablePadding: true, label: 'Charge', isFilter: true },
+            { id: 'freightTerms', numeric: false, disablePadding: true, label: 'Terms' },
+            { id: 'freightCharges', numeric: false, disablePadding: true, label: 'Charge' },
             { id: 'customerName', numeric: false, disablePadding: true, label: 'Customer Name' },
-            { id: 'shipToCity', numeric: false, disablePadding: true, label: 'City', isFilter: true },
-            { id: 'shipToState', numeric: false, disablePadding: true, label: 'State', isFilter: true },
-            { id: 'boxes', numeric: false, disablePadding: true, label: '# Boxes', isFilter: true },
-            { id: 'skid', numeric: false, disablePadding: true, label: '# Skids', isFilter: true },
+            { id: 'shipToCity', numeric: false, disablePadding: true, label: 'City' },
+            { id: 'shipToState', numeric: false, disablePadding: true, label: 'State' },
+            { id: 'boxes', numeric: false, disablePadding: true, label: '# Boxes' },
+            { id: 'skid', numeric: false, disablePadding: true, label: '# Skids' },
             { id: 'originalWeight', numeric: false, disablePadding: true, label: 'Actual Weight' },
             { id: 'actions', numeric: false, disablePadding: true, label: 'Actions' },
         ];
