@@ -12,11 +12,13 @@ class HttpService implements IHttpService {
     protected readonly instance: AxiosInstance;
     private cookies: cookies.Cookies;
     private host = 'http://dev.netvisionllc.com:9001/';
+    private selfHost = 'http://contabo.netvisionllc.com:3000/';
     private token: string = '';
     
     constructor() {
         if (process.env.NODE_ENV === "development") {
-            this.host = 'http://localhost:9001/'   
+            this.host = 'http://localhost:9001/';
+            this.selfHost = 'http://localhost:3000';
         }
         console.log(`HttpService -> host ${this.host}`);
         this.cookies = new cookies.Cookies();
@@ -24,7 +26,7 @@ class HttpService implements IHttpService {
         this.instance = axios.create({
             baseURL: this.host,
             headers: {
-                'Access-Control-Allow-Origin': 'http://localhost:3000',
+                'Access-Control-Allow-Origin': this.selfHost,
                 'Content-Type': 'application/json',
             },
             withCredentials: true,
