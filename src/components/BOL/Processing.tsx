@@ -262,18 +262,22 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
             return {
                 id: process.id,
                 orderNumber: {
+                    isSearchable: true,
                     source: process.orderNumber,
                     value: <RegularTypography length="120px">{process.orderNumber}</RegularTypography>
                 },
                 deliveryNumber: {
+                    isSearchable: true,
                     source: process.deliveryNumber,
                     value: <RegularTypography length="120px">{process.deliveryNumber}</RegularTypography>
                 },
                 pilot: {
+                    isSearchable: true,
                     source: process.pilot,
                     value: <RegularTypography length="60px">{process.pilot}</RegularTypography>
                 },
                 proNumber: {
+                    isSearchable: true,
                     source: process.proNumber,
                     value:  (<TextField
                                 style={{ width: '60px' }}
@@ -287,6 +291,7 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                             />)
                 },
                 carrier: {
+                    isSearchable: true,
                     source: process.carrier,
                     value: (
                         process.brokerApi ? (
@@ -313,10 +318,12 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                     )
                 },
                 freightTerms: {
+                    isSearchable: true,
                     source: process.freightTerms,
                     value: <RegularTypography length="120px">{process.freightTerms}</RegularTypography>
                 },
                 freightCharges: {
+                    isSearchable: true,
                     source: process.freightCharges,
                     value: (process.freightTerms === 'Prepaid (Genera Pay)' ?(
                     <RegularTypography length="100px">
@@ -335,28 +342,34 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                     ) )
                 },
                 customerName: {
+                    isSearchable: true,
                     source: process.customerName,
                     value: <RegularTypography length="120px">{process.customerName}</RegularTypography>
                 },
                 shipToCity: {
+                    isSearchable: true,
                     source: process.shipToCity,
                     value: <RegularTypography length="120px">{process.shipToCity}</RegularTypography>
                 },
                 shipToState: {
+                    isSearchable: true,
                     source: process.shipToState,
                     value: <RegularTypography length="60px">{process.shipToState}</RegularTypography>
                 },
                 boxes: {
+                    isSearchable: true,
                     source: process.boxes,
                     value: <RegularTypography length="60px">{process.boxes}</RegularTypography>
                 },
                 skid: {
+                    isSearchable: true,
                     source: process.skid,
                     value: <RegularTypography onClick={() => {
                         this.onSkidClick(process);
                     }} length="60px">{process.skid}</RegularTypography>
                 },
                 originalWeight: {
+                    isSearchable: true,
                     source: process.originalWeight,
                     value: <RegularTypography length="60px">{process.originalWeight}</RegularTypography>
                 },
