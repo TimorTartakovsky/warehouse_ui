@@ -8,12 +8,15 @@ import {
   Paper,
   Checkbox,
   TablePagination,
+  FormControl,
+  InputAdornment,
+  TextField,
+  Grid,
 } from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import TableHeader, { ETableHeaderOrder } from './TableHeader';
-import TableToolbar from './TableHeaderToolbar';
 import { IBOLMonitoring } from '../../store/bol/types';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const descendingComparator = (a: any, b: any, orderBy: string) => {
   if (b[orderBy] && b[orderBy].source < a[orderBy] && a[orderBy].source) {
@@ -47,8 +50,6 @@ const useStyles = makeStyles(theme => ({
     root: {
         width: '100%',
         height: '100%',
-        overflowX: 'auto',
-        overflowY: 'auto'
     },
     paper: {
         width: '100%',
@@ -92,13 +93,14 @@ const doTableItemsList = (len: number): number[] => {
 
 const DynamicTable = (props: IDynamicTable) => {
   const classes = useStyles();
-  const rows = props.rows;
+  const [rows, setRows] = React.useState(props.rows);
   const [order, setOrder] = React.useState(ETableHeaderOrder.asc);
   const [orderBy, setOrderBy] = React.useState('calories');
   const defaultSelected: string[] = [];
   const [selected, setSelected] = React.useState(defaultSelected);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [searchField, setSearchField] = React.useState('');
 
   const handleRequestSort = (event: any, property: string) => {
     const isAsc = orderBy === property && order === ETableHeaderOrder.asc;
@@ -148,17 +150,51 @@ const DynamicTable = (props: IDynamicTable) => {
 
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
 
+  const handleSearchRowsUpdate = (v: string) => {
+    setSearchField(v);
+    if (!Array.isArray(props.rows) || !props.rows.length) {
+      console.log(`NO ITEMS WERE FOUND.`);
+      return;
+    }
+    if (!v) {
+      console.log(`FILTER WAS DISABLED.`);
+      setRows(props.rows);
+    } else {
+      console.log(`SEARCH STARTED.`);
+      const keys = Object.keys(props.rows[0]);
+      const newRows = props.rows.filter(r => {
+        const compar = (k: any) =>r[k].isSearchable && `${r[k].source || ''}`.includes(v)
+        const d = keys.filter(compar);
+        return d.length;
+      });
+      setRows(newRows);
+    }
+  }
+
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
     <div className={classes.root}>
-      <Paper className={classes.paper}>
-        {/* {
-          props.isMultiSelectable ? (
-            <TableToolbar numSelected={selected.length} />
-          ) : null
-        } */}
+        <Grid container spacing={0}>
+          <Grid item xs={4} md={4} className="p-2">
+            <FormControl className="w-100" variant="outlined">
+              <TextField
+                variant="outlined"
+                value={searchField}
+                fullWidth
+                onChange={({target: { value }}) =>  handleSearchRowsUpdate(value)}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                        <FontAwesomeIcon icon={['fas', 'search']} />
+                    </InputAdornment>
+                    ),
+                  }}
+              />
+            </FormControl>
+          </Grid>
+        </Grid>
         <TableContainer style={{ maxHeight: '60vh' }}>
           <Table
             className={classes.table}
@@ -256,7 +292,6 @@ const DynamicTable = (props: IDynamicTable) => {
           onChangePage={handleChangePage}
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
-      </Paper>
     </div>
   );
 }

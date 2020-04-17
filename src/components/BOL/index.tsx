@@ -276,10 +276,10 @@ const BOL = (props: IBOL): React.ReactElement => {
                 )
             }
             <Card className="card-box mb-4-spacing overflow-visible">
-                <div className="card-header">
+                {/* <div className="card-header">
                     <div className="card-header--title font-size-md font-weight-bold py-2">
                     </div>
-                </div>
+                </div> */}
                 <CardContent className="p-3">
                     {
                         props.type === EBOLTypes.BOLMonitoring ? (<BOLMonitoring onSelectedValue={onMonitoringSelectedItem} />) : null
