@@ -34,6 +34,7 @@ export interface ICarrier {
     carrierName: string;
     scacCode: string;
     cnt: number;
+    firstLetter?: string;
 }
 
 export interface IBOLProcessing {

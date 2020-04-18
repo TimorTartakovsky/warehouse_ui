@@ -42,23 +42,25 @@ const TableHeader = (props: ITableHeader) => {
     const createSortHandler = (property: string) => (event: any) => {
       onRequestSort(event, property);
     };
-  
     return (
       <TableHead>
         <TableRow>
           {
-            props.isMultiSelectable ? (
-              <TableCell padding="checkbox">
-                <Checkbox
-                  indeterminate={numSelected > 0 && numSelected < rowCount}
-                  checked={rowCount > 0 && numSelected === rowCount}
-                  onChange={onSelectAllClick}
-                  inputProps={{ 'aria-label': 'select all desserts' }}
-                />
-              </TableCell>
-            ) :  <TableCell padding="checkbox" />
+            // props.isMultiSelectable ? (
+            //   <TableCell padding="checkbox">
+                
+            //       Temp blocked
+            //       <Checkbox
+            //       indeterminate={numSelected > 0 && numSelected < rowCount}
+            //       checked={rowCount > 0 && numSelected === rowCount}
+            //       onChange={onSelectAllClick}
+            //       inputProps={{ 'aria-label': 'select all desserts' }}
+            //     />
+            //   </TableCell>
+            // ) :  
           }
           
+          <TableCell padding="checkbox" />
           {headCells.map((headCell: any, i: number) => (
             <>
               <TableCell

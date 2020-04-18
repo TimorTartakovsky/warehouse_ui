@@ -192,7 +192,7 @@ const DynamicTable = (props: IDynamicTable) => {
                       tabIndex={-1}
                       draggable="true"
                       title={row.remarks || ''}
-                      key={index}
+                      key={row.id}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">

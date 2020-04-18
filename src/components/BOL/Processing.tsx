@@ -24,7 +24,7 @@ import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import * as _ from 'lodash';
 import { IconButtonGroup, EIconButtonGroupType } from '../Shared/Buttons';
 import ReceiptIcon from '@material-ui/icons/ReceiptOutlined';
-import * as lodash from 'lodash';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 export enum BOLProcessingBtnType {
     process = 'process',
@@ -340,7 +340,10 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
               }));
           } else {
               const keys = Object.keys(this.state.processingArray[0]);
-              const compar = (k: string, r: any) => !!r[k] && r[k].isSearchable && `${r[k].source || ''}`.includes(v);
+
+              const compar = (k: string, r: any) => !!r[k] && r[k].isSearchable 
+                && `${r[k].source || ''}`.toLowerCase().includes(v.toLowerCase());
+
               const newRows = this.state.processingArray
                 .filter((r: TableItem) => {
                     const d = keys.filter(k => compar(k, r));
@@ -355,13 +358,11 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
         }
     }
 
-    private handleProcessCarrierChange = (e: any, process: IBOLProcessing) => {
+    private handleProcessCarrierChange = (e: any, selectedCarrier: ICarrier, id: number) => {
         e.stopPropagation();
-        const carrierNumber = e.target.value;
         const selectedCarriersMap = this.state.selectedCarriesMap;
-        const selectedCarrier = process.carriers.find(c => c.carrierNumber === carrierNumber);
         if (selectedCarrier) {
-            selectedCarriersMap.set(process.id, selectedCarrier);
+            selectedCarriersMap.set(id, selectedCarrier);
         }
         this.setState(prev => ({
             ...prev,
@@ -385,8 +386,15 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
             return [];
         } else {
             return this.props.processing.map((process: IBOLProcessing) => {
+                const defCs = process.carriers && process.carriers[0];
                 const cs = this.state.selectedCarriesMap.get(process.id);
-                const defCs = process.carriers && process.carriers[0] && process.carriers[0].carrierNumber;
+                const options = process.carriers.map((option: ICarrier) => {
+                    const firstLetter = option.carrierName[0];
+                    return {
+                      firstLetter: /[0-9]/.test(firstLetter) ? '0-9' : firstLetter,
+                      ...option,
+                    };
+                });
                 return {
                         id: process.id,
                         orderNumber: {
@@ -425,22 +433,21 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                                 process.brokerApi ? (
                                     <RegularTypography length="120px">Auto-select</RegularTypography>
                                 ) : (
-                                    <TextField fullWidth className="m-2"
-                                        id="outlined-select-currency"
+                                    <Autocomplete
+                                        id={`${process.id}-bol-processing-carrier`}
+                                        options={options.sort((a, b) => -b.firstLetter.localeCompare(a.firstLetter))}
+                                        groupBy={(option) => option && option.firstLetter || ''}
+                                        getOptionLabel={(option) => option && option.carrierName}
                                         style={{ width: '120px' }}
-                                        select
-                                        value={cs && cs.carrierNumber || defCs || ''}
-                                        defaultValue={process.carrier}
-                                        onChange={e => this.handleProcessCarrierChange(e, process)}
+                                        value={cs || defCs || null}
                                         disabled={!process.carriers || !process.carriers.length}
-                                        variant="outlined"
-                                    >
-                                        {process.carriers.map(option => (
-                                            <MenuItem key={option.carrierNumber} value={option.carrierNumber}>
-                                                {option.carrierName}
-                                            </MenuItem>
-                                        ))}
-                                    </TextField>
+                                        onChange={(e: any, p: any) => this.handleProcessCarrierChange(e, p, process.id)}
+                                        renderInput={(params) => {
+                                            return (
+                                                <TextField {...params} variant="outlined" />
+                                            );
+                                        }}
+                                    />
                                 )
                                 
                             )
@@ -539,8 +546,6 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
     }
 
     public render(): React.ReactElement {
-        const processingHeaderCells = this.doGenerateProcessingHeader();
-        // const parsedProcessingArray = this.doGenerateProcessing();
         return (
             <CardContent>
                 <div className={clsx('app-page-title')}>
@@ -552,7 +557,7 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                                 <ReceiptIcon />
                             </Paper>
                             <div className="app-page-title--heading">
-                                <h5>Processing Page</h5>
+                                <h5>BOL Processing</h5>
                             </div>
                         </Box>
                     </div>
@@ -621,7 +626,7 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                     headerProperty={'id'}
                     isMultiSelectable
                     onSelectedCallBack={this.onProcessSelected}
-                    headers={processingHeaderCells}
+                    headers={this.doGenerateProcessingHeader()}
                     rows={this.state.processingArray}
                 />
             {
