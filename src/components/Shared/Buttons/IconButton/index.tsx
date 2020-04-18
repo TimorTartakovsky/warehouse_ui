@@ -29,6 +29,7 @@ const IconButton = (props: IIconButton) => {
         variant="contained"
         color="secondary"
         className={classes.button}
+        size="small" // TODO injection
         startIcon={props.icon}
         onClick={e => props.onButtonClicked(e, props.btnType)}
         disabled={props.isDisabled}
