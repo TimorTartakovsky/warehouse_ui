@@ -208,7 +208,7 @@ const DynamicExpansionPanelTable = (props: IDynamicTable) => {
                       tabIndex={-1}
                       draggable="true"
                       title={row.remarks || ''}
-                      key={index}
+                      key={`${index}${row.id}`}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -229,7 +229,7 @@ const DynamicExpansionPanelTable = (props: IDynamicTable) => {
                                         const value = copyRow[k];
                                         return (
                                         <TableCell
-                                            key={innerIndex}
+                                            key={`table-cell-${innerIndex}`}
                                             component="th"
                                             id={labelId}
                                             onMouseOver={event => showRow(index)}
