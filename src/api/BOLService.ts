@@ -61,10 +61,10 @@ export class BOLService extends HttpService implements IBOLService {
         }
     }
 
-    updateProcess = async (props: UpdateProcessProps): Promise<void> => {
+    updateProcess = async (props: UpdateProcessProps): Promise<any> => {
         try {
             const processing = await this.httpService.post(`/bol/update`, props);
-            // possible continue
+            return processing;
         } catch (e) {
             throw new Error(`IBOLService -> recallMonitoring -> updateProcess failed.`);
         }

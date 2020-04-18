@@ -1,22 +1,56 @@
 import React, { Dispatch }  from 'react';
 import { connect } from 'react-redux';
+import clsx from 'clsx';
+import { Menu } from '@material-ui/icons';
+import {
+    TextField, MenuItem, Dialog, Grid, Button, DialogTitle, DialogContent, 
+    List, ListItemIcon, ListItemText, ListItem,
+    Checkbox, Paper, FormControl, InputLabel, Select, DialogActions, Card, FormLabel, RadioGroup,
+    FormControlLabel, Radio, FormGroup, Typography, Fab, CardContent, InputAdornment, Box,
+} from '@material-ui/core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { BOL_ACTIONS, IActionPayload } from '../../actions'
 import { IRootState } from '../../store';
-import { IBOLProcessing, ICarrier } from '../../store/bol/types';
+import { IBOLProcessing, ICarrier, IBOLState } from '../../store/bol/types';
 import {
     BOLRequestProps, UpdateProcessProps, ConflictAddressType, UpdateAddress,
     ProcessingGetInfo, ProcessingInfo,
 } from '../../actions/bol.action';
 import DynamicTable, { IHeaderCellType } from '../DynamicTable';
 import { RegularTypography } from '../Shared/Typography';
-import {
-    TextField, MenuItem, Dialog, Grid, Button, DialogTitle, DialogContent, 
-    List, ListItemIcon, ListItemText, ListItemSecondaryAction, IconButton, ListItem,
-    Checkbox, Paper, FormControl, InputLabel, Select, DialogActions, Card, FormLabel, RadioGroup,
-    FormControlLabel, Radio, FormGroup, Typography, Fab
-} from '@material-ui/core';
-import { Menu } from '@material-ui/icons';
+import Check from '@material-ui/icons/Check';
+import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import * as _ from 'lodash';
+import { IconButtonGroup, EIconButtonGroupType } from '../Shared/Buttons';
+import ReceiptIcon from '@material-ui/icons/ReceiptOutlined';
+import * as lodash from 'lodash';
+
+export enum BOLProcessingBtnType {
+    process = 'process',
+    shipConfirm = 'shipConfirm',
+    delete = 'delete',
+}
+
+type ProcessingButtonsGroupState = {
+    [BOLProcessingBtnType.process]: boolean;
+    [BOLProcessingBtnType.shipConfirm]: boolean;
+    [BOLProcessingBtnType.delete]: boolean;
+}
+
+const DEFAULT_PROCESSING_BUTTONS_GROUP_STATE: ProcessingButtonsGroupState = {
+    [BOLProcessingBtnType.process]: true,
+    [BOLProcessingBtnType.shipConfirm]: true,
+    [BOLProcessingBtnType.delete]: true,
+}
+
+export interface TableItem {
+    [k: string]: {
+     source?: any;
+     value?: React.ReactElement | React.ReactElement[];
+     isSearchable?: boolean;
+    } | number;
+ }
 
 export interface IBOLProcessingProps {
     locationId?: number;
@@ -25,25 +59,30 @@ export interface IBOLProcessingProps {
     processInfo?: ProcessingInfo | null;
     conflictAddress?: ConflictAddressType[] | null;
     processingTableHeaders?: IHeaderCellType[];
-    updateAddressRequest?: (p: UpdateAddress) => void;
     fetchProcessing?: (p: BOLRequestProps) => void;
     fetchProcessInfo?: (p: ProcessingGetInfo) => void;
+    updateAddressRequest?: (p: UpdateAddress) => void;
+    updateProcessingRequest?: (p: UpdateProcessProps) => void;
     fetchConflictingAddress?: (p: number[]) => void;
     onSelected?: (m: UpdateProcessProps) => void;
 }
 
 export interface IBOLProcessingState {
-    selectedCarriesMap: Map<number, ICarrier>;
-    selectedProcesses: Map<string, IBOLProcessing>;
-    selectedTermsMap: Map<string, number>;
-    selectedAddressMap: Map<number, number>;
+    searchField: string;
+    processingArray: TableItem[] | any[];
     selectedAddress: ConflictAddressType;
-    selectedTermConflict: string;
-    selectedSkipProcess: Partial<IBOLProcessing>;
-    isOpenDialogAddressConflict: boolean;
+    selectedTermsMap: Map<string, number>;
     isOpenDialogSkid: boolean;
+    selectedProcesses: Map<string, IBOLProcessing>;
+    selectedCarriesMap: Map<number, ICarrier>;
+    selectedAddressMap: Map<number, number>;
+    selectedSkipProcess: Partial<IBOLProcessing>;
+    selectedTermConflict: string;
     isOpenDialogAdditional: boolean;
+    btnProcessingGroupStatus: ProcessingButtonsGroupState;
     selectedProcessAdditional: Partial<IBOLProcessing>;
+    isOpenDialogAddressConflict: boolean;
+    isBrokerApi: boolean;
 }
 
 export interface IBOLProcessingCellData {
@@ -62,15 +101,11 @@ export interface IBOLProcessingCellData {
     originalWeight: number;
 }
 
-
 class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingState> {
-    
     state = {
-        selectedCarriesMap: new Map<number, ICarrier>(),
-        selectedProcesses: new Map<string, IBOLProcessing>(),
-        selectedTermsMap: new Map<string, number>(),
-        selectedAddressMap: new Map<number, number>(),
-        selectedTermConflict: '',
+        isBrokerApi: false,
+        searchField: '',
+        processingArray: [],
         selectedAddress: {
             shipToAddress1: '',
             shipToCountry: '',
@@ -79,6 +114,11 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
             shipToCustomerNumber: '',
             shipToAddressId: '',
         },
+        selectedTermsMap: new Map<string, number>(),
+        isOpenDialogSkid: false,
+        selectedProcesses: new Map<string, IBOLProcessing>(),
+        selectedCarriesMap: new Map<number, ICarrier>(),
+        selectedAddressMap: new Map<number, number>(),
         selectedSkipProcess: {
             customerName: '',
             proNumber: '',
@@ -93,12 +133,14 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
             freightTerms: '',
             carrier: '',
         },
+        selectedTermConflict: '',
+        isOpenDialogAdditional: false,
         selectedProcessAdditional: {
             billToCustomerName: '',
         },
+        btnProcessingGroupStatus: DEFAULT_PROCESSING_BUTTONS_GROUP_STATE,
         isOpenDialogAddressConflict: false,
-        isOpenDialogSkid: false,
-        isOpenDialogAdditional: false,
+        
     }
 
     componentDidMount() {
@@ -111,6 +153,14 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
 
     private onProcessSelected = (m: any,  selected: string[], pk: string) => {
         if (!Array.isArray(this.props.processing)) {
+            this.setState(prev => ({
+                ...prev,
+                btnProcessingGroupStatus: {
+                    [BOLProcessingBtnType.process]: true,
+                    [BOLProcessingBtnType.shipConfirm]: true,
+                    [BOLProcessingBtnType.delete]: true,
+                }
+            }))
             return;
         } else {
             const sourceProcessing = this.props.processing.find(p => p.id === m[pk]);
@@ -138,6 +188,12 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                     selectedProcesses,
                     selectedTermsMap: termsMap,
                     selectedAddressMap: addressMap,
+                    isBrokerApi: !prev.isBrokerApi ? m.brokerApi : prev.isBrokerApi,
+                    btnProcessingGroupStatus: {
+                        [BOLProcessingBtnType.process]: false,
+                        [BOLProcessingBtnType.shipConfirm]: false,
+                        [BOLProcessingBtnType.delete]: false,
+                    },
                 }));
             } else {
                 const termsIncremented  = termsCount + 1;
@@ -155,6 +211,12 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                         selectedTermsMap: termsMap,
                         selectedAddressMap: addressMap,
                         isOpenDialogAddressConflict: true,
+                        isBrokerApi: !prev.isBrokerApi ? m.brokerApi : prev.isBrokerApi,
+                        btnProcessingGroupStatus: {
+                            [BOLProcessingBtnType.process]: false,
+                            [BOLProcessingBtnType.shipConfirm]: false,
+                            [BOLProcessingBtnType.delete]: false,
+                        },
                     }));
                 } else {
                     this.setState(prev => ({
@@ -162,11 +224,30 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                         selectedProcesses,
                         selectedTermsMap: termsMap,
                         selectedAddressMap: addressMap,
+                        isBrokerApi: !prev.isBrokerApi ? m.brokerApi : prev.isBrokerApi,
+                        btnProcessingGroupStatus: {
+                            [BOLProcessingBtnType.process]: false,
+                            [BOLProcessingBtnType.shipConfirm]: false,
+                            [BOLProcessingBtnType.delete]: false,
+                        },
                     }));
                 }
             }
-            this.props.onSelected && this.props.onSelected(m);
         }
+    }
+
+    private onProcessClicked = () => {
+        // const bolKeys = [...this.state.selectedProcesses.keys()];
+        this.props.updateProcessingRequest &&
+        this.props.updateProcessingRequest({
+            bolNumbers: [],
+            branchId: this.props.branchId || 0,
+            brokerApi: this.state.isBrokerApi ? 1 : 0,
+            locationId: this.props.locationId || 0,
+            orders: [...this.state.selectedProcesses.values()],
+            status: 1,
+            taskType: 1,
+        });
     }
 
     private onSelectTermConflict = (p: string): void => {
@@ -240,156 +321,204 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
         }));
     }
 
-    public render(): React.ReactElement {
-        const parsedProcessingArray = (this.props.processing &&
-        this.props.processing.length &&
-        this.props.processing.map((process: IBOLProcessing) => {
-            const handleProcessCarrierChange = (e: any) => {
-                e.stopPropagation();
-                const carrierNumber = e.target.value;
-                const selectedCarriersMap = this.state.selectedCarriesMap;
-                const selectedCarrier = process.carriers.find(c => c.carrierNumber === carrierNumber);
-                if (selectedCarrier) {
-                    selectedCarriersMap.set(process.id, selectedCarrier);
-                }
-                this.setState(prev => ({
-                    ...prev,
-                    selectedCarriesMap: selectedCarriersMap,
-                }));
-            }
-            const cs = this.state.selectedCarriesMap.get(process.id);
-            const defCs = process.carriers && process.carriers[0] && process.carriers[0].carrierNumber;
-            return {
-                id: process.id,
-                orderNumber: {
-                    isSearchable: true,
-                    source: process.orderNumber,
-                    value: <RegularTypography length="120px">{process.orderNumber}</RegularTypography>
-                },
-                deliveryNumber: {
-                    isSearchable: true,
-                    source: process.deliveryNumber,
-                    value: <RegularTypography length="120px">{process.deliveryNumber}</RegularTypography>
-                },
-                pilot: {
-                    isSearchable: true,
-                    source: process.pilot,
-                    value: <RegularTypography length="60px">{process.pilot}</RegularTypography>
-                },
-                proNumber: {
-                    isSearchable: true,
-                    source: process.proNumber,
-                    value:  (<TextField
-                                style={{ width: '60px' }}
-                                placeholder={process.proNumber}
-                                onClick={() => this.onClickProNumber(process)}
-                                fullWidth
-                                disabled={process.brokerApi === 1}
-                                className="m-2"
-                                id="outlined-basic"
-                                variant="outlined"
-                            />)
-                },
-                carrier: {
-                    isSearchable: true,
-                    source: process.carrier,
-                    value: (
-                        process.brokerApi ? (
-                            <RegularTypography length="120px">Auto-select</RegularTypography>
-                        ) : (
-                            <TextField fullWidth className="m-2"
-                                id="outlined-select-currency"
-                                style={{ width: '120px' }}
-                                select
-                                value={cs && cs.carrierNumber || defCs || ''}
-                                defaultValue={process.carrier}
-                                onChange={handleProcessCarrierChange}
-                                disabled={!process.carriers || !process.carriers.length}
-                                variant="outlined"
-                            >
-                                {process.carriers.map(option => (
-                                    <MenuItem key={option.carrierNumber} value={option.carrierNumber}>
-                                        {option.carrierName}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        )
-                        
-                    )
-                },
-                freightTerms: {
-                    isSearchable: true,
-                    source: process.freightTerms,
-                    value: <RegularTypography length="120px">{process.freightTerms}</RegularTypography>
-                },
-                freightCharges: {
-                    isSearchable: true,
-                    source: process.freightCharges,
-                    value: (process.freightTerms === 'Prepaid (Genera Pay)' ?(
-                    <RegularTypography length="100px">
+    private tableColumnFilter = (v: string) => {
+        if (!Array.isArray(this.props.processing) || !this.props.processing.length) {
+          console.log(`NO ITEMS WERE FOUND.`);
+        } else if (!v) {
+          console.log(`FILTER WAS DISABLED.`);
+          this.setState(prev => ({
+            ...prev,
+            searchField: v,
+            processingArray: this.doGenerateProcessing(),
+          }));
+        } else {
+          console.log(`SEARCH STARTED.`);
+          if (!this.state.processingArray.length) {
+              return this.setState(prev => ({
+                ...prev,
+                searchField: v,
+              }));
+          } else {
+              const keys = Object.keys(this.state.processingArray[0]);
+              const compar = (k: string, r: any) => !!r[k] && r[k].isSearchable && `${r[k].source || ''}`.includes(v);
+              const newRows = this.state.processingArray
+                .filter((r: TableItem) => {
+                    const d = keys.filter(k => compar(k, r));
+                    return d.length;
+                });
+              this.setState(prev => ({
+                ...prev,
+                searchField: v,
+                processingArray: newRows,
+              }));
+          }
+        }
+    }
 
-                    </RegularTypography>
-                    ) : (
-                        <TextField
-                            style={{ width: '100px' }}
-                            onClick={() => this.onClickProNumber(process)}
-                            fullWidth
-                            type="number"
-                            className="m-2"
-                            id="outlined-basic"
-                            variant="outlined"
-                        />
-                    ) )
-                },
-                customerName: {
-                    isSearchable: true,
-                    source: process.customerName,
-                    value: <RegularTypography length="120px">{process.customerName}</RegularTypography>
-                },
-                shipToCity: {
-                    isSearchable: true,
-                    source: process.shipToCity,
-                    value: <RegularTypography length="120px">{process.shipToCity}</RegularTypography>
-                },
-                shipToState: {
-                    isSearchable: true,
-                    source: process.shipToState,
-                    value: <RegularTypography length="60px">{process.shipToState}</RegularTypography>
-                },
-                boxes: {
-                    isSearchable: true,
-                    source: process.boxes,
-                    value: <RegularTypography length="60px">{process.boxes}</RegularTypography>
-                },
-                skid: {
-                    isSearchable: true,
-                    source: process.skid,
-                    value: <RegularTypography onClick={() => {
-                        this.onSkidClick(process);
-                    }} length="60px">{process.skid}</RegularTypography>
-                },
-                originalWeight: {
-                    isSearchable: true,
-                    source: process.originalWeight,
-                    value: <RegularTypography length="60px">{process.originalWeight}</RegularTypography>
-                },
-                actions: {
-                    source: '***',
-                    value:  (<Fab
-                                size="small"
-                                color="secondary"
-                                aria-label="additional"
-                                onClick={e => {
-                                    e.stopPropagation();
-                                    this.onAdditionalClicked(process);
-                                }}
-                            >
-                                <Menu />
-                            </Fab>)
-                },
-            }
-        })) || []
+    private handleProcessCarrierChange = (e: any, process: IBOLProcessing) => {
+        e.stopPropagation();
+        const carrierNumber = e.target.value;
+        const selectedCarriersMap = this.state.selectedCarriesMap;
+        const selectedCarrier = process.carriers.find(c => c.carrierNumber === carrierNumber);
+        if (selectedCarrier) {
+            selectedCarriersMap.set(process.id, selectedCarrier);
+        }
+        this.setState(prev => ({
+            ...prev,
+            selectedCarriesMap: selectedCarriersMap,
+        }));
+    }
 
+    public componentDidUpdate(prevProps: IBOLProcessingProps, prevState: IBOLProcessingState) {
+        if (!prevProps || !prevProps.processing || !prevProps.processing.length) {
+            return;
+        }
+        // IMPORTANT: PREVENT INFINITY UPDATE
+        if (prevProps.processing.length !== prevState.processingArray.length) {
+            const newProcessing = this.doGenerateProcessing();
+            this.setState(prev => ({ ...prev, processingArray: newProcessing}));
+        }
+    }
+
+    private doGenerateProcessing = (): TableItem[] => {
+        if (!this.props.processing || !this.props.processing.length) {
+            return [];
+        } else {
+            return this.props.processing.map((process: IBOLProcessing) => {
+                const cs = this.state.selectedCarriesMap.get(process.id);
+                const defCs = process.carriers && process.carriers[0] && process.carriers[0].carrierNumber;
+                return {
+                        id: process.id,
+                        orderNumber: {
+                            isSearchable: true,
+                            source: process.orderNumber,
+                            value: <RegularTypography length="120px">{process.orderNumber}</RegularTypography>
+                        },
+                        deliveryNumber: {
+                            isSearchable: true,
+                            source: process.deliveryNumber,
+                            value: <RegularTypography length="120px">{process.deliveryNumber}</RegularTypography>
+                        },
+                        pilot: {
+                            isSearchable: true,
+                            source: process.pilot,
+                            value: <RegularTypography length="60px">{process.pilot}</RegularTypography>
+                        },
+                        proNumber: {
+                            isSearchable: true,
+                            source: process.proNumber,
+                            value:  (<TextField
+                                        style={{ width: '60px' }}
+                                        placeholder={process.proNumber}
+                                        onClick={() => this.onClickProNumber(process)}
+                                        fullWidth
+                                        disabled={process.brokerApi === 1}
+                                        className="m-2"
+                                        id="outlined-basic"
+                                        variant="outlined"
+                                    />)
+                        },
+                        carrier: {
+                            isSearchable: true,
+                            source: process.carrier,
+                            value: (
+                                process.brokerApi ? (
+                                    <RegularTypography length="120px">Auto-select</RegularTypography>
+                                ) : (
+                                    <TextField fullWidth className="m-2"
+                                        id="outlined-select-currency"
+                                        style={{ width: '120px' }}
+                                        select
+                                        value={cs && cs.carrierNumber || defCs || ''}
+                                        defaultValue={process.carrier}
+                                        onChange={e => this.handleProcessCarrierChange(e, process)}
+                                        disabled={!process.carriers || !process.carriers.length}
+                                        variant="outlined"
+                                    >
+                                        {process.carriers.map(option => (
+                                            <MenuItem key={option.carrierNumber} value={option.carrierNumber}>
+                                                {option.carrierName}
+                                            </MenuItem>
+                                        ))}
+                                    </TextField>
+                                )
+                                
+                            )
+                        },
+                        freightTerms: {
+                            isSearchable: true,
+                            source: process.freightTerms,
+                            value: <RegularTypography length="120px">{process.freightTerms}</RegularTypography>
+                        },
+                        freightCharges: {
+                            isSearchable: true,
+                            source: process.freightCharges,
+                            value: (process.freightTerms === 'Prepaid (Genera Pay)' ?(
+                            <RegularTypography length="100px" />
+                            ) : (
+                                <TextField
+                                    style={{ width: '100px' }}
+                                    onClick={() => this.onClickProNumber(process)}
+                                    fullWidth
+                                    type="number"
+                                    className="m-2"
+                                    id="outlined-basic"
+                                    variant="outlined"
+                                />
+                            ) )
+                        },
+                        customerName: {
+                            isSearchable: true,
+                            source: process.customerName,
+                            value: <RegularTypography length="120px">{process.customerName}</RegularTypography>
+                        },
+                        shipToCity: {
+                            isSearchable: true,
+                            source: process.shipToCity,
+                            value: <RegularTypography length="120px">{process.shipToCity}</RegularTypography>
+                        },
+                        shipToState: {
+                            isSearchable: true,
+                            source: process.shipToState,
+                            value: <RegularTypography length="60px">{process.shipToState}</RegularTypography>
+                        },
+                        boxes: {
+                            isSearchable: true,
+                            source: process.boxes,
+                            value: <RegularTypography length="60px">{process.boxes}</RegularTypography>
+                        },
+                        skid: {
+                            isSearchable: true,
+                            source: process.skid,
+                            value: <RegularTypography onClick={() => {
+                                this.onSkidClick(process);
+                            }} length="60px">{process.skid}</RegularTypography>
+                        },
+                        originalWeight: {
+                            isSearchable: true,
+                            source: process.originalWeight,
+                            value: <RegularTypography length="60px">{process.originalWeight}</RegularTypography>
+                        },
+                        actions: {
+                            source: '***',
+                            value:  (<Fab
+                                        size="small"
+                                        color="secondary"
+                                        aria-label="additional"
+                                        onClick={e => {
+                                            e.stopPropagation();
+                                            this.onAdditionalClicked(process);
+                                        }}
+                                    >
+                                    <Menu />
+                                </Fab>)
+                        },
+                    }
+            });
+        }
+    }
+
+    private doGenerateProcessingHeader = (): IHeaderCellType[] => {
         const processingHeaderCells: IHeaderCellType[] = [
             { id: 'orderNumber', numeric: false, disablePadding: true, label: 'Order' },
             { id: 'deliveryNumber', numeric: false, disablePadding: true, label: 'Delivery' },
@@ -406,15 +535,94 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
             { id: 'originalWeight', numeric: false, disablePadding: true, label: 'Actual Weight' },
             { id: 'actions', numeric: false, disablePadding: true, label: 'Actions' },
         ];
-        
+        return processingHeaderCells;
+    }
+
+    public render(): React.ReactElement {
+        const processingHeaderCells = this.doGenerateProcessingHeader();
+        // const parsedProcessingArray = this.doGenerateProcessing();
         return (
-            <>
+            <CardContent>
+                <div className={clsx('app-page-title')}>
+                    <div>
+                        <Box className="app-page-title--first">
+                            <Paper
+                                elevation={2}
+                                className="app-page-title--iconbox d-70 d-flex align-items-center bg-secondary justify-content-center">
+                                <ReceiptIcon />
+                            </Paper>
+                            <div className="app-page-title--heading">
+                                <h5>Processing Page</h5>
+                            </div>
+                        </Box>
+                    </div>
+                    <div className="d-flex align-items-center justify-content-right">
+                        <Grid container spacing={0}>
+                            <Grid item xs={3} md={3}>
+                                <FormControl className="mt-3" variant="outlined">
+                                    <TextField
+                                        variant="outlined"
+                                        value={this.state.searchField}
+                                        fullWidth
+                                        size="small"
+                                        onChange={({target: { value }}) =>  this.tableColumnFilter(value)}
+                                        InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <FontAwesomeIcon icon={['fas', 'search']} />
+                                            </InputAdornment>
+                                            ),
+                                        }}
+                                    />
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={9} md={9}>
+                                <IconButtonGroup
+                                    id="BOL_monitoring_page_buttons"
+                                    type={EIconButtonGroupType.horizontal}
+                                    buttons={[
+                                        {
+                                            btnType: BOLProcessingBtnType.process,
+                                            icon: (<Check />),
+                                            text: 'Process BOL',
+                                            isDisabled: this.state.btnProcessingGroupStatus.process,
+                                            onButtonClicked: (e: any, btnType: string): void => {
+                                                e.stopPropagation();
+                                                this.onProcessClicked()
+                                            }
+                                        },
+                                        {
+                                            btnType: BOLProcessingBtnType.shipConfirm,
+                                            icon: (<AddShoppingCartIcon/>),
+                                            text: 'Ship Confirm BOL /W/O BOL',
+                                            isDisabled: this.state.btnProcessingGroupStatus.shipConfirm,
+                                            onButtonClicked: (e: any, btnType: string): void => {
+                                                // handleProcessingEvents(e, btnType);
+                                            }
+                                        },
+                                        {
+                                            btnType: BOLProcessingBtnType.delete,
+                                            icon: (<HighlightOffIcon />),
+                                            text: 'Delete BOL Info',
+                                            isDisabled: this.state.btnProcessingGroupStatus.delete,
+                                            onButtonClicked: (e: any, btnType: string): void => {
+                                                // handleProcessingEvents(e, btnType);
+                                            }
+                                        }
+                                    ]}
+                                />
+                            </Grid>
+                        </Grid>
+                    </div>
+                </div>
+
+                
                 <DynamicTable
                     headerProperty={'id'}
                     isMultiSelectable
                     onSelectedCallBack={this.onProcessSelected}
                     headers={processingHeaderCells}
-                    rows={parsedProcessingArray}
+                    rows={this.state.processingArray}
                 />
             {
                 (this.state.isOpenDialogAddressConflict && this.props.conflictAddress) ? (
@@ -802,7 +1010,21 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                     </Dialog>
                 ) : null
             }
-            </>
+            {/* {
+                isOpen ? (
+                    <ConfirmationDialog 
+                        isOpen={isOpen}
+                        setOpen={setOpen}
+                        headerText={confirmHeaderText || ''}
+                        bodyText={confirmBodyText || ''}
+                        footerActions={{
+                            close: () => console.log(`closed`),
+                            agreed: () => { (agreedCB && typeof agreedCB === 'function' && agreedCB()) },
+                        }}
+                    />
+                ): null
+            } */}
+            </CardContent>
         )
     }
 }

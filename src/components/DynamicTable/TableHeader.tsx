@@ -59,10 +59,10 @@ const TableHeader = (props: ITableHeader) => {
             ) :  <TableCell padding="checkbox" />
           }
           
-          {headCells.map(headCell => (
+          {headCells.map((headCell: any, i: number) => (
             <>
               <TableCell
-                key={headCell.id}
+                key={i}
                 align={headCell.numeric ? 'right' : 'left'}
                 padding={headCell.disablePadding ? 'none' : 'default'}
                 sortDirection={orderBy === headCell.id ? order : false}

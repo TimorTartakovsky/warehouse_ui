@@ -43,8 +43,16 @@ function* processingAsync(action: IActionPayload) {
 function* processingUpdateAsync(action: IActionPayload) {
     try {
         const { props } = action.payload || {};
-        const conflicts = yield call(BOLService.getProcessConflictAddress, props);
-        yield put(BOL_ACTIONS.bolProcessingUpdateRequestSuccess(conflicts));
+        const updatedData = yield call(BOLService.updateProcess, props);
+        if (updatedData) {
+            yield put(BOL_ACTIONS.bolProcessingRequest({
+                locationId: props.locationId,
+                branchId: props.branchId,
+            }));
+            yield put(BOL_ACTIONS.bolProcessingUpdateRequestSuccess(updatedData));
+        } else {
+            throw new Error(`Update Process was failed.`);
+        }
     } catch(e) {
         yield put(BOL_ACTIONS.bolProcessingUpdateRequestFail(e));
     }
