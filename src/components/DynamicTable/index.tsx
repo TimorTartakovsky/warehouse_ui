@@ -214,9 +214,13 @@ const DynamicTable = (props: IDynamicTable) => {
                                         <TableCell
                                             key={index}
                                             component="th"
+                                            align="center"
+                                            // style={{
+                                            //   width: '100%',
+                                            //   justifyContent: 'center',
+                                            //   textAlign: 'center',
+                                            // }}
                                             id={labelId}
-                                            size="medium"
-                                            padding="checkbox"
                                         >
                                           {rowItem.value}
                                         </TableCell>
