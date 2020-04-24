@@ -8,6 +8,7 @@ import {
   Checkbox,
   TablePagination,
   FormControl,
+  Typography,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import TableHeader, { ETableHeaderOrder } from './TableHeader';
@@ -178,59 +179,70 @@ const DynamicTable = (props: IDynamicTable) => {
                   const labelId = 'enhanced-table-checkbox';
 
                   return (
-                    <TableRow
-                      hover
-                      onClick={event => {
-                        if (props.isSelectionRestricted && props.isSelectionRestricted(row, selected, props.headerProperty)) {
-                          return;
+                    <>
+                      <TableRow
+                        hover
+                        onClick={event => {
+                          if (props.isSelectionRestricted && props.isSelectionRestricted(row, selected, props.headerProperty)) {
+                            return;
+                          }
+                          handleClick(event, row[props.headerProperty]);
+                          props.onSelectedCallBack && props.onSelectedCallBack(row, selected, props.headerProperty);
+                        }}
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        draggable="true"
+                        key={index}
+                        selected={isItemSelected}
+                      >
+                        <TableCell
+                          key={`checkbox-${index}`}
+                          padding="checkbox">
+                          <Checkbox
+                            checked={isItemSelected}
+                            inputProps={{ 'aria-labelledby': labelId }}
+                          />
+                        </TableCell>
+                        {
+                          <>
+                              {
+                                  Object.keys(row)
+                                  .filter((k: string) => k !== props.headerProperty)
+                                  .map(
+                                      (k: string, i: number) => {
+                                          const copyRow: any = row;
+                                          const rowItem = copyRow[k];
+                                          return (
+                                          <TableCell
+                                              key={`inner-cell-${i}--${index}`}
+                                              component="th"
+                                              align="center"
+                                              id={labelId}
+                                          >
+                                            {rowItem.value}
+                                          </TableCell>
+                                          )
+                                      }
+                                  )
+                              }
+                          </>
                         }
-                        handleClick(event, row[props.headerProperty]);
-                        props.onSelectedCallBack && props.onSelectedCallBack(row, selected, props.headerProperty);
-                      }}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      draggable="true"
-                      title={row.remarks || ''}
-                      key={row.id}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={isItemSelected}
-                          inputProps={{ 'aria-labelledby': labelId }}
-                        />
-                      </TableCell>
-                      {
-                         <>
-                            {
-                                Object.keys(row)
-                                .filter((k: string) => k !== props.headerProperty)
-                                .map(
-                                    (k: string, index: number) => {
-                                        const copyRow: any = row;
-                                        const rowItem = copyRow[k];
-                                        return (
-                                        <TableCell
-                                            key={index}
-                                            component="th"
-                                            align="center"
-                                            // style={{
-                                            //   width: '100%',
-                                            //   justifyContent: 'center',
-                                            //   textAlign: 'center',
-                                            // }}
-                                            id={labelId}
-                                        >
-                                          {rowItem.value}
-                                        </TableCell>
-                                        )
-                                    }
-                                )
-                            }
-                         </>
-                      }
                     </TableRow>
+                    {
+                      row.remarks ? (
+                        <TableRow>
+                          <TableCell
+                            key={`info-cell-${index}`}
+                            colSpan={9}
+                          >
+                            <Typography>
+                              Remarks: {row.remarks && row.remarks.source}
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      ) : null
+                    }
+                    </>
                   );
                 })}
               {emptyRows > 0 && (
