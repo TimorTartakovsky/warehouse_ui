@@ -207,7 +207,7 @@ const DynamicTable = (props: IDynamicTable) => {
                           <>
                               {
                                   Object.keys(row)
-                                  .filter((k: string) => k !== props.headerProperty)
+                                  .filter((k: string) => k !== props.headerProperty && k !== 'remarks')
                                   .map(
                                       (k: string, i: number) => {
                                           const copyRow: any = row;
@@ -233,7 +233,7 @@ const DynamicTable = (props: IDynamicTable) => {
                         <TableRow>
                           <TableCell
                             key={`info-cell-${index}`}
-                            colSpan={9}
+                            colSpan={Object.keys(row).length + 1}
                           >
                             <Typography>
                               Remarks: {row.remarks && row.remarks.source}

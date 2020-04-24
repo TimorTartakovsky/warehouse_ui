@@ -182,9 +182,9 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                     selectedAddressMap: addressMap,
                     isBrokerApi: !prev.isBrokerApi ? m.brokerApi : prev.isBrokerApi,
                     btnProcessingGroupStatus: {
-                        [BOLProcessingBtnType.process]: false,
-                        [BOLProcessingBtnType.shipConfirm]: false,
-                        [BOLProcessingBtnType.delete]: false,
+                        [BOLProcessingBtnType.process]: selectedProcesses.size === 0 ? true : false,
+                        [BOLProcessingBtnType.shipConfirm]: selectedProcesses.size === 0 ? true : false,
+                        [BOLProcessingBtnType.delete]: selectedProcesses.size === 0 ? true : false,
                     },
                 }));
             } else {
@@ -390,12 +390,12 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                         orderNumber: {
                             isSearchable: true,
                             source: process.orderNumber,
-                            value: <RegularTypography length="120px">{process.orderNumber}</RegularTypography>
+                            value: <RegularTypography length="80px">{process.orderNumber}</RegularTypography>
                         },
                         deliveryNumber: {
                             isSearchable: true,
                             source: process.deliveryNumber,
-                            value: <RegularTypography length="100px">{process.deliveryNumber}</RegularTypography>
+                            value: <RegularTypography length="70px">{process.deliveryNumber}</RegularTypography>
                         },
                         pilot: {
                             isSearchable: true,
@@ -436,19 +436,21 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                         freightCharges: {
                             isSearchable: true,
                             source: process.freightCharges,
-                            value: (process.freightTerms === 'Prepaid (Genera Pay)' ?(
-                            <RegularTypography length="100px" />
-                            ) : (
-                                <TextField
-                                    style={{ width: '100px' }}
-                                    onClick={() => console.log('freightCharges -> implement')}
-                                    fullWidth
-                                    type="number"
-                                    className="m-2"
-                                    id="outlined-basic"
-                                    variant="outlined"
-                                />
-                            ) )
+                            value: 
+                            (process.freightTerms === 'Prepaid (Genera Pay)' ?(
+                                <RegularTypography length="60px" />
+                                ) : (
+                                    <TextField
+                                        style={{ width: '60px' }}
+                                        onClick={() => console.log('freightCharges -> implement')}
+                                        fullWidth
+                                        type="number"
+                                        className="m-2"
+                                        id="outlined-basic"
+                                         variant="standard"
+                                    />
+                                ) 
+                            )
                         },
                         customerName: {
                             isSearchable: true,
