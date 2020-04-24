@@ -182,9 +182,9 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                     selectedAddressMap: addressMap,
                     isBrokerApi: !prev.isBrokerApi ? m.brokerApi : prev.isBrokerApi,
                     btnProcessingGroupStatus: {
-                        [BOLProcessingBtnType.process]: false,
-                        [BOLProcessingBtnType.shipConfirm]: false,
-                        [BOLProcessingBtnType.delete]: false,
+                        [BOLProcessingBtnType.process]: selectedProcesses.size === 0 ? true : false,
+                        [BOLProcessingBtnType.shipConfirm]: selectedProcesses.size === 0 ? true : false,
+                        [BOLProcessingBtnType.delete]: selectedProcesses.size === 0 ? true : false,
                     },
                 }));
             } else {
@@ -248,12 +248,6 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
             selectedTermConflict: p,
         }))
     }
-
-    // private onClickProNumber = (p: IBOLProcessing) => {
-    //     if (!p.brokerApi) {
-    //         // call 
-    //     }
-    // }
 
     private triggerDialog = (isOpenDialog: boolean): void => {
         this.setState(prev => ({
@@ -389,35 +383,25 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                 });
                 return {
                         id: process.id,
+                        remarks: {
+                            isSearchable: false,
+                            source: process.remarks,
+                        },
                         orderNumber: {
                             isSearchable: true,
                             source: process.orderNumber,
-                            value: <RegularTypography length="120px">{process.orderNumber}</RegularTypography>
+                            value: <RegularTypography length="80px">{process.orderNumber}</RegularTypography>
                         },
                         deliveryNumber: {
                             isSearchable: true,
                             source: process.deliveryNumber,
-                            value: <RegularTypography length="100px">{process.deliveryNumber}</RegularTypography>
+                            value: <RegularTypography length="70px">{process.deliveryNumber}</RegularTypography>
                         },
                         pilot: {
                             isSearchable: true,
                             source: process.pilot,
                             value: <RegularTypography length="40px">{process.pilot}</RegularTypography>
                         },
-                        // proNumber: {
-                        //     isSearchable: true,
-                        //     source: process.proNumber,
-                        //     value:  (<TextField
-                        //                 style={{ width: '60px' }}
-                        //                 placeholder={process.proNumber}
-                        //                 onClick={() => this.onClickProNumber(process)}
-                        //                 fullWidth
-                        //                 disabled={process.brokerApi === 1}
-                        //                 className="m-2"
-                        //                 id="outlined-basic"
-                        //                 variant="outlined"
-                        //             />)
-                        // },
                         carrier: {
                             isSearchable: true,
                             source: process.carrier,
@@ -427,6 +411,7 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                                 ) : (
                                     <Autocomplete
                                         id={`${process.id}-bol-processing-carrier`}
+                                        key={`${process.id}-bol-processing-carrier`}
                                         options={options.sort((a, b) => -b.firstLetter.localeCompare(a.firstLetter))}
                                         groupBy={(option) => option && option.firstLetter || ''}
                                         getOptionLabel={(option) => option && option.carrierName}
@@ -451,19 +436,21 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                         freightCharges: {
                             isSearchable: true,
                             source: process.freightCharges,
-                            value: (process.freightTerms === 'Prepaid (Genera Pay)' ?(
-                            <RegularTypography length="100px" />
-                            ) : (
-                                <TextField
-                                    style={{ width: '100px' }}
-                                    onClick={() => console.log('freightCharges -> implement')}
-                                    fullWidth
-                                    type="number"
-                                    className="m-2"
-                                    id="outlined-basic"
-                                    variant="outlined"
-                                />
-                            ) )
+                            value: 
+                            (process.freightTerms === 'Prepaid (Genera Pay)' ?(
+                                <RegularTypography length="60px" />
+                                ) : (
+                                    <TextField
+                                        style={{ width: '60px' }}
+                                        onClick={() => console.log('freightCharges -> implement')}
+                                        fullWidth
+                                        type="number"
+                                        className="m-2"
+                                        id="outlined-basic"
+                                         variant="standard"
+                                    />
+                                ) 
+                            )
                         },
                         customerName: {
                             isSearchable: true,
@@ -521,7 +508,6 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
             { id: 'orderNumber', numeric: false, disablePadding: true, label: 'Order' },
             { id: 'deliveryNumber', numeric: false, disablePadding: true, label: 'Delivery' },
             { id: 'pilot', numeric: false, disablePadding: true, label: 'Pilot' },
-            // { id: 'proNumber', numeric: false, disablePadding: true, label: 'Pro Number' },
             { id: 'carrier', numeric: false, disablePadding: true, label: 'Carrier' },
             { id: 'freightTerms', numeric: false, disablePadding: true, label: 'Terms' },
             { id: 'freightCharges', numeric: false, disablePadding: true, label: 'Charge' },
