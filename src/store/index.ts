@@ -11,6 +11,14 @@ import { IOrderType } from './order-type/types';
 
 import { combineReducers } from 'redux';
 
+export interface TableItem {
+    [k: string]: {
+     source?: any;
+     value?: React.ReactElement | React.ReactElement[];
+     isSearchable?: boolean;
+    } | number;
+ }
+
 export interface IRootState {
     login: ILogin;
     theme: IThemeOptionState;

@@ -2,6 +2,7 @@ import { IHeaderCellType } from "../../components/DynamicTable";
 import { ConflictAddressType, ProcessingInfo } from "../../actions/bol.action";
 
 export interface IBOLMonitoring {
+    id: number;
     bolIds: Array<number>;
     bolNumber: string;
     brokerApi: number;
@@ -83,10 +84,8 @@ export interface IBOLProcessing {
 
 export interface IBOLState {
     monitoring?: IBOLMonitoring[] | null;
-    monitoringTableHeaders: IHeaderCellType[];
     conflictAddress: ConflictAddressType[] | null;
     processing?: IBOLProcessing[] | null;
-    processingTableHeaders: IHeaderCellType[];
     isMonitoringBolRequestFailed: boolean;
     isProcessingBolRequestFailed: boolean;
     monitoringBolRequestErrorMessage: string;
@@ -94,43 +93,8 @@ export interface IBOLState {
     processInfo: ProcessingInfo | null;
 }
 
-const processingHeaderCells: IHeaderCellType[] = [
-    { id: 'orderNumber', numeric: false, disablePadding: true, label: 'Order', isFilter: true },
-    { id: 'deliveryNumber', numeric: false, disablePadding: true, label: 'Delivery', isFilter: true },
-    { id: 'pilot', numeric: false, disablePadding: true, label: 'Pilot', isFilter: true },
-    { id: 'proNumber', numeric: false, disablePadding: true, label: 'Pro Number', isFilter: true },
-    { id: 'carrier', numeric: false, disablePadding: true, label: 'Carrier', isFilter: true },
-    { id: 'freightTerms', numeric: false, disablePadding: true, label: 'Terms', isFilter: true },
-    { id: 'freightCharges', numeric: false, disablePadding: true, label: 'Charge', isFilter: true },
-    { id: 'customerName', numeric: false, disablePadding: true, label: 'Customer Name' },
-    { id: 'shipToCity', numeric: false, disablePadding: true, label: 'City', isFilter: true },
-    { id: 'shipToState', numeric: false, disablePadding: true, label: 'State', isFilter: true },
-    { id: 'boxes', numeric: false, disablePadding: true, label: '# Boxes', isFilter: true },
-    { id: 'skid', numeric: false, disablePadding: true, label: '# Skids', isFilter: true },
-    { id: 'originalWeight', numeric: false, disablePadding: true, label: 'Actual Weight', isFilter: true },
-    { id: 'actions', numeric: false, disablePadding: true, label: 'Actions' },
-];
-
-const monitoringHeaderCells: IHeaderCellType[] = [
-    { id: 'bolNumber', numeric: false, disablePadding: true, label: 'BOL' },
-    { id: 'orderNumbers', numeric: false, disablePadding: true, label: 'Order' },
-    { id: 'proNumber', numeric: false, disablePadding: true, label: 'Pro Number' },
-    { id: 'customerName', numeric: false, disablePadding: true, label: 'Customer Name' },
-    { id: 'carrier', numeric: false, disablePadding: true, label: 'Carrier' },
-    { id: 'deliveryDays', numeric: false, disablePadding: true, label: 'D Days' },
-    { id: 'freightCharges', numeric: false, disablePadding: true, label: 'Charge' },
-    { id: 'freightTerms', numeric: false, disablePadding: true, label: 'Terms' },
-    { id: 'boxes', numeric: false, disablePadding: true, label: 'Boxes' },
-    { id: 'skids', numeric: false, disablePadding: true, label: 'Skids' },
-    { id: 'revisedWeight', numeric: false, disablePadding: true, label: 'Weight' },
-    { id: 'checkedDate', numeric: false, disablePadding: true, label: 'Ship Date' },
-    { id: 'status', numeric: false, disablePadding: true, label: 'Status' },
-];
-
 export const initBOLState: IBOLState = {
     monitoring: null,
-    processingTableHeaders: processingHeaderCells,
-    monitoringTableHeaders: monitoringHeaderCells,
     processing: null,
     conflictAddress: null,
     processInfo: null,

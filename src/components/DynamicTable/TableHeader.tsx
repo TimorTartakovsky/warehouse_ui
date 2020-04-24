@@ -45,21 +45,6 @@ const TableHeader = (props: ITableHeader) => {
     return (
       <TableHead>
         <TableRow>
-          {
-            // props.isMultiSelectable ? (
-            //   <TableCell padding="checkbox">
-                
-            //       Temp blocked
-            //       <Checkbox
-            //       indeterminate={numSelected > 0 && numSelected < rowCount}
-            //       checked={rowCount > 0 && numSelected === rowCount}
-            //       onChange={onSelectAllClick}
-            //       inputProps={{ 'aria-label': 'select all desserts' }}
-            //     />
-            //   </TableCell>
-            // ) :  
-          }
-          
           <TableCell padding="checkbox" />
           {headCells.map((headCell: any, i: number) => (
             <>
@@ -72,35 +57,16 @@ const TableHeader = (props: ITableHeader) => {
                 <TableSortLabel
                   style={{
                     height: '60px',
-                    minWidth: '100px',
+                    minWidth: '100%',
+                    justifyContent: 'center',
                   }}
                   active={orderBy === headCell.id}
                   direction={orderBy === headCell.id ? order : 'asc'}
                   onClick={createSortHandler(headCell.id)}
                 >
-                  {headCell.isFilter}
-                  {
-                    headCell.isFilter ? (
-                    <FormControl
-                        style={{
-                          paddingRight: '2px',
-                          paddingLeft: '2px',
-                          width: '100px',
-                        }}
-                        fullWidth
-                        size="small"
-                        variant="outlined"
-                    >
-                      <InputLabel htmlFor="outlined-adornment-amount">{headCell.label}</InputLabel>
-                      <OutlinedInput
-                        // onChange={handleChange('amount')}
-                        labelWidth={100}
-                      />
-                    </FormControl>
-                    ) : headCell.label
-                  }
-              </TableSortLabel>
-            </TableCell>
+                  { headCell.label }
+                </TableSortLabel>
+              </TableCell>
             </>
           ))}
         </TableRow>

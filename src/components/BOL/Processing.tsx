@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { BOL_ACTIONS, IActionPayload } from '../../actions'
-import { IRootState } from '../../store';
+import { IRootState, TableItem } from '../../store';
 import { IBOLProcessing, ICarrier, IBOLState } from '../../store/bol/types';
 import {
     BOLRequestProps, UpdateProcessProps, ConflictAddressType, UpdateAddress,
@@ -21,10 +21,10 @@ import { RegularTypography } from '../Shared/Typography';
 import Check from '@material-ui/icons/Check';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-import * as _ from 'lodash';
 import { IconButtonGroup, EIconButtonGroupType } from '../Shared/Buttons';
 import ReceiptIcon from '@material-ui/icons/ReceiptOutlined';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import * as _ from 'lodash';
 
 export enum BOLProcessingBtnType {
     process = 'process',
@@ -43,14 +43,6 @@ const DEFAULT_PROCESSING_BUTTONS_GROUP_STATE: ProcessingButtonsGroupState = {
     [BOLProcessingBtnType.shipConfirm]: true,
     [BOLProcessingBtnType.delete]: true,
 }
-
-export interface TableItem {
-    [k: string]: {
-     source?: any;
-     value?: React.ReactElement | React.ReactElement[];
-     isSearchable?: boolean;
-    } | number;
- }
 
 export interface IBOLProcessingProps {
     locationId?: number;
@@ -257,11 +249,11 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
         }))
     }
 
-    private onClickProNumber = (p: IBOLProcessing) => {
-        if (!p.brokerApi) {
-            // call 
-        }
-    }
+    // private onClickProNumber = (p: IBOLProcessing) => {
+    //     if (!p.brokerApi) {
+    //         // call 
+    //     }
+    // }
 
     private triggerDialog = (isOpenDialog: boolean): void => {
         this.setState(prev => ({
@@ -405,27 +397,27 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                         deliveryNumber: {
                             isSearchable: true,
                             source: process.deliveryNumber,
-                            value: <RegularTypography length="120px">{process.deliveryNumber}</RegularTypography>
+                            value: <RegularTypography length="100px">{process.deliveryNumber}</RegularTypography>
                         },
                         pilot: {
                             isSearchable: true,
                             source: process.pilot,
-                            value: <RegularTypography length="60px">{process.pilot}</RegularTypography>
+                            value: <RegularTypography length="40px">{process.pilot}</RegularTypography>
                         },
-                        proNumber: {
-                            isSearchable: true,
-                            source: process.proNumber,
-                            value:  (<TextField
-                                        style={{ width: '60px' }}
-                                        placeholder={process.proNumber}
-                                        onClick={() => this.onClickProNumber(process)}
-                                        fullWidth
-                                        disabled={process.brokerApi === 1}
-                                        className="m-2"
-                                        id="outlined-basic"
-                                        variant="outlined"
-                                    />)
-                        },
+                        // proNumber: {
+                        //     isSearchable: true,
+                        //     source: process.proNumber,
+                        //     value:  (<TextField
+                        //                 style={{ width: '60px' }}
+                        //                 placeholder={process.proNumber}
+                        //                 onClick={() => this.onClickProNumber(process)}
+                        //                 fullWidth
+                        //                 disabled={process.brokerApi === 1}
+                        //                 className="m-2"
+                        //                 id="outlined-basic"
+                        //                 variant="outlined"
+                        //             />)
+                        // },
                         carrier: {
                             isSearchable: true,
                             source: process.carrier,
@@ -438,18 +430,17 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                                         options={options.sort((a, b) => -b.firstLetter.localeCompare(a.firstLetter))}
                                         groupBy={(option) => option && option.firstLetter || ''}
                                         getOptionLabel={(option) => option && option.carrierName}
-                                        style={{ width: '120px' }}
+                                        style={{ width: 200 }}
                                         value={cs || defCs || null}
                                         disabled={!process.carriers || !process.carriers.length}
                                         onChange={(e: any, p: any) => this.handleProcessCarrierChange(e, p, process.id)}
                                         renderInput={(params) => {
                                             return (
-                                                <TextField {...params} variant="outlined" />
+                                                <TextField style={{ width: 200 }} {...params} variant="outlined" />
                                             );
                                         }}
                                     />
-                                )
-                                
+                                )        
                             )
                         },
                         freightTerms: {
@@ -465,7 +456,7 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                             ) : (
                                 <TextField
                                     style={{ width: '100px' }}
-                                    onClick={() => this.onClickProNumber(process)}
+                                    onClick={() => console.log('freightCharges -> implement')}
                                     fullWidth
                                     type="number"
                                     className="m-2"
@@ -530,7 +521,7 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
             { id: 'orderNumber', numeric: false, disablePadding: true, label: 'Order' },
             { id: 'deliveryNumber', numeric: false, disablePadding: true, label: 'Delivery' },
             { id: 'pilot', numeric: false, disablePadding: true, label: 'Pilot' },
-            { id: 'proNumber', numeric: false, disablePadding: true, label: 'Pro Number' },
+            // { id: 'proNumber', numeric: false, disablePadding: true, label: 'Pro Number' },
             { id: 'carrier', numeric: false, disablePadding: true, label: 'Carrier' },
             { id: 'freightTerms', numeric: false, disablePadding: true, label: 'Terms' },
             { id: 'freightCharges', numeric: false, disablePadding: true, label: 'Charge' },
@@ -1039,7 +1030,6 @@ const mapStateToProps = (state: IRootState) => ({
     branchId: state.user.location && state.user.location.branchId || 0,
     processing: state.bol.processing,
     conflictAddress: state.bol.conflictAddress,
-    processingTableHeaders: state.bol.processingTableHeaders,
     processInfo: state.bol.processInfo,
 })
 
