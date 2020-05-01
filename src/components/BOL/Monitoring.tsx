@@ -5,6 +5,7 @@ import { IRootState, TableItem } from '../../store';
 import { IBOLMonitoring } from '../../store/bol/types';
 import { BOLRequestProps } from '../../actions/bol.action';
 import DynamicTable, { IHeaderCellType } from '../DynamicTable';
+import moment from 'moment';
 import { RegularTypography } from '../Shared/Typography';
 import { CardContent, Box, Paper, Grid, TextField, FormControl, InputAdornment } from '@material-ui/core';
 import { IconButtonGroup, EIconButtonGroupType } from '../Shared/Buttons';
@@ -14,7 +15,6 @@ import Print from '@material-ui/icons/Print';
 import Create from '@material-ui/icons/Create';
 import Email from '@material-ui/icons/Email';
 import ReceiptIcon from '@material-ui/icons/ReceiptOutlined';
-const moment = require('moment');
 
 
 const DATE_TIME_FORMAT = 'DD/MM HH:mm';

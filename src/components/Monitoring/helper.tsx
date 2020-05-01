@@ -2,7 +2,7 @@ import React from 'react';
 import { EOrderTypeOptions, EOrderSubTypeOptions } from '../../store/order-type/types';
 import { IMonitoring } from '../../store/monitoring/types';
 import {RegularTypography} from '../Shared/Typography';
-const moment = require('moment');
+import moment from 'moment';
 const DATE_TIME_FORMAT = 'DD/MM HH:mm';
 const DATE_TIME_DB = 'YYYY-MM-DD HH:mm:ss';
 
