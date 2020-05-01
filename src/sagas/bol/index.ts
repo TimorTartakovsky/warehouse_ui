@@ -1,7 +1,7 @@
 import { takeLatest, put, call, fork } from 'redux-saga/effects';
 import { BOL_ACTIONS, IActionPayload } from '../../actions';
 import BOLService from '../../api/BOLService';
-import { IBOLMonitoring, IBOLProcessing } from '../../store/bol/types';
+import { IBOLMonitoring, IBOLProcessing, IBOLBilling, IBOLShipping } from '../../store/bol/types';
 
 
 function* monitoringAsync(action: IActionPayload) {
@@ -88,6 +88,83 @@ function* processingGetInfo(action: IActionPayload) {
     }
 }
 
+function* processingGetBillingInfo(action: IActionPayload) {
+    try {
+        const { props } = action.payload || {};
+        yield put(BOL_ACTIONS.bolProcessingGetBillingInfoRequestStart());
+        const billings: IBOLBilling[] = yield call(BOLService.getFindBillings, props);
+        yield put(BOL_ACTIONS.bolProcessingGetBillingInfoRequestSuccess(billings));
+    } catch(e) {
+        yield put(BOL_ACTIONS.bolProcessingGetBillingInfoRequestFail(e));
+    }
+}
+
+function* processingGetShippingInfo (action: IActionPayload) {
+    try {
+        const { props } = action.payload || {};
+        yield put(BOL_ACTIONS.bolProcessingGetShippingInfoRequestStart());
+        const shippings: IBOLShipping[] = yield call(BOLService.getFindShippings, props);
+        yield put(BOL_ACTIONS.bolProcessingGetShippingInfoRequestSuccess(shippings));
+    } catch(e) {
+        yield put(BOL_ACTIONS.bolProcessingGeShippingInfoRequestFail(e));
+    }
+}
+
+function* processingUpdateBillingAddress(action: IActionPayload) {
+    try {
+        const { props } = action.payload || {};
+        yield put(BOL_ACTIONS.bolProcessingUpdateBillingAddressRequestStart());
+        const billingAddress = yield call(BOLService.updateLocationAddress, props);
+        yield put(BOL_ACTIONS.bolProcessingUpdateBillingAddressRequestSuccess(billingAddress));
+        // have no idea what to do with it
+    } catch(e) {
+        yield put(BOL_ACTIONS.bolProcessingGeShippingInfoRequestFail(e));
+    }
+}
+
+function* processingUpdateShippingAddress(action: IActionPayload) {
+    try {
+        const { props } = action.payload || {};
+        yield put(BOL_ACTIONS.bolProcessingUpdateShippingAddressRequestStart());
+        const shippingAddress = yield call(BOLService.updateLocationAddress, props);
+        yield put(BOL_ACTIONS.bolProcessingUpdateShippingAddressRequestSuccess(shippingAddress));
+    } catch(e) {
+        yield put(BOL_ACTIONS.bolProcessingUpdateShippingAddressRequestFail(e));
+    }
+}
+
+function* processingUpdateLocationInfo(action: IActionPayload) {
+    try {
+        const { props } = action.payload || {};
+        yield put(BOL_ACTIONS.bolProcessingUpdateLocationStart());
+        const billingAddress = yield call(BOLService.updateLocationInfo, props);
+        yield put(BOL_ACTIONS.bolProcessingUpdateLocationSuccess(billingAddress));
+        // have no idea what to do with it
+    } catch(e) {
+        yield put(BOL_ACTIONS.bolProcessingUpdateLocationFail(e));
+    }
+}
+
+function* watchBOLProcessingUpdateLocationInfo() {
+    yield takeLatest(BOL_ACTIONS.BOL_PROCESSING_UPDATE_LOCATION_INFO_REQUEST, processingUpdateLocationInfo);
+}
+
+function* watchBOLProcessingUpdateShippingAddress() {
+    yield takeLatest(BOL_ACTIONS.BOL_PROCESSING_UPDATE_SHIPPING_ADDRESS_REQUEST, processingUpdateShippingAddress);
+}
+
+function* watchBOLProcessingUpdateBillingAddress() {
+    yield takeLatest(BOL_ACTIONS.BOL_PROCESSING_UPDATE_ADDRESS_REQUEST, processingUpdateBillingAddress);
+}
+
+function* watchBOLProcessingGetShippingInfo() {
+    yield takeLatest(BOL_ACTIONS.BOL_PROCESSING_GET_SHIPPINGS_iNFO_REQUEST, processingGetShippingInfo);
+}
+
+function* watchBOLProcessingGetBillingInfo() {
+    yield takeLatest(BOL_ACTIONS.BOL_PROCESSING_GET_BILLINGS_iNFO_REQUEST, processingGetBillingInfo);
+}
+
 function* watchBOLProcessingGetInfo() {
     yield takeLatest(BOL_ACTIONS.BOL_PROCESSING_GET_iNFO_REQUEST, processingGetInfo);
 }
@@ -117,6 +194,11 @@ function* watchBOLProcessingRequests() {
 }
 
 const bolSagas = [
+    fork(watchBOLProcessingUpdateShippingAddress),
+    fork(watchBOLProcessingUpdateLocationInfo),
+    fork(watchBOLProcessingUpdateBillingAddress),
+    fork(watchBOLProcessingGetShippingInfo),
+    fork(watchBOLProcessingGetBillingInfo),
     fork(watchBOLProcessingGetInfo),
     fork(watchBOLProcessingUpdateAddressRequest),
     fork(watchBOLProcessingConflictAddressRequest),

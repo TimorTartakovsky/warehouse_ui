@@ -11,10 +11,10 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { BOL_ACTIONS, IActionPayload } from '../../actions'
 import { IRootState, TableItem } from '../../store';
-import { IBOLProcessing, ICarrier, IBOLState } from '../../store/bol/types';
+import { IBOLProcessing, ICarrier, IBOLBilling, IBOLShipping } from '../../store/bol/types';
 import {
     BOLRequestProps, UpdateProcessProps, ConflictAddressType, UpdateAddress,
-    ProcessingGetInfo, ProcessingInfo,
+    ProcessingGetInfo, ProcessingInfo, IUpdateBillingAddress, IBOLUpdateLocationInfo, IUpdateShippingAddress,
 } from '../../actions/bol.action';
 import DynamicTable, { IHeaderCellType } from '../DynamicTable';
 import { RegularTypography } from '../Shared/Typography';
@@ -25,6 +25,7 @@ import { IconButtonGroup, EIconButtonGroupType } from '../Shared/Buttons';
 import ReceiptIcon from '@material-ui/icons/ReceiptOutlined';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import * as _ from 'lodash';
+import { AdditionalInfo } from './dialogs/AdditionalInfo';
 
 export enum BOLProcessingBtnType {
     process = 'process',
@@ -46,8 +47,11 @@ const DEFAULT_PROCESSING_BUTTONS_GROUP_STATE: ProcessingButtonsGroupState = {
 
 export interface IBOLProcessingProps {
     locationId?: number;
+    location?: any;
     branchId?: number;
     processing?: IBOLProcessing[] | null;
+    billings?:  IBOLBilling[] | null;
+    shippings?:  IBOLShipping[] | null;
     processInfo?: ProcessingInfo | null;
     conflictAddress?: ConflictAddressType[] | null;
     processingTableHeaders?: IHeaderCellType[];
@@ -57,6 +61,11 @@ export interface IBOLProcessingProps {
     updateProcessingRequest?: (p: UpdateProcessProps) => void;
     fetchConflictingAddress?: (p: number[]) => void;
     onSelected?: (m: UpdateProcessProps) => void;
+    getBillingInfo?: (p: string) => void;
+    getShippingInfo?: (p: string) => void;
+    updateBillingAddress?: (p: IUpdateBillingAddress) => void;
+    updateLocationInfo?: (p: IBOLUpdateLocationInfo) => void;
+    updateShippingAddress?: (p: IUpdateShippingAddress) => void;
 }
 
 export interface IBOLProcessingState {
@@ -293,7 +302,6 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
     }
 
     private onAdditionalClicked = (p: IBOLProcessing): void => {
-        console.log(p);
         this.props.fetchProcessInfo && this.props.fetchProcessInfo({
             billToAddressId: p.billToAddressId,
             bolId: p.id,
@@ -365,6 +373,27 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
             const newProcessing = this.doGenerateProcessing();
             this.setState(prev => ({ ...prev, processingArray: newProcessing}));
         }
+    }
+
+    private updateAddress = (up: IUpdateBillingAddress): void => {
+        this.props.updateBillingAddress && this.props.updateBillingAddress(
+            {
+                bolIds: up.bolIds,
+                locationId: this.props.locationId || 0,
+                shipToCountry: 'billTo',
+                updateParams: up.updateParams,
+            }
+        )
+    }
+    private updateShippingAddress = (up: IUpdateShippingAddress): void => {
+        this.props.updateShippingAddress && this.props.updateShippingAddress(
+            {
+                bolIds: up.bolIds,
+                locationId: this.props.locationId || 0,
+                shipToCountry: up.shipToCountry,
+                updateParams: up.updateParams,
+            }
+        );
     }
 
     private doGenerateProcessing = (): TableItem[] => {
@@ -895,8 +924,7 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
             {
                 (this.state.isOpenDialogAdditional && this.props.processInfo) ? (
                     <Dialog
-                        scroll="body"
-                        maxWidth="lg"
+                        maxWidth={false}
                         open={this.state.isOpenDialogAdditional}
                         onClose={() => {
                            this.setState(prev => ({
@@ -906,87 +934,24 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                         }}>
                             <DialogTitle id="skid-process-dialog">Shipping Information</DialogTitle>
                             <DialogContent>
-                                <Paper elevation={3}>
-                                    <Grid item xs={6} lg={6}>
-                                        <FormGroup 
-                                            row
-                                            style={{
-                                                minWidth: '350px',
-                                                margin: '1%',
-                                                padding: '10px',
-                                            }}
-                                        >
-                                            <Grid item xs={4} lg={4}>
-                                                <Typography>Ship Form:</Typography>
-                                            </Grid>
-                                            <Grid item xs={8} lg={8}>
-                                                <Typography>
-                                                    {
-                                                        `${this.state.selectedProcessAdditional.billToCustomerName}
-                                                        ${this.props.processInfo.billToState}
-                                                        ${this.props.processInfo.billToCity}
-                                                        ${this.props.processInfo.billToAddress1}
-                                                        ${this.props.processInfo.billToPhone}
-                                                        `
-                                                    }
-                                                </Typography>
-                                            </Grid>
-                                        </FormGroup>
-                                        <FormGroup 
-                                            row
-                                            style={{
-                                                minWidth: '350px',
-                                                margin: '1%',
-                                                padding: '10px',
-                                            }}
-                                        >
-                                            <Grid item xs={4} lg={4}>
-                                                <Typography>Bill To:</Typography>
-                                            </Grid>
-                                            <Grid item xs={8} lg={8}>
-                                                <Typography>
-                                                    {
-                                                        `${this.state.selectedProcessAdditional.billToCustomerName}
-                                                        ${this.props.processInfo.billToState}
-                                                        ${this.props.processInfo.billToCity}
-                                                        ${this.props.processInfo.billToAddress1}
-                                                        ${this.props.processInfo.billToPhone}
-                                                        `
-                                                    }
-                                                </Typography>
-                                            </Grid>
-                                        </FormGroup>
-                                        <FormGroup 
-                                            row
-                                            style={{
-                                                minWidth: '350px',
-                                                margin: '1%',
-                                                padding: '10px',
-                                            }}
-                                        >
-                                            <Grid item xs={4} lg={4}>
-                                                <Typography>Change Bill To Address to Customer:</Typography>
-                                            </Grid>
-                                            <Grid item xs={8} lg={8}>
-                                               
-                                            </Grid>
-                                        </FormGroup>
-                                        <FormGroup row>
-
-                                        </FormGroup>
-                                        <FormGroup row>
-
-                                        </FormGroup>
-                                        <FormGroup row>
-
-                                        </FormGroup>
-                                        <FormGroup row>
-
-                                        </FormGroup>
-                                    </Grid>
-                                    <Grid item xs={6} lg={6}>
-                                        
-                                    </Grid>
+                                <Paper>
+                                    <AdditionalInfo
+                                        additionalInfo={this.props.processInfo}
+                                        userLocation={this.props.location}
+                                        getBillingInfo={this.props.getBillingInfo}
+                                        getShippingInfo={this.props.getShippingInfo}
+                                        billings={this.props.billings}
+                                        shippings={this.props.shippings}
+                                        updateAddress={this.updateAddress}
+                                        updateShippingAddress={this.updateShippingAddress}
+                                        updateLocationInfo={d => {
+                                            this.props.updateLocationInfo && this.props.updateLocationInfo(d);
+                                            this.setState(prev => ({
+                                                ...prev,
+                                                isOpenDialogAdditional: false,
+                                            }));
+                                        }}
+                                    />
                                 </Paper>
                             </DialogContent>
                     </Dialog>
@@ -1017,24 +982,42 @@ const mapStateToProps = (state: IRootState) => ({
     processing: state.bol.processing,
     conflictAddress: state.bol.conflictAddress,
     processInfo: state.bol.processInfo,
+    location: state.user.location,
+    billings: state.bol.billings,
+    shippings: state.bol.shippings,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch<IActionPayload>) => ({
-    fetchProcessing: (p: BOLRequestProps) => {
+    fetchProcessing: (p: BOLRequestProps): void => {
         dispatch(BOL_ACTIONS.bolProcessingRequest(p));
     },
-    fetchConflictingAddress: (p: number[]) => {
+    fetchConflictingAddress: (p: number[]): void => {
         dispatch(BOL_ACTIONS.bolProcessingConflictingAddressRequest(p));
     },
-    fetchProcessInfo: (p: ProcessingGetInfo) => {
+    fetchProcessInfo: (p: ProcessingGetInfo): void => {
         dispatch(BOL_ACTIONS.bolProcessingGetInfoRequest(p));
     },
-    updateProcessingRequest: (p: UpdateProcessProps) => {
+    updateProcessingRequest: (p: UpdateProcessProps): void => {
         dispatch(BOL_ACTIONS.bolProcessingUpdateRequest(p));
     },
-    updateAddressRequest: (p: UpdateAddress) => {
+    updateAddressRequest: (p: UpdateAddress): void => {
         dispatch(BOL_ACTIONS.bolProcessingUpdateAddressRequest(p));
-    }
+    },
+    getBillingInfo: (p: string): void => {
+        dispatch(BOL_ACTIONS.bolProcessingGetBillingInfoRequest(p));
+    },
+    getShippingInfo: (p: string): void => {
+        dispatch(BOL_ACTIONS.bolProcessingGetShippingInfoRequest(p));
+    },
+    updateBillingAddress: (p: IUpdateBillingAddress): void => {
+        dispatch(BOL_ACTIONS.bolProcessingUpdateBillingAddressRequest(p));
+    },
+    updateShippingAddress: (p: IUpdateShippingAddress) => {
+        dispatch(BOL_ACTIONS.bolProcessingUpdateShippingAddressRequest(p));
+    },
+    updateLocationInfo: (p: IBOLUpdateLocationInfo): void => {
+        dispatch(BOL_ACTIONS.bolProcessingUpdateLocationRequest(p));
+    },
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(BOLProcessing);

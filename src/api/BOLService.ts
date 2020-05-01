@@ -1,9 +1,9 @@
 import HttpService from "./HttpService";
 import {
     BOLRequestProps, RecallMonitoringProps, UpdateProcessProps, ConflictAddressType, UpdateAddress,
-    ProcessingGetInfo, ProcessingInfo,
+    ProcessingGetInfo, ProcessingInfo, IUpdateBillingAddress, IBOLUpdateLocationInfo, IUpdateShippingAddress,
 } from '../actions/bol.action';
-import { IBOLMonitoring, IBOLProcessing } from "../store/bol/types";
+import { IBOLMonitoring, IBOLProcessing, IBOLBilling, IBOLShipping } from "../store/bol/types";
 
 export interface IBOLService {
     getBOLMonitoring: (p: BOLRequestProps) => Promise<IBOLMonitoring[]>;
@@ -12,6 +12,11 @@ export interface IBOLService {
     recallMonitoringChangeStatus: (p: RecallMonitoringProps) => Promise<void>;
     getProcessConflictAddress: (p: number[]) => Promise<ConflictAddressType[]>;
     getInfo: (p: ProcessingGetInfo) => Promise<ProcessingInfo>;
+    getFindBillings: (p: number) => Promise<IBOLBilling[]>;
+    getFindShippings: (p: number) => Promise<IBOLShipping[]>;
+    updateAddress:(p: UpdateAddress) => Promise<IBOLProcessing[]>; 
+    updateLocationAddress: (d: IUpdateBillingAddress | IUpdateShippingAddress) => Promise<any>;
+    updateLocationInfo: (d: IBOLUpdateLocationInfo) => Promise<void>;
 }
 
 export class BOLService extends HttpService implements IBOLService {
@@ -21,6 +26,48 @@ export class BOLService extends HttpService implements IBOLService {
     constructor() {
         super();
         this.httpService = new HttpService();
+    }
+
+    updateLocationInfo = async (data: IBOLUpdateLocationInfo): Promise<any> => {
+        try {
+            const updatedLocation = await this.httpService.post(
+                `/bol/updateLocationInfo`,
+                data,
+            );
+            return updatedLocation;
+        } catch (e) {
+            throw new Error(`IBOLService -> updateLocationInfo -> failed to update location info.`);
+        }
+    }
+
+    updateLocationAddress = async (data: IUpdateBillingAddress | IUpdateShippingAddress): Promise<any> => {
+        try {
+            const updatedBilling = await this.httpService.post(
+                `/bol/updateAddress`,
+                data,
+            );
+            return updatedBilling;
+        } catch (e) {
+            throw new Error(`IBOLService -> updateBillingAddress -> failed to update billing address.`);
+        }
+    }
+
+    getFindBillings = async (customerNumber: number): Promise<IBOLBilling[]> => {
+        try {
+            const billings = await this.httpService.get(`/bol/getBillToAddresses?customerNumber=${customerNumber}`);
+            return billings;
+        } catch (e) {
+            throw new Error(`IBOLService -> getFindBillings -> failed to fetch billings.`);
+        }
+    }
+
+    getFindShippings = async (customerNumber: number): Promise<IBOLShipping[]> => {
+        try {
+            const shippings = await this.httpService.get(`/bol/getShipToAddresses?customerNumber=${customerNumber}`);
+            return shippings;
+        } catch (e) {
+            throw new Error(`IBOLService -> getFindBShipping -> failed to fetch shippings.`);
+        }
     }
 
     getProcessConflictAddress = async (props: number[]): Promise<ConflictAddressType[]> => {

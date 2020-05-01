@@ -82,6 +82,47 @@ export interface IBOLProcessing {
     orderParts: number;
 }
 
+export interface IBOLBilling {
+    billToAddress1: string;
+    billToAddress2: string;
+    billToAddress3: string;
+    billToAddress4: string;
+    billToAddressId: string;
+    billToCity: string;
+    billToCountry: string;
+    billToCustomerId: string;
+    billToCustomerName: string;
+    billToCustomerNumber: string;
+    billToIdentifyingFlag: string;
+    billToLocation: string;
+    billToLocationId: string;
+    billToPhone: string;
+    billToSiteUseId: string;
+    billToState: string;
+    billToZip: string;
+    id: number;
+}
+
+export interface IBOLShipping {
+    id: number;
+    shipToAddress1: string;
+    shipToAddress2: string;
+    shipToAddress3: string;
+    shipToAddress4: string;
+    shipToAddressId: string;
+    shipToCity: string;
+    shipToCountry: string;
+    shipToCustomerId: string;
+    shipToCustomerName: string;
+    shipToCustomerNumber: string;
+    shipToLocation: string;
+    shipToLocationId: number;
+    shipToPhone: string;
+    shipToSiteUseId: string;
+    shipToState: string;
+    shipToZip: string;
+}
+
 export interface IBOLState {
     monitoring?: IBOLMonitoring[] | null;
     conflictAddress: ConflictAddressType[] | null;
@@ -91,6 +132,8 @@ export interface IBOLState {
     monitoringBolRequestErrorMessage: string;
     processingBolRequestErrorMessage: string;
     processInfo: ProcessingInfo | null;
+    billings: IBOLBilling[] | null;
+    shippings: IBOLShipping[] | null;
 }
 
 export const initBOLState: IBOLState = {
@@ -98,6 +141,8 @@ export const initBOLState: IBOLState = {
     processing: null,
     conflictAddress: null,
     processInfo: null,
+    billings: null,
+    shippings: null,
     isMonitoringBolRequestFailed: false,
     isProcessingBolRequestFailed: false,
     monitoringBolRequestErrorMessage: '',
