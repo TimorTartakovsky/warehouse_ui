@@ -17,6 +17,26 @@ const bolReducer = (state: IBOLState = initBOLState, actions: IActionPayload) =>
                 isMonitoringBolRequestFailed: true,
                 monitoringBolRequestErrorMessage: actions.payload && actions.payload.error,
             }
+        case BOL_ACTIONS.BOL_PROCESSING_GET_BILLINGS_iNFO_REQUEST_START:
+            return {
+                ...state,
+                billings: [],
+            }
+        case BOL_ACTIONS.BOL_PROCESSING_GET_BILLINGS_iNFO_REQUEST_SUCCESS:
+            return {
+                ...state,
+                billings: actions.payload && actions.payload.billings,
+            }
+        case BOL_ACTIONS.BOL_PROCESSING_GET_SHIPPINGS_iNFO_REQUEST_START:
+            return {
+                ...state,
+                shippings: [],
+            }
+        case BOL_ACTIONS.BOL_PROCESSING_GET_SHIPPINGS_iNFO_REQUEST_SUCCESS:
+            return {
+                ...state,
+                shippings: actions.payload && actions.payload.shippings,
+            }
         case BOL_ACTIONS.BOL_PROCESSING_ACTION_REQUEST_SUCCESS:
             return {
                 ...state,
@@ -57,7 +77,9 @@ const bolReducer = (state: IBOLState = initBOLState, actions: IActionPayload) =>
         case BOL_ACTIONS.BOL_PROCESSING_GET_iNFO_REQUEST_SUCCESS:
             return {
                 ...state,
-                processInfo: actions.payload && actions.payload.processInfo
+                processInfo: actions.payload && actions.payload.processInfo,
+                billings: [],
+                shippings: [],
             }
         default: return state;
     }

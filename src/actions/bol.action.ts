@@ -1,5 +1,5 @@
 import { IActionPayload, IActionBasic } from ".";
-import { IBOLMonitoring, IBOLProcessing } from "../store/bol/types";
+import { IBOLMonitoring, IBOLProcessing, IBOLBilling, IBOLShipping } from "../store/bol/types";
 
 export const BOL_MONITORING_ACTION_START = 'BOL_MONITORING_ACTION_START';
 export const BOL_MONITORING_ACTION_REQUEST = 'BOL_MONITORING_ACTION_REQUEST';
@@ -33,6 +33,171 @@ export const BOL_PROCESSING_UPDATE_ADDRESS_ACTION_REQUEST_FAILED = 'BOL_PROCESSI
 export const BOL_PROCESSING_GET_iNFO_REQUEST = 'BOL_PROCESSING_GET_iNFO_REQUEST';
 export const BOL_PROCESSING_GET_iNFO_REQUEST_SUCCESS = 'BOL_PROCESSING_GET_iNFO_REQUEST_SUCCESS';
 export const BOL_PROCESSING_GET_iNFO_REQUEST_FAIL = 'BOL_PROCESSING_GET_iNFO_REQUEST_FAIL';
+
+export const BOL_PROCESSING_GET_BILLINGS_iNFO_REQUEST = 'BOL_PROCESSING_GET_BILLINGS_iNFO_REQUEST';
+export const  BOL_PROCESSING_GET_BILLINGS_iNFO_REQUEST_START = 'BOL_PROCESSING_GET_BILLINGS_iNFO_REQUEST_START';
+export const BOL_PROCESSING_GET_BILLINGS_iNFO_REQUEST_SUCCESS = 'BOL_PROCESSING_GET_BILLINGS_iNFO_REQUEST_SUCCESS';
+export const BOL_PROCESSING_GET_BILLINGS_iNFO_REQUEST_FAIL = 'BOL_PROCESSING_GET_BILLINGS_iNFO_REQUEST_FAIL';
+
+export const BOL_PROCESSING_GET_SHIPPINGS_iNFO_REQUEST = 'BOL_PROCESSING_GET_SHIPPINGS_iNFO_REQUEST';
+export const BOL_PROCESSING_GET_SHIPPINGS_iNFO_REQUEST_START = 'BOL_PROCESSING_GET_SHIPPINGS_iNFO_REQUEST_START';
+export const BOL_PROCESSING_GET_SHIPPINGS_iNFO_REQUEST_SUCCESS = 'BOL_PROCESSING_GET_SHIPPINGS_iNFO_REQUEST_SUCCESS';
+export const BOL_PROCESSING_GET_SHIPPINGS_iNFO_REQUEST_FAIL = 'BOL_PROCESSING_GET_SHIPPINGS_iNFO_REQUEST_FAIL';
+
+export const BOL_PROCESSING_UPDATE_ADDRESS_REQUEST = 'BOL_PROCESSING_UPDATE_ADDRESS_REQUEST';
+export const BOL_PROCESSING_UPDATE_ADDRESS_REQUEST_START = 'BOL_PROCESSING_UPDATE_ADDRESS_REQUEST_START';
+export const BOL_PROCESSING_UPDATE_ADDRESS_REQUEST_SUCCESS = 'BOL_PROCESSING_UPDATE_ADDRESS_REQUEST_SUCCESS';
+export const BOL_PROCESSING_UPDATE_ADDRESS_REQUEST_FAIL = 'BOL_PROCESSING_UPDATE_ADDRESS_REQUEST_FAIL';
+
+export const BOL_PROCESSING_UPDATE_LOCATION_INFO_REQUEST = 'BOL_PROCESSING_UPDATE_LOCATION_INFO_REQUEST';
+export const BOL_PROCESSING_UPDATE_LOCATION_INFO_REQUEST_START = 'BOL_PROCESSING_UPDATE_LOCATION_INFO_REQUEST_START';
+export const BOL_PROCESSING_UPDATE_LOCATION_INFO_REQUEST_SUCCESS = 'BOL_PROCESSING_UPDATE_LOCATION_INFO_REQUEST_SUCCESS';
+export const BOL_PROCESSING_UPDATE_LOCATION_INFO_REQUEST_FAIL = 'BOL_PROCESSING_UPDATE_LOCATION_INFO_REQUEST_FAIL';
+
+export const BOL_PROCESSING_UPDATE_SHIPPING_ADDRESS_REQUEST = 'BOL_PROCESSING_UPDATE_SHIPPING_ADDRESS_REQUEST';
+export const BOL_PROCESSING_UPDATE_SHIPPING_ADDRESS_REQUEST_START = 'BOL_PROCESSING_UPDATE_SHIPPING_ADDRESS_REQUEST_START';
+export const BOL_PROCESSING_UPDATE_SHIPPING_ADDRESS_REQUEST_SUCCESS = 'BOL_PROCESSING_UPDATE_SHIPPING_ADDRESS_REQUEST_SUCCESS';
+export const BOL_PROCESSING_UPDATE_SHIPPING_ADDRESS_REQUEST_FAIL = 'BOL_PROCESSING_UPDATE_SHIPPING_ADDRESS_REQUEST_FAIL';
+
+
+export interface IUpdateShippingAddress {
+    bolIds: string[];
+    locationId: number;
+    shipToCountry: string;
+    updateParams: {
+        shipToAddressId?: string;
+        shipToCustomerId?: string;
+        shipToCustomerName?: string;
+        shipToCustomerNumber?: string;
+    };
+}
+
+export const bolProcessingUpdateShippingAddressRequest = (props: IUpdateShippingAddress): IActionPayload => ({
+    type: BOL_PROCESSING_UPDATE_SHIPPING_ADDRESS_REQUEST,
+    payload: { props }
+});
+
+export const bolProcessingUpdateShippingAddressRequestSuccess = (shipping: any): IActionPayload => ({
+    type: BOL_PROCESSING_UPDATE_SHIPPING_ADDRESS_REQUEST_SUCCESS,
+    payload: { shipping }
+});
+
+export const bolProcessingUpdateShippingAddressRequestFail = (error: Error): IActionPayload => ({
+    type: BOL_PROCESSING_UPDATE_SHIPPING_ADDRESS_REQUEST_FAIL,
+    payload: { error }
+});
+
+export const bolProcessingUpdateShippingAddressRequestStart = (): IActionBasic => ({
+    type: BOL_PROCESSING_UPDATE_SHIPPING_ADDRESS_REQUEST_START,
+});
+
+export interface IBOLUpdateLocationInfo {
+    classRate: string;
+    description: string;
+    eta: string | null;
+    ids: number[];
+    internalRemark: string;
+    quoteAmount: string;
+    quoteNumber: string;
+    revisedWeight: number;
+    shipperName: string;
+    specInst: string;
+}
+
+export const bolProcessingUpdateLocationStart = (): IActionBasic => ({
+    type: BOL_PROCESSING_UPDATE_LOCATION_INFO_REQUEST_START,
+});
+
+export const bolProcessingUpdateLocationRequest = (props: IBOLUpdateLocationInfo): IActionPayload => ({
+    type: BOL_PROCESSING_UPDATE_LOCATION_INFO_REQUEST,
+    payload: { props }
+});
+
+export const bolProcessingUpdateLocationSuccess = (billing: any): IActionPayload => ({
+    type: BOL_PROCESSING_UPDATE_LOCATION_INFO_REQUEST_SUCCESS,
+    payload: { billing }
+});
+
+export const bolProcessingUpdateLocationFail = (error: Error): IActionPayload => ({
+    type: BOL_PROCESSING_UPDATE_LOCATION_INFO_REQUEST_FAIL,
+    payload: { error }
+});
+
+export interface IUpdateBillingAddress {
+    bolIds: string[];
+    locationId: number;
+    shipToCountry: string;
+    updateParams: {
+        billToAddressId?: string;
+        billToCustomerId?: string;
+        billToCustomerName?: string;
+        billToCustomerNumber?: string;
+    }
+}
+
+export const bolProcessingUpdateBillingAddressRequest = (props: IUpdateBillingAddress): IActionPayload => ({
+    type: BOL_PROCESSING_UPDATE_ADDRESS_REQUEST,
+    payload: { props }
+});
+
+export const bolProcessingUpdateBillingAddressRequestSuccess = (billing: any): IActionPayload => ({
+    type: BOL_PROCESSING_UPDATE_ADDRESS_REQUEST_SUCCESS,
+    payload: { billing }
+});
+
+export const bolProcessingUpdateBillingAddressRequestFail = (error: Error): IActionPayload => ({
+    type: BOL_PROCESSING_UPDATE_ADDRESS_REQUEST_FAIL,
+    payload: { error }
+});
+
+export const bolProcessingUpdateBillingAddressRequestStart = (): IActionBasic => ({
+    type: BOL_PROCESSING_UPDATE_ADDRESS_REQUEST_START,
+});
+
+export const bolProcessingGetBillingInfoRequestStart = (): IActionBasic => ({
+    type: BOL_PROCESSING_GET_BILLINGS_iNFO_REQUEST_START,
+});
+
+export const bolProcessingGetBillingInfoRequest = (props: string)
+: IActionPayload => ({
+    type: BOL_PROCESSING_GET_BILLINGS_iNFO_REQUEST,
+    payload: { props }
+});
+
+export const bolProcessingGetBillingInfoRequestSuccess = (billings: IBOLBilling[])
+: IActionPayload => ({
+    type: BOL_PROCESSING_GET_BILLINGS_iNFO_REQUEST_SUCCESS,
+    payload: { billings }
+});
+
+export const bolProcessingGetBillingInfoRequestFail = (error: Error)
+: IActionPayload => ({
+    type: BOL_PROCESSING_GET_BILLINGS_iNFO_REQUEST_FAIL,
+    payload: { error }
+});
+
+
+export const bolProcessingGetShippingInfoRequestStart = (): IActionBasic => ({
+    type: BOL_PROCESSING_GET_SHIPPINGS_iNFO_REQUEST_START,
+});
+
+export const bolProcessingGetShippingInfoRequest = (props: string)
+: IActionPayload => ({
+    type: BOL_PROCESSING_GET_SHIPPINGS_iNFO_REQUEST,
+    payload: { props }
+});
+
+export const bolProcessingGetShippingInfoRequestSuccess = (shippings: IBOLShipping[])
+: IActionPayload => ({
+    type: BOL_PROCESSING_GET_SHIPPINGS_iNFO_REQUEST_SUCCESS,
+    payload: { shippings }
+});
+
+export const bolProcessingGeShippingInfoRequestFail = (error: Error)
+: IActionPayload => ({
+    type: BOL_PROCESSING_GET_SHIPPINGS_iNFO_REQUEST_FAIL,
+    payload: { error }
+});
 
 export type ProcessingInfo = {
     id: number;
