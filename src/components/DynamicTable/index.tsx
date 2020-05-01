@@ -7,13 +7,11 @@ import {
   TableRow,
   Checkbox,
   TablePagination,
-  FormControl,
   Typography,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import TableHeader, { ETableHeaderOrder } from './TableHeader';
 import { IBOLMonitoring } from '../../store/bol/types';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const descendingComparator = (a: any, b: any, orderBy: string) => {
   if (b[orderBy] && b[orderBy].source < a[orderBy] && a[orderBy].source) {
