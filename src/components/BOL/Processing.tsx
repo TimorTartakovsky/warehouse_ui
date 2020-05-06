@@ -5,8 +5,7 @@ import { Menu } from '@material-ui/icons';
 import {
     TextField, MenuItem, Dialog, Grid, Button, DialogTitle, DialogContent, 
     List, ListItemIcon, ListItemText, ListItem,
-    Checkbox, Paper, FormControl, InputLabel, Select, DialogActions, Card, FormLabel, RadioGroup,
-    FormControlLabel, Radio, FormGroup, Typography, Fab, CardContent, InputAdornment, Box,
+    Checkbox, Paper, FormControl, InputLabel, Select, DialogActions, Fab, CardContent, InputAdornment, Box,
 } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { BOL_ACTIONS, IActionPayload } from '../../actions'
@@ -26,6 +25,7 @@ import ReceiptIcon from '@material-ui/icons/ReceiptOutlined';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import * as _ from 'lodash';
 import { AdditionalInfo } from './dialogs/AdditionalInfo';
+import { SplitShipment } from './dialogs/SplitShipment';
 
 export enum BOLProcessingBtnType {
     process = 'process',
@@ -756,167 +756,11 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                         }}>
                         <DialogTitle id="skid-process-dialog">Split Shipment Window</DialogTitle>
                         <DialogContent>
-                            <Paper elevation={3}>
-                                <DialogTitle id="skid-process-dialog-inner">Order Information</DialogTitle>
-                                <Grid container spacing={4}>
-                                    <Grid item xs={6} lg={6}>
-                                        <FormControl variant="outlined" style={{
-                                            minWidth: '350px',
-                                            margin: '1%',
-                                            padding: '10px',
-                                        }}> 
-                                            {
-                                                this.state.selectedSkipProcess ? (
-                                                    <>
-                                                        <div className="p-2">
-                                                            <RegularTypography length="300px">
-                                                                {`Customer Name: ${this.state.selectedSkipProcess.customerName}`}
-                                                            </RegularTypography>
-                                                        </div>
-                                                        <div className="p-2">
-                                                            <RegularTypography length="300px">
-                                                                {`Pro Number: ${this.state.selectedSkipProcess.proNumber}`}
-                                                            </RegularTypography>
-                                                        </div>
-                                                        <div className="p-2">
-                                                            <RegularTypography length="300px">
-                                                                {`Order Number: ${this.state.selectedSkipProcess.orderNumber}`}
-                                                            </RegularTypography>
-                                                        </div>
-                                                        <div className="p-2">
-                                                            <RegularTypography length="300px">
-                                                                {`Delivery Number: ${this.state.selectedSkipProcess.deliveryNumber}`}
-                                                            </RegularTypography>
-                                                        </div>
-                                                        <div className="p-2">
-                                                            <RegularTypography length="300px">
-                                                                {`Number Of Skids: ${this.state.selectedSkipProcess.skid}`}
-                                                            </RegularTypography>
-                                                        </div>
-                                                        <div className="p-2">
-                                                            <RegularTypography length="300px">
-                                                                {`Number Of Packages: ${this.state.selectedSkipProcess.boxes}`}
-                                                            </RegularTypography>
-                                                        </div>
-                                                        <div className="p-2">
-                                                            <RegularTypography length="300px">
-                                                                {`Weight: ${this.state.selectedSkipProcess.revisedWeight}`}
-                                                            </RegularTypography>
-                                                        </div>
-                                                    </>
-                                                ): null
-                                            }
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item xs={6} lg={6}>
-                                        <FormControl variant="outlined" style={{
-                                            minWidth: '350px',
-                                            margin: '1%',
-                                            padding: '10px',
-                                        }}> 
-                                            {
-                                                this.state.selectedSkipProcess ? (
-                                                    <>
-                                                        <div className="p-2">
-                                                            <RegularTypography length="300px" />
-                                                        </div>
-                                                        <div className="p-2">
-                                                            <RegularTypography length="300px" />
-                                                        </div>
-                                                        <div className="p-2">
-                                                            <RegularTypography length="300px">
-                                                                {`Order Date: ${this.state.selectedSkipProcess.orderDate}`}
-                                                            </RegularTypography>
-                                                        </div>
-                                                        <div className="p-2">
-                                                            <RegularTypography length="300px">
-                                                                {`Released Date: ${this.state.selectedSkipProcess.releasedDate}`}
-                                                            </RegularTypography>
-                                                        </div>
-                                                        <div className="p-2">
-                                                            <RegularTypography length="300px">
-                                                                {`Due Date: ${this.state.selectedSkipProcess.dueDate}`}
-                                                            </RegularTypography>
-                                                        </div>
-                                                        <div className="p-2">
-                                                            <RegularTypography length="300px">
-                                                                {`Terms: ${this.state.selectedSkipProcess.freightTerms}`}
-                                                            </RegularTypography>
-                                                        </div>
-                                                        <div className="p-2">
-                                                            <RegularTypography length="300px">
-                                                                {`Carrier: ${this.state.selectedSkipProcess.carrier}`}
-                                                            </RegularTypography>
-                                                        </div>
-                                                    </>
-                                                ): null
-                                            }
-                                        </FormControl>
-                                    </Grid>
-                                </Grid>
+                            <Paper>
+                                <SplitShipment
+                                    selectedSkipProcess={this.state.selectedSkipProcess}
+                                />
                             </Paper>
-                            <Grid container spacing={4}>
-                                <Grid item xs={9} lg={9}>
-                                    <FormControl variant="outlined" style={{
-                                        minWidth: '500px',
-                                        marginTop: '35px'
-                                    }}>
-                                        <InputLabel id="demo-simple-select-outlined-label">
-                                            How many containers this order is going to need?
-                                        </InputLabel>
-                                        <Select
-                                            labelId="demo-simple-select-outlined-label"
-                                            id="demo-simple-select-outlined"
-                                            label="How many containers this order is going to need?"
-                                        >
-                                            {
-                                                
-                                                _.times((this.state.selectedSkipProcess.skid + 1))
-                                                .filter(p => p)
-                                                .map((k: number) => (
-                                                    <MenuItem
-                                                        key={k}
-                                                        value={k}
-                                                        // onClick={e => {
-                                                        //     e.stopPropagation();
-                                                        //     this.onSelectTermConflict(k);
-                                                        // }}
-                                                    >
-                                                        {k}
-                                                    </MenuItem>
-                                                ))
-                                            }
-                                        </Select>
-                                    </FormControl>
-                                    <FormControl component="fieldset" style={{
-                                        minWidth: '500px',
-                                        marginTop: '35px'
-                                    }}>
-                                        <FormLabel component="legend">
-                                            Even number of Skids?
-                                        </FormLabel>
-                                        <RadioGroup
-                                            aria-label="even-skids"
-                                            name="even-skids"
-                                            row
-                                            // value={value}
-                                            // onChange={handleRadioChange}
-                                        >
-                                            <FormControlLabel value="YES" control={<Radio />} label="YES" />
-                                            <FormControlLabel value="NO" control={<Radio />} label="NO" />
-                                        </RadioGroup>
-                                    </FormControl>
-                                </Grid>
-                                <Grid item xs={3} lg={3}>
-                                    <Button
-                                        style={{
-                                            marginTop: '50px',
-                                        }}
-                                        color="default">
-                                            Custom Configuration
-                                    </Button>
-                                </Grid>
-                            </Grid>
                         </DialogContent>
                     </Dialog>
                 ) : null

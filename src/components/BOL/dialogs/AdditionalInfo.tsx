@@ -238,7 +238,7 @@ export const AdditionalInfo = (props: IAdditionalInfo) => {
                         row
                         style={{ minWidth: '500px', padding: '10px'}}
                     >
-                        <Grid item xs={4} lg={4} offset-lg={1}>
+                        <Grid item xs={4} lg={4} offset-lg={1} style={{ display: 'flex' }} alignItems="center">
                             <Typography>
                                 Description:
                             </Typography>
@@ -248,6 +248,7 @@ export const AdditionalInfo = (props: IAdditionalInfo) => {
                                 fullWidth
                                 id="additional-info-description"
                                 multiline
+                                size="small"
                                 variant="outlined"
                                 rows={4}
                                 value={description}
@@ -262,14 +263,15 @@ export const AdditionalInfo = (props: IAdditionalInfo) => {
                             padding: '10px',
                         }}
                     >
-                        <Grid item xs={4} lg={4} offset-lg={1}>
+                        <Grid item xs={4} lg={4} offset-lg={1}  style={{ display: 'flex' }} alignItems="center">
                             <Typography>Special Instruction:</Typography>
                         </Grid>
                         <Grid item xs={7} lg={7}>
                             <TextField
-                                id="standard-multiline-static"
+                                id="additional-info-instruction"
                                 multiline
                                 fullWidth
+                                size="small"
                                 rows={4}
                                 variant="outlined"
                                 value={instruction}
@@ -284,14 +286,15 @@ export const AdditionalInfo = (props: IAdditionalInfo) => {
                             padding: '10px',
                         }}
                     >
-                        <Grid item xs={4} lg={4} offset-lg={1}>
+                        <Grid item xs={4} lg={4} offset-lg={1}  style={{ display: 'flex' }} alignItems="center">
                             <Typography>Internal Remark:</Typography>
                         </Grid>
                         <Grid item xs={7} lg={7}>
                             <TextField
-                                id="standard-multiline-static"
+                                id="additional-info-remark"
                                 multiline
                                 fullWidth
+                                size="small"
                                 rows={4}
                                 variant="outlined"
                                 value={remark}
@@ -306,13 +309,14 @@ export const AdditionalInfo = (props: IAdditionalInfo) => {
                             padding: '10px',
                         }}
                     >
-                        <Grid item xs={4} lg={4} offset-lg={1}>
+                        <Grid item xs={4} lg={4} offset-lg={1}  style={{ display: 'flex' }} alignItems="center">
                             <Typography>Freight Quote Number:</Typography>
                         </Grid>
                         <Grid item xs={7} lg={7}>
                             <TextField
-                                id="filled-textarea"
+                                id="additional-info-quote-number"
                                 fullWidth
+                                size="small"
                                 variant="outlined"
                                 value={quoteNumber}
                                 onChange={e => setQuoteNumber(e.target.value)}
@@ -326,13 +330,14 @@ export const AdditionalInfo = (props: IAdditionalInfo) => {
                             padding: '10px',
                         }}
                     >
-                        <Grid item xs={4} lg={4} offset-lg={1}>
+                        <Grid item xs={4} lg={4} offset-lg={1}  style={{ display: 'flex' }} alignItems="center">
                             <Typography>Freight Quote Amt:</Typography>
                         </Grid>
                         <Grid item xs={7} lg={7}>
                             <TextField
-                                id="filled-textarea"
+                                id="additional-info-quote-amount"
                                 fullWidth
+                                size="small"
                                 variant="outlined"
                                 value={quoteAmount}
                                 onChange={e => setAmount(e.target.value)}
@@ -346,13 +351,14 @@ export const AdditionalInfo = (props: IAdditionalInfo) => {
                             padding: '10px',
                         }}
                     >
-                        <Grid item xs={4} lg={4} offset-lg={1}>
+                        <Grid item xs={4} lg={4} offset-lg={1}  style={{ display: 'flex' }} alignItems="center">
                             <Typography>Shipper Per:</Typography>
                         </Grid>
                         <Grid item xs={7} lg={7}>
                             <TextField
-                                id="filled-textarea"
+                                id="additional-info-shipper"
                                 fullWidth
+                                size="small"
                                 variant="outlined"
                                 value={shipper}
                                 onChange={e => setShipper(e.target.value)}
@@ -366,13 +372,14 @@ export const AdditionalInfo = (props: IAdditionalInfo) => {
                             padding: '10px',
                         }}
                     >
-                        <Grid item xs={4} lg={4} offset-lg={1}>
+                        <Grid item xs={4} lg={4} offset-lg={1}  style={{ display: 'flex' }} alignItems="center">
                             <Typography>Update Total Weight:</Typography>
                         </Grid>
                         <Grid item xs={7} lg={7}>
                             <TextField
-                                id="filled-textarea"
+                                id="additional-info-weight"
                                 fullWidth
+                                size="small"
                                 variant="outlined"
                                 value={weight}
                                 onChange={e => setWeight(e.target.value)}
@@ -386,13 +393,14 @@ export const AdditionalInfo = (props: IAdditionalInfo) => {
                             padding: '10px',
                         }}
                     >
-                        <Grid item xs={4} lg={4} offset-lg={1}>
+                        <Grid item xs={4} lg={4} offset-lg={1}  style={{ display: 'flex' }} alignItems="center">
                             <Typography>Class Rate:</Typography>
                         </Grid>
                         <Grid item xs={7} lg={7}>
                             <TextField
-                                id="filled-textarea"
+                                id="additional-info-rate"
                                 fullWidth
+                                size="small"
                                 variant="outlined"
                                 value={rate}
                                 onChange={e => setRate(e.target.value)}
@@ -406,13 +414,14 @@ export const AdditionalInfo = (props: IAdditionalInfo) => {
                             padding: '10px',
                         }}
                     >
-                        <Grid item xs={4} lg={4} offset-lg={1}>
+                        <Grid item xs={4} lg={4} offset-lg={1}  style={{ display: 'flex' }} alignItems="center">
                             <Typography>Pro Number:</Typography>
                         </Grid>
                         <Grid item xs={7} lg={7}>
                             <TextField
-                                id="filled-textarea"
+                                id="additional-info-pro-number"
                                 fullWidth
+                                size="small"
                                 variant="outlined"
                             />
                         </Grid>
@@ -427,7 +436,7 @@ export const AdditionalInfo = (props: IAdditionalInfo) => {
                                 padding: '10px',
                             }}
                         >
-                            <Grid item xs={3} lg={3} offset-lg={1}>
+                            <Grid item xs={3} lg={3} offset-lg={1}  style={{ display: 'flex' }} alignItems="center">
                                 <Typography>Pro Number:</Typography>
                             </Grid>
                             <Grid item xs={8} lg={8}>
@@ -454,7 +463,7 @@ export const AdditionalInfo = (props: IAdditionalInfo) => {
                                 padding: '10px',
                             }}
                         >
-                            <Grid item xs={3} lg={3} offset-lg={1}>
+                            <Grid item xs={3} lg={3} offset-lg={1}  style={{ display: 'flex' }} alignItems="center">
                                 <Typography>Bill To:</Typography>
                             </Grid>
                             <Grid item xs={8} lg={8}>
@@ -596,7 +605,7 @@ export const AdditionalInfo = (props: IAdditionalInfo) => {
                                 padding: '10px',
                             }}
                         >
-                            <Grid item xs={3} lg={3} offset-lg={1}>
+                            <Grid item xs={3} lg={3} offset-lg={1}  style={{ display: 'flex' }} alignItems="center">
                                 <Typography>Ship To:</Typography>
                             </Grid>
                             <Grid item xs={8} lg={8}>
@@ -735,7 +744,7 @@ export const AdditionalInfo = (props: IAdditionalInfo) => {
                         row
                         style={{ minWidth: '500px', padding: '10px'}}
                     >
-                        <Grid item xs={4} lg={4} offset-lg={1}>
+                        <Grid item xs={4} lg={4} offset-lg={1} style={{ display: 'flex' }} alignItems="center">
                             <Typography>
                                 Custom Broker Email:
                             </Typography>
@@ -745,9 +754,8 @@ export const AdditionalInfo = (props: IAdditionalInfo) => {
                                 fullWidth
                                 id="additional-info-broker-email"
                                 multiline
+                                size="small"
                                 variant="outlined"
-                                // value={description}
-                                // onChange={e => setDescription(e.target.value)}
                             />
                         </Grid>
                     </FormGroup>
@@ -755,7 +763,7 @@ export const AdditionalInfo = (props: IAdditionalInfo) => {
                         row
                         style={{ minWidth: '500px', padding: '10px'}}
                     >
-                        <Grid item xs={4} lg={4} offset-lg={1}>
+                        <Grid item xs={4} lg={4} offset-lg={1} style={{ display: 'flex' }} alignItems="center">
                             <Typography>
                                 Additional Information:
                             </Typography>
@@ -766,9 +774,8 @@ export const AdditionalInfo = (props: IAdditionalInfo) => {
                                 id="additional-info"
                                 multiline
                                 variant="outlined"
+                                size="small"
                                 rows={4}
-                                // value={description}
-                                // onChange={e => setDescription(e.target.value)}
                             />
                         </Grid>
                     </FormGroup>
@@ -776,7 +783,7 @@ export const AdditionalInfo = (props: IAdditionalInfo) => {
                         row
                         style={{ minWidth: '500px', padding: '10px'}}
                     >
-                        <Grid item xs={4} lg={4} offset-lg={1}>
+                        <Grid item xs={4} lg={4} offset-lg={1}  style={{ display: 'flex' }} alignItems="center">
                             <Typography>
                                 Originator Default:
                             </Typography>
@@ -788,8 +795,7 @@ export const AdditionalInfo = (props: IAdditionalInfo) => {
                                 multiline
                                 variant="outlined"
                                 rows={4}
-                                // value={description}
-                                // onChange={e => setDescription(e.target.value)}
+                                size="small"
                             />
                         </Grid>
                     </FormGroup>
@@ -797,7 +803,7 @@ export const AdditionalInfo = (props: IAdditionalInfo) => {
                         row
                         style={{ minWidth: '500px', padding: '10px'}}
                     >
-                        <Grid item xs={4} lg={4} offset-lg={1}>
+                        <Grid item xs={4} lg={4} offset-lg={1}  style={{ display: 'flex' }} alignItems="center">
                             <Typography>
                                 Default Unit Quality:
                             </Typography>
@@ -807,15 +813,14 @@ export const AdditionalInfo = (props: IAdditionalInfo) => {
                                 fullWidth
                                 id="additional-info-quantity"
                                 variant="outlined"
-                                // value={description}
-                                // onChange={e => setDescription(e.target.value)}
+                                size="small"
                             />
                         </Grid>
                     </FormGroup>
                 </TabPanel>
                 <TabPanel value={currentTab} index={EAdditionalInfoType.PALLET_INFO}>
                     <FormGroup  row style={{ minWidth: '500px', padding: '10px'}}>
-                        <Grid alignContent="center" item xs={4} lg={4} offset-lg={1}>
+                        <Grid item xs={4} lg={4} offset-lg={1}  style={{ display: 'flex' }} alignItems="center">
                             <Typography>
                                 Order Number:
                             </Typography>
