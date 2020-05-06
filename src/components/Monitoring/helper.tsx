@@ -1,7 +1,7 @@
 import React from 'react';
 import { EOrderTypeOptions, EOrderSubTypeOptions } from '../../store/order-type/types';
 import { IMonitoring } from '../../store/monitoring/types';
-import {RegularTypography} from '../Shared/Typography'
+import {RegularTypography} from '../Shared/Typography';
 import moment from 'moment';
 const DATE_TIME_FORMAT = 'DD/MM HH:mm';
 const DATE_TIME_DB = 'YYYY-MM-DD HH:mm:ss';
@@ -49,16 +49,19 @@ const generateWillCallRows = (arr: IMonitoring[]): any[] => {
     return arr.map((m:IMonitoring) => ({
         id: m.id,
         orderNumber: {
+            source: m.orderNumber,
             value1: (<RegularTypography length="120px">{m.orderNumber}</RegularTypography>),
             isFocused: false,
             value2: (<RegularTypography length="120px">BN: {m.batchNumber}</RegularTypography>) 
         },
         customerName: {
+            source: m.customerName,
             value1: (<RegularTypography length="200px">{m.customerName}</RegularTypography>),
             isFocused: false,
             value2: (<RegularTypography length="200px">Address: {m.shipToCity}, {m.shipToState}, {m.shipToCountry}</RegularTypography>) 
         },
         orderDate: {
+            source: m.orderDate,
             value1: (<RegularTypography length="120px">
                 {moment(m.orderDate, DATE_TIME_DB).format(DATE_TIME_FORMAT)}
             </RegularTypography>),
@@ -68,6 +71,7 @@ const generateWillCallRows = (arr: IMonitoring[]): any[] => {
             }</RegularTypography>) 
         },
         dueDate: {
+            source: m.dueDate,
             value1: ( <RegularTypography length="120px">{
                 moment(m.dueDate, DATE_TIME_DB).format(DATE_TIME_FORMAT)
                }</RegularTypography>),
@@ -75,16 +79,19 @@ const generateWillCallRows = (arr: IMonitoring[]): any[] => {
             value2: ( <RegularTypography length="120px">Pieces: {m.pieces}</RegularTypography>) 
         },
         stage: {
-        value1: (<RegularTypography length="100px">{
-            getStatus(m.orderType)
-        }</RegularTypography>),
+            source: m.orderType,
+            value1: (<RegularTypography length="100px">{
+                getStatus(m.orderType)
+            }</RegularTypography>),
             isFocused: false, 
         },
         username: {
+            source: m.username,
             value1: (<RegularTypography length="100px">{m.username}</RegularTypography>),
             isFocused: false, 
         },
         startDateTime: {
+            source: m.startDateTime,
             value1: (<RegularTypography length="120px">{
                 moment(m.startDateTime, DATE_TIME_DB).format(DATE_TIME_FORMAT)
                }</RegularTypography>),
@@ -94,6 +101,7 @@ const generateWillCallRows = (arr: IMonitoring[]): any[] => {
                 }</RegularTypography>) 
         },
         hold: {
+            source: '',
             value1: (<RegularTypography length="20px"></RegularTypography>),
             isFocused: false, 
         },
@@ -117,16 +125,19 @@ const generateStockOrderRows = (arr: IMonitoring[]): any[] => {
     return arr.map(m => ({
         id: m.id,
         orderNumber: {
+            source: m.orderNumber,
             value1: (<RegularTypography length="120px">{m.orderNumber}</RegularTypography>),
             isFocused: false,
             value2: (<RegularTypography length="120px">BN: {m.batchNumber}</RegularTypography>) 
         },
         customerName: {
+            source: m.customerName,
             value1: (<RegularTypography length="200px">{m.customerName}</RegularTypography>),
             isFocused: false,
             value2: (<RegularTypography length="200px">Address: {m.shipToCity}, {m.shipToState}, {m.shipToCountry}</RegularTypography>) 
         },
         orderDate: {
+            source: m.releasedDate,
             value1: (<RegularTypography length="120px">
                 {moment(m.orderDate, DATE_TIME_DB).format(DATE_TIME_FORMAT)}
             </RegularTypography>),
@@ -136,6 +147,7 @@ const generateStockOrderRows = (arr: IMonitoring[]): any[] => {
             }</RegularTypography>) 
         },
         dueDate: {
+            source: m.dueDate,
             value1: ( <RegularTypography length="120px">{
                 moment(m.dueDate, DATE_TIME_DB).format(DATE_TIME_FORMAT)
                }</RegularTypography>),
@@ -143,16 +155,19 @@ const generateStockOrderRows = (arr: IMonitoring[]): any[] => {
             value2: ( <RegularTypography length="120px">Pieces: {m.pieces}</RegularTypography>) 
         },
         stage: {
-        value1: (<RegularTypography length="100px">{
-            getStatus(m.orderType)
-        }</RegularTypography>),
+            source: m.orderType,
+            value1: (<RegularTypography length="100px">{
+                getStatus(m.orderType)
+            }</RegularTypography>),
             isFocused: false, 
         },
         username: {
+            source: m.username,
             value1: (<RegularTypography length="100px">{m.username}</RegularTypography>),
             isFocused: false, 
         },
         startDateTime: {
+            source: m.startDateTime,
             value1: (<RegularTypography length="120px">{
                 moment(m.startDateTime, DATE_TIME_DB).format(DATE_TIME_FORMAT)
                }</RegularTypography>),
@@ -162,6 +177,7 @@ const generateStockOrderRows = (arr: IMonitoring[]): any[] => {
                 }</RegularTypography>) 
         },
         hold: {
+            source: '',
             value1: (<RegularTypography length="20px"></RegularTypography>),
             isFocused: false, 
         },
@@ -205,36 +221,107 @@ const generateRGAOrderHeaders = (): any[] => {
 
 const generateRGAOrderRows = (arr: IMonitoring[]): any[] => {
     return arr.map(m => ({
-        returnNumber: m.returnNumber,
-        type: 'G',
-        masterBatchId: m.masterBatchId,
-        customerNumber: m.customerNumber,
-        shipToCity: m.shipToCity,
-        createdDate: moment(m.createdDate, DATE_TIME_DB).format(DATE_TIME_FORMAT),
-        receivedDate: moment(m.receivedDate, DATE_TIME_DB).format(DATE_TIME_FORMAT),
-        pieces: m.pieces,
-        inspectionWorker: m.inspectionWorker,
-        shelvingWorker: m.shelvingWorker,
-        dockNumber: m.dockNumber,
-        rgaStatus: m.rgaStatus,
-        
+        returnNumber: {
+            value: m.returnNumber,
+            source: m.returnNumber,
+        },
+        type: {
+            value: 'G',
+            source: 'G',
+        },
+        masterBatchId: {
+            value: m.masterBatchId,
+            source: m.masterBatchId
+        },
+        customerNumber: {
+            value: m.customerNumber,
+            source: m.customerNumber
+        },
+        shipToCity: {
+            value: m.shipToCity,
+            source: m.shipToCity
+        },
+        createdDate: {
+            value: moment(m.createdDate, DATE_TIME_DB).format(DATE_TIME_FORMAT),
+            source: moment(m.createdDate, DATE_TIME_DB).format(DATE_TIME_FORMAT)
+        },
+        receivedDate: {
+            value: moment(m.receivedDate, DATE_TIME_DB).format(DATE_TIME_FORMAT),
+            source: moment(m.receivedDate, DATE_TIME_DB).format(DATE_TIME_FORMAT),
+        },
+        pieces: {
+            value: m.pieces,
+            source: m.pieces
+        },
+        inspectionWorker: {
+            value: m.inspectionWorker,
+            source: m.inspectionWorker
+        },
+        shelvingWorker: {
+            value: m.shelvingWorker,
+            source: m.shelvingWorker
+        },
+        dockNumber: {
+            value: m.dockNumber,
+            source: m.dockNumber
+        },
+        rgaStatus: {
+            value: m.rgaStatus,
+            source: m.rgaStatus
+        },
     }));
 }
 
 const generateTransferOutRows = (arr: IMonitoring[]): any[] => {
     return arr.map((m:IMonitoring) => ({
-        trNumber: m.trNumber,
-        transferType: m.transferType,
-        createdDate: moment(m.createdDate, DATE_TIME_DB).format(DATE_TIME_FORMAT),
-        toLocationCode: m.toLocationCode,
-        shipperId: m.shipperId,
-        pieces: m.pieces,
-        releasedDate: moment(m.releasedDate, DATE_TIME_DB).format(DATE_TIME_FORMAT),
-        stage: getStatus(m.orderType),
-        employee: `${m.firstName} ${m.lastName}`,
-        startDate: moment(m.startDate, DATE_TIME_DB).format(DATE_TIME_FORMAT),
-        endDate: moment(m.endDate, DATE_TIME_DB).format(DATE_TIME_FORMAT),
-        hold: '',
+        trNumber: {
+            value: m.trNumber,
+            source: m.trNumber,
+        },
+        transferType: {
+            value: m.transferType,
+            source: m.transferType,
+        },
+        createdDate: {
+            value: moment(m.createdDate, DATE_TIME_DB).format(DATE_TIME_FORMAT),
+            source: moment(m.createdDate, DATE_TIME_DB).format(DATE_TIME_FORMAT),
+        },
+        toLocationCode: {
+            value: m.toLocationCode,
+            source: m.toLocationCode,
+        },
+        shipperId: {
+            value: m.shipperId,
+            source: m.shipperId,
+        },
+        pieces: {
+            value: m.pieces,
+            source: m.pieces,
+        },
+        releasedDate: {
+            value: moment(m.releasedDate, DATE_TIME_DB).format(DATE_TIME_FORMAT),
+            source: moment(m.releasedDate, DATE_TIME_DB).format(DATE_TIME_FORMAT),
+        },
+        stage: {
+            value: getStatus(m.orderType),
+            source: getStatus(m.orderType),
+        },
+        employee: {
+            value: `${m.firstName} ${m.lastName}`,
+            source: `${m.firstName} ${m.lastName}`,
+        },
+        startDate: {
+            value: moment(m.startDate, DATE_TIME_DB).format(DATE_TIME_FORMAT),
+            source: moment(m.startDate, DATE_TIME_DB).format(DATE_TIME_FORMAT),
+        },
+        endDate: {
+            value: moment(m.endDate, DATE_TIME_DB).format(DATE_TIME_FORMAT),
+            source: moment(m.endDate, DATE_TIME_DB).format(DATE_TIME_FORMAT),
+        },
+        hold: {
+            value: '',
+            source: '',
+        },
     }));
 }
 

@@ -5,22 +5,19 @@ import {
   TableCell,
   TableContainer,
   TableRow,
-  Paper,
   Checkbox,
   TablePagination,
+  Typography,
 } from '@material-ui/core';
-// import { AutoSizer, Column, Table, TableCellRenderer, TableHeaderProps } from 'react-virtualized';
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import TableHeader, { ETableHeaderOrder } from './TableHeader';
-import TableToolbar from './TableHeaderToolbar';
 import { IBOLMonitoring } from '../../store/bol/types';
 
 const descendingComparator = (a: any, b: any, orderBy: string) => {
-  if (b[orderBy] < a[orderBy]) {
+  if (b[orderBy] && b[orderBy].source < a[orderBy] && a[orderBy].source) {
     return -1;
   }
-  if (b[orderBy] > a[orderBy]) {
+  if (b[orderBy] && b[orderBy].source > a[orderBy] && a[orderBy].source) {
     return 1;
   }
   return 0;
@@ -48,8 +45,6 @@ const useStyles = makeStyles(theme => ({
     root: {
         width: '100%',
         height: '100%',
-        overflowX: 'auto',
-        overflowY: 'auto'
     },
     paper: {
         width: '100%',
@@ -65,6 +60,8 @@ export interface IHeaderCellType {
     numeric: boolean;
     disablePadding: boolean;
     label: string;
+    isFilter?: boolean;
+    filterCB?: (id: string, value: string) => void;
 }
 export interface IDynamicTable {
    onSelectedCallBack?: (monitoring: IBOLMonitoring, selected: string[], pk: string) => void;
@@ -72,6 +69,21 @@ export interface IDynamicTable {
    headers: IHeaderCellType[];
    headerProperty: string;
    isMultiSelectable?: boolean;
+   isSelectionRestricted?: (monitoring: IBOLMonitoring, selected: string[], pk: string) => boolean;
+}
+
+const doTableItemsList = (len: number): number[] => {
+  if (len < 10) {
+    return [10];
+  } else if (len < 50) {
+    return [10, len];
+  } else if (len < 100) {
+    return [10, 50, len];
+  } else if (len < 200) {
+    return [10, 50, 100, len];
+  } else {
+    return [10, 50, 100, 200];
+  }
 }
 
 const DynamicTable = (props: IDynamicTable) => {
@@ -137,12 +149,6 @@ const DynamicTable = (props: IDynamicTable) => {
 
   return (
     <div className={classes.root}>
-      <Paper className={classes.paper}>
-        {
-          props.isMultiSelectable ? (
-            <TableToolbar numSelected={selected.length} />
-          ) : null
-        }
         <TableContainer style={{ maxHeight: '60vh' }}>
           <Table
             className={classes.table}
@@ -171,52 +177,70 @@ const DynamicTable = (props: IDynamicTable) => {
                   const labelId = 'enhanced-table-checkbox';
 
                   return (
-                    <TableRow
-                      hover
-                      onClick={event => {
-                        handleClick(event, row[props.headerProperty]);
-                        props.onSelectedCallBack && props.onSelectedCallBack(row, selected, props.headerProperty);
-                      }}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      draggable="true"
-                      title={row.remarks || ''}
-                      key={index}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={isItemSelected}
-                          inputProps={{ 'aria-labelledby': labelId }}
-                        />
-                      </TableCell>
-                      {
-                         <>
-                            {
-                                Object.keys(row)
-                                .filter((k: string) => k !== props.headerProperty)
-                                .map(
-                                    (k: string, index: number) => {
-                                        const copyRow: any = row;
-                                        const value = copyRow[k];
-                                        return (
-                                        <TableCell
-                                            key={index}
-                                            component="th"
-                                            id={labelId}
-                                            size="medium"
-                                            padding="checkbox"
-                                        >
-                                          {value}
-                                        </TableCell>
-                                        )
-                                    }
-                                )
-                            }
-                         </>
-                      }
+                    <>
+                      <TableRow
+                        hover
+                        onClick={event => {
+                          if (props.isSelectionRestricted && props.isSelectionRestricted(row, selected, props.headerProperty)) {
+                            return;
+                          }
+                          handleClick(event, row[props.headerProperty]);
+                          props.onSelectedCallBack && props.onSelectedCallBack(row, selected, props.headerProperty);
+                        }}
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        draggable="true"
+                        key={index}
+                        selected={isItemSelected}
+                      >
+                        <TableCell
+                          key={`checkbox-${index}`}
+                          padding="checkbox">
+                          <Checkbox
+                            checked={isItemSelected}
+                            inputProps={{ 'aria-labelledby': labelId }}
+                          />
+                        </TableCell>
+                        {
+                          <>
+                              {
+                                  Object.keys(row)
+                                  .filter((k: string) => k !== props.headerProperty && k !== 'remarks')
+                                  .map(
+                                      (k: string, i: number) => {
+                                          const copyRow: any = row;
+                                          const rowItem = copyRow[k];
+                                          return (
+                                          <TableCell
+                                              key={`inner-cell-${i}--${index}`}
+                                              component="th"
+                                              align="center"
+                                              id={labelId}
+                                          >
+                                            {rowItem.value}
+                                          </TableCell>
+                                          )
+                                      }
+                                  )
+                              }
+                          </>
+                        }
                     </TableRow>
+                    {
+                      row.remarks ? (
+                        <TableRow>
+                          <TableCell
+                            key={`info-cell-${index}`}
+                            colSpan={Object.keys(row).length + 1}
+                          >
+                            <Typography>
+                              Remarks: {row.remarks && row.remarks.source}
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      ) : null
+                    }
+                    </>
                   );
                 })}
               {emptyRows > 0 && (
@@ -229,7 +253,7 @@ const DynamicTable = (props: IDynamicTable) => {
           
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[10, 50, 100, 200]}
+          rowsPerPageOptions={doTableItemsList(rows.length)}
           component="div"
           count={rows.length}
           rowsPerPage={rowsPerPage}
@@ -237,7 +261,6 @@ const DynamicTable = (props: IDynamicTable) => {
           onChangePage={handleChangePage}
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
-      </Paper>
     </div>
   );
 }

@@ -16,6 +16,10 @@ export const RegularTypography = (props: any)  => {
         <Typography 
                 style={{ width: props.length || '100px' }}
                 align="left"
+                onClick={e => {
+                  e.stopPropagation();
+                  props.onClick && props.onClick(props.children)
+                }}
                 noWrap={props.noWrap || true}
                 color="textPrimary"
                 variant="inherit"

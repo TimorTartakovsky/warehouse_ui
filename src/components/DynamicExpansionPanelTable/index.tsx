@@ -16,10 +16,10 @@ import CircleCheckedFilled from '@material-ui/icons/CheckCircle';
 import CircleUnchecked from '@material-ui/icons/RadioButtonUnchecked';
 
 const descendingComparator = (a: any, b: any, orderBy: string) => {
-  if (b[orderBy] < a[orderBy]) {
+  if (b[orderBy] && b[orderBy].source < a[orderBy] && a[orderBy].source) {
     return -1;
   }
-  if (b[orderBy] > a[orderBy]) {
+  if (b[orderBy] && b[orderBy].source > a[orderBy] && a[orderBy].source) {
     return 1;
   }
   return 0;
@@ -208,7 +208,7 @@ const DynamicExpansionPanelTable = (props: IDynamicTable) => {
                       tabIndex={-1}
                       draggable="true"
                       title={row.remarks || ''}
-                      key={index}
+                      key={`${index}${row.id}`}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -229,7 +229,7 @@ const DynamicExpansionPanelTable = (props: IDynamicTable) => {
                                         const value = copyRow[k];
                                         return (
                                         <TableCell
-                                            key={innerIndex}
+                                            key={`table-cell-${innerIndex}`}
                                             component="th"
                                             id={labelId}
                                             onMouseOver={event => showRow(index)}
