@@ -3,10 +3,6 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Checkbox,
-  FormControl,
-  InputLabel,
-  OutlinedInput,
 } from '@material-ui/core';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 
@@ -29,12 +25,8 @@ export interface ITableHeader {
 
 const TableHeader = (props: ITableHeader) => {
     const {
-      classes,
-      onSelectAllClick,
       order,
       orderBy,
-      numSelected,
-      rowCount,
       onRequestSort,
       headCells
     } = props;
@@ -45,29 +37,27 @@ const TableHeader = (props: ITableHeader) => {
     return (
       <TableHead>
         <TableRow>
-          <TableCell padding="checkbox" />
+          <TableCell padding="checkbox" key="checkbox-general" />
           {headCells.map((headCell: any, i: number) => (
-            <>
-              <TableCell
-                key={i}
-                align={headCell.numeric ? 'right' : 'left'}
-                padding={headCell.disablePadding ? 'none' : 'default'}
-                sortDirection={orderBy === headCell.id ? order : false}
+            <TableCell
+              key={`table-header-cell-#${i}`}
+              align={headCell.numeric ? 'right' : 'left'}
+              padding={headCell.disablePadding ? 'none' : 'default'}
+              sortDirection={orderBy === headCell.id ? order : false}
+            >
+              <TableSortLabel
+                style={{
+                  height: '60px',
+                  minWidth: '100%',
+                  justifyContent: 'center',
+                }}
+                active={orderBy === headCell.id}
+                direction={orderBy === headCell.id ? order : 'asc'}
+                onClick={createSortHandler(headCell.id)}
               >
-                <TableSortLabel
-                  style={{
-                    height: '60px',
-                    minWidth: '100%',
-                    justifyContent: 'center',
-                  }}
-                  active={orderBy === headCell.id}
-                  direction={orderBy === headCell.id ? order : 'asc'}
-                  onClick={createSortHandler(headCell.id)}
-                >
-                  { headCell.label }
-                </TableSortLabel>
-              </TableCell>
-            </>
+                { headCell.label }
+            </TableSortLabel>
+          </TableCell>
           ))}
         </TableRow>
       </TableHead>

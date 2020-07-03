@@ -14,7 +14,8 @@ class HttpService implements IHttpService {
     private host = 'http://dev.netvisionllc.com:9001/';
     private selfHost = 'http://contabo.netvisionllc.com:3000/';
     private token: string = '';
-    
+    private _socket: any;
+
     constructor() {
         if (process.env.NODE_ENV === "development") {
             this.host = 'http://localhost:9001/';
@@ -49,6 +50,14 @@ class HttpService implements IHttpService {
 
     public async get(url: string, body?: any): Promise<any> {
         return await this.instance.get(url);
+    }
+
+    set socket(socket: any) {
+        this._socket = socket;
+    }
+
+    get socket(): any {
+        return this._socket;
     }
 
     unsetToken(): void {

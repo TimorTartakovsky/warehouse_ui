@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { BOL_ACTIONS, IActionPayload } from '../../actions'
 import { IRootState, TableItem } from '../../store';
 import { IBOLMonitoring } from '../../store/bol/types';
-import { BOLRequestProps } from '../../actions/bol.action';
+import { BOLRequestProps, RecallMonitoringProps } from '../../actions/bol.action';
 import DynamicTable, { IHeaderCellType } from '../DynamicTable';
 import moment from 'moment';
 import { RegularTypography } from '../Shared/Typography';
@@ -47,10 +47,12 @@ export interface IBOLMonitoringProps {
     monitoring?: IBOLMonitoring[];
     monitoringTableHeaders?: IHeaderCellType[];
     fetchMonitoring?: (p: BOLRequestProps) => void;
+    doRecallMonitoring?: (p: RecallMonitoringProps) => void;
 }
 export interface IBOLMonitoringState {
     searchField: string;
     monitoringArray: TableItem[] | any[];
+    monitoringSelected: IBOLMonitoring | any;
     btnMonitoringGroupStatus: MonitoringButtonsGroupState;
 }
 
@@ -78,6 +80,14 @@ class BOLMonitoring extends React.Component<IBOLMonitoringProps, IBOLMonitoringS
         searchField: '',
         monitoringArray: [],
         btnMonitoringGroupStatus: defaultMonitoringButtonsGroupState,
+        monitoringSelected: {
+            bolNumber: '',
+            bolIds: [],
+            carrier: '',
+            orderNumbers: [],
+            taskId: 0,
+            bolStatus: 0
+        },
     }
 
     public componentDidMount() {
@@ -101,13 +111,18 @@ class BOLMonitoring extends React.Component<IBOLMonitoringProps, IBOLMonitoringS
     
     public onMonitoringSelected = (m: any,  selected: string[], pk: string): void => {
         const bolMonitoringSource = this.props.monitoring ? this.props.monitoring
-        .find(mon => mon.orderNumbers[0] === m.orderNumbers.source[0]) : null;
+            .find((mon: any, id: number) => id === m.id) : null;
         if (bolMonitoringSource && this.props.locationId) {
-            // this.props.onSelectedValue(
-            //     bolMonitoringSource,
-            //     selected,
-            //     pk,
-            //     this.props.locationId);
+            this.setState(prev => ({
+                ...prev,
+                monitoringSelected: bolMonitoringSource,
+                btnMonitoringGroupStatus: {
+                    [BOLMonitoringBtnType.detail]: false,
+                    [BOLMonitoringBtnType.printDocs]: false,
+                    [BOLMonitoringBtnType.recall]: false,
+                    [BOLMonitoringBtnType.resend]: false,
+                },
+            }));
         } else {
             console.log(`Selected item wasn't defined.`)
         }
@@ -118,8 +133,8 @@ class BOLMonitoring extends React.Component<IBOLMonitoringProps, IBOLMonitoringS
         if (!Array.isArray(this.props.monitoring) || !this.props.monitoring.length) {
             return [];
         } else {
-            return this.props.monitoring.map((monitoring: IBOLMonitoring) => ({
-                id: monitoring.id,
+            return this.props.monitoring.map((monitoring: IBOLMonitoring, i: number) => ({
+                id: i,
                 bolNumber: {
                     isSearchable: true,
                     source: monitoring.bolNumber,
@@ -137,19 +152,24 @@ class BOLMonitoring extends React.Component<IBOLMonitoringProps, IBOLMonitoringS
                 },
                 customerName: {
                     isSearchable: true,
+                    title: monitoring.customerName,
                     source: monitoring.customerName,
                     value: <RegularTypography length="120px">{monitoring.customerName}</RegularTypography>
                 },
                 carrier: {
                     isSearchable: true,
                     source: monitoring.carrier,
+                    title: monitoring.carrier,
                     value: <RegularTypography length="120px">{monitoring.carrier}</RegularTypography>
                 },
                 deliveryDays: {
                     isSearchable: true,
                     source: monitoring.deliveryDays,
                     value: (<RegularTypography length="100px">
-                             {monitoring.deliveryDays  && moment(monitoring.deliveryDays, DATE_TIME_DB).format(DATE_TIME_FORMAT) || ''}
+                            {
+                                (!!monitoring.deliveryDays) ? 
+                                moment(monitoring.deliveryDays, DATE_TIME_DB).format(DATE_TIME_FORMAT) : ''
+                            }
                          </RegularTypography>),
                 },
                 freightCharges: {
@@ -159,6 +179,7 @@ class BOLMonitoring extends React.Component<IBOLMonitoringProps, IBOLMonitoringS
                 },
                 freightTerms: {
                     isSearchable: true,
+                    title: monitoring.freightTerms,
                     source: monitoring.freightTerms,
                     value: <RegularTypography length="120px">{monitoring.freightTerms}</RegularTypography>
                 },
@@ -181,7 +202,10 @@ class BOLMonitoring extends React.Component<IBOLMonitoringProps, IBOLMonitoringS
                     isSearchable: true,
                     source: monitoring.checkedDate,
                     value: (<RegularTypography length="100px">
-                                {monitoring.checkedDate && moment(monitoring.checkedDate, DATE_TIME_DB).format(DATE_TIME_FORMAT) || ''}
+                                {
+                                    (!!monitoring.checkedDate) ? 
+                                    moment(monitoring.checkedDate, DATE_TIME_DB).format(DATE_TIME_FORMAT) : ''
+                                }
                             </RegularTypography>)
                 },
                 bolStatus: {
@@ -295,7 +319,25 @@ class BOLMonitoring extends React.Component<IBOLMonitoringProps, IBOLMonitoringS
                                         text: 'Recall',
                                         isDisabled: this.state.btnMonitoringGroupStatus.recall,
                                         onButtonClicked: (e: any, btnType: string): void => {
-                                            // handleMonitoringEvents(e, btnType);
+                                            if (!this.state.monitoringSelected || !this.props.locationId) {
+                                                return;
+                                            } else {
+                                                const {
+                                                    bolNumber, bolIds, carrier, orderNumbers,
+                                                    taskId, bolStatus,
+                                                } = this.state.monitoringSelected;
+                                                const { locationId = 0 } = this.props;   
+                                                this.props.doRecallMonitoring && this.props
+                                                .doRecallMonitoring({
+                                                    bolNumbers: bolNumber,
+                                                    bolWorkIds: bolIds,
+                                                    carrier,
+                                                    locationId: locationId,
+                                                    orderNumbers: orderNumbers,
+                                                    status: bolStatus,
+                                                    taskId,
+                                                })
+                                            }
                                         }
                                     },
                                     {
@@ -327,13 +369,16 @@ class BOLMonitoring extends React.Component<IBOLMonitoringProps, IBOLMonitoringS
 
 const mapStateToProps = (state: IRootState) => ({
     locationId: state.user.locationId || 0,
-    branchId: state.user.location && state.user.location.branchId || 0,
+    branchId: (state.user.location && state.user.location.branchId) || 0,
     monitoring: state.bol.monitoring || [],
 })
 
 const mapDispatchToProps = (dispatch: Dispatch<IActionPayload>) => ({
     fetchMonitoring: (p: BOLRequestProps) => {
         dispatch(BOL_ACTIONS.bolMonitoringRequest(p));
+    },
+    doRecallMonitoring: (p: RecallMonitoringProps) => {
+        dispatch(BOL_ACTIONS.bolMonitoringRecallRequest(p));
     }
 })
 

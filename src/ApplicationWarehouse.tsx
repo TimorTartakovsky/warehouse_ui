@@ -261,7 +261,6 @@ library.add(
 );
 // TODO: remove most of it after setup
 
-
 // COVER REACT IN TYPESCRIPT GAP
 declare global {
   interface Window {

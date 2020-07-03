@@ -1,9 +1,8 @@
-import { IHeaderCellType } from "../../components/DynamicTable";
 import { ConflictAddressType, ProcessingInfo } from "../../actions/bol.action";
 
 export interface IBOLMonitoring {
     id: number;
-    bolIds: Array<number>;
+    bolIds: number[];
     bolNumber: string;
     brokerApi: number;
     proNumber: string;

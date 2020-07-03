@@ -177,7 +177,6 @@ const DynamicExpansionPanelTable = (props: IDynamicTable) => {
           <Table
             className={classes.table}
             aria-labelledby="tableTitle"
-            size="small"
             stickyHeader
             aria-label="sticky table"
           >
@@ -207,6 +206,7 @@ const DynamicExpansionPanelTable = (props: IDynamicTable) => {
                       aria-checked={isItemSelected}
                       tabIndex={-1}
                       draggable="true"
+                      style={{ height: '53px' }}
                       title={row.remarks || ''}
                       key={`${index}${row.id}`}
                       selected={isItemSelected}
@@ -221,34 +221,38 @@ const DynamicExpansionPanelTable = (props: IDynamicTable) => {
                         />
                       </TableCell>
                       {
-                         <>
-                            {
-                                Object.keys(row).filter(f=> f !== 'id').map(
-                                    (k: string, innerIndex: number) => {
-                                        const copyRow: any = row;
-                                        const value = copyRow[k];
-                                        return (
-                                        <TableCell
-                                            key={`table-cell-${innerIndex}`}
-                                            component="th"
-                                            id={labelId}
-                                            onMouseOver={event => showRow(index)}
-                                            onMouseOut={event => hideRow(index)}
-                                            size="medium"
-                                            padding="checkbox"
-                                        >
-                                          {
-                                            value.value1
-                                          }
-                                          {
-                                            value.isFocused ? value.value2 : null
-                                          }
-                                        </TableCell>
-                                        )
+                        Object.keys(row).filter(f=> f !== 'id').map(
+                            (k: string, innerIndex: number) => {
+                                const copyRow: any = row;
+                                const value = copyRow[k];
+                                return (
+                                <TableCell
+                                    key={`table-cell-${innerIndex}`}
+                                    component="th"
+                                    id={labelId}
+                                    onMouseOver={e => {
+                                        e.stopPropagation();
+                                        showRow(index);
+                                      }
                                     }
+                                    onMouseOut={e => {
+                                        e.stopPropagation();
+                                        hideRow(index)
+                                      }
+                                    }
+                                    size="medium"
+                                    padding="checkbox"
+                                >
+                                  {
+                                    value.value1
+                                  }
+                                  {
+                                    value.isFocused ? value.value2 : null
+                                  }
+                                </TableCell>
                                 )
                             }
-                         </>
+                        ) 
                       }
                     </TableRow>
                   );

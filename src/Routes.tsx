@@ -133,7 +133,7 @@ import {
   faSignOutAlt,
   faLink
 } from '@fortawesome/free-solid-svg-icons';
-import MonitoringPage from './components/Monitoring';
+// import MonitoringPage from './components/Monitoring';
 library.add(
   far,
   faSquare,
@@ -334,8 +334,9 @@ const ApplicationWarehouseRoutes = () => {
                   >
                     {
                       PATHS.ROUTES.map(
-                        (r: PATHS.IPath) => (
-                          <Route key={r.path} path={r.path} exact component={() => r.component(r.props)} />)
+                        (r: PATHS.IPath, index: number) => (
+                          <Route key={`${index}#${r.path}`} path={r.path} exact component={() => r.component(r.props)} />
+                          )
                         )
                     }
                   </motion.div>

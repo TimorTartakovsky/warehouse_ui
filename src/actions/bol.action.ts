@@ -59,6 +59,30 @@ export const BOL_PROCESSING_UPDATE_SHIPPING_ADDRESS_REQUEST_START = 'BOL_PROCESS
 export const BOL_PROCESSING_UPDATE_SHIPPING_ADDRESS_REQUEST_SUCCESS = 'BOL_PROCESSING_UPDATE_SHIPPING_ADDRESS_REQUEST_SUCCESS';
 export const BOL_PROCESSING_UPDATE_SHIPPING_ADDRESS_REQUEST_FAIL = 'BOL_PROCESSING_UPDATE_SHIPPING_ADDRESS_REQUEST_FAIL';
 
+export const BOL_PROCESSING_SPLIT_SHIPMENT_REQUEST = 'BOL_PROCESSING_SPLIT_SHIPMENT_REQUEST';
+export const BOL_PROCESSING_SPLIT_SHIPMENT_REQUEST_START = 'BOL_PROCESSING_SPLIT_SHIPMENT_REQUEST_START';
+export const BOL_PROCESSING_SPLIT_SHIPMENT_REQUEST_SUCCESS = 'BOL_PROCESSING_SPLIT_SHIPMENT_REQUEST_SUCCESS';
+export const BOL_PROCESSING_SPLIT_SHIPMENT_REQUEST_FAIL = 'BOL_PROCESSING_SPLIT_SHIPMENT_REQUEST_FAIL';
+
+
+export const bolProcessingSplitShipmentRequest = (props: any): IActionPayload => ({
+    type: BOL_PROCESSING_SPLIT_SHIPMENT_REQUEST,
+    payload: { props }
+});
+
+export const bolProcessingSplitShipmentRequestSuccess = (shipping: any): IActionPayload => ({
+    type: BOL_PROCESSING_SPLIT_SHIPMENT_REQUEST_SUCCESS,
+    payload: { shipping }
+});
+
+export const bolProcessingSplitShipmentRequestFail = (error: Error): IActionPayload => ({
+    type: BOL_PROCESSING_SPLIT_SHIPMENT_REQUEST_FAIL,
+    payload: { error }
+});
+
+export const bolProcessingSplitShipmentRequestStart = (): IActionBasic => ({
+    type: BOL_PROCESSING_SPLIT_SHIPMENT_REQUEST_START,
+});
 
 export interface IUpdateShippingAddress {
     bolIds: string[];
@@ -356,11 +380,11 @@ export const bolProcessingUpdateRequestFail = (error: Error)
 
 export type RecallMonitoringProps = {
     orderNumbers: string[];
-    taskId: number;
+    taskId: number | string;
     bolNumbers: string;
     bolWorkIds: number[];
     carrier: string;
-    locationId: number;
+    locationId: number | string;
     status: number;
 }
 

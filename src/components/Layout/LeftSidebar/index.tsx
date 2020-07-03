@@ -1,7 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import { connect } from 'react-redux';
-import { Sidebar, SidebarHeader, SidebarFooter } from '../../SidebarGroup/';
+import { Sidebar, SidebarHeader } from '../../SidebarGroup/';
 import { IRootState } from '../../../store';
 
 export interface ILeftSidebar {

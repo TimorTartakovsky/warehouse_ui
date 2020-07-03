@@ -100,7 +100,7 @@ class Monitoring extends React.Component<IMonitoringProps, IMonitoringState> {
                     <CardContent className="p-3">
                         <div className="pb-3 d-flex justify-content-left">
                             {
-                                this.props.type === EOrderTypeOptions.express &&  SUBTYPE_BUTTONS.map(sub => (
+                                (this.props.type === EOrderTypeOptions.express) ? SUBTYPE_BUTTONS.map(sub => (
                                     <Button
                                         key={sub}
                                         style={{ marginLeft: '5px' }}
@@ -115,7 +115,7 @@ class Monitoring extends React.Component<IMonitoringProps, IMonitoringState> {
                                             { sub }
                                         </span>
                                     </Button>
-                                )) || null
+                                )) : null
                             }
                         </div>
                         {
@@ -167,7 +167,7 @@ const mapStateToProps = (state: IRootState, props: IMonitoringProps) => {
         isRequestFailed: state.monitoring.isRequestFailed,
         failRequestMessage: state.monitoring.failRequestMessage,
         locationId: state.user.locationId || 0,
-        branchId: state.user.location && state.user.location.branchId || 0,
+        branchId: (state.user.location && state.user.location.branchId) || 0,
     }
   }
   

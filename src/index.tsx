@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import ApplicationWarehouse from './ApplicationWarehouse';
 import { CookiesProvider } from 'react-cookie';
 import * as serviceWorker from './serviceWorker';
+
 if (process.env.NODE_ENV === 'development') {
     console.log(`==== Application is running on 'development' mode. ====`);
 } else if (process.env.NODE_ENV === 'production') {

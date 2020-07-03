@@ -28,6 +28,10 @@ export class BOLService extends HttpService implements IBOLService {
         this.httpService = new HttpService();
     }
 
+    onBOLConnected() {
+        
+    }
+
     updateLocationInfo = async (data: IBOLUpdateLocationInfo): Promise<any> => {
         try {
             const updatedLocation = await this.httpService.post(
@@ -114,6 +118,15 @@ export class BOLService extends HttpService implements IBOLService {
             return processing;
         } catch (e) {
             throw new Error(`IBOLService -> recallMonitoring -> updateProcess failed.`);
+        }
+    }
+
+    splitBolShipment = async (props: any) => {
+        try {
+            const split = await this.httpService.post(`/bol/splitBolShipment`, props);
+            return split;
+        } catch (e) {
+            throw new Error(`IBOLService -> recallMonitoring -> monitoring cannot be fetched.`);
         }
     }
 

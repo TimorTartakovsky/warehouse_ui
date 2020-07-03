@@ -26,7 +26,6 @@ export interface ITableHeader {
 
 const TableHeader = (props: ITableHeader) => {
     const {
-      classes,
       onSelectAllClick,
       order,
       orderBy,

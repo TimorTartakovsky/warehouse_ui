@@ -1,33 +1,9 @@
 import React, { Fragment } from 'react';
 import clsx from 'clsx';
-import {
-  Paper,
-  Box,
-  Typography,
-} from '@material-ui/core';
+import { Paper, Box } from '@material-ui/core';
 import DashboardTwoToneIcon from '@material-ui/icons/DashboardTwoTone';
 import { connect } from 'react-redux';
 import { IRootState } from '../../../store';
-// import { NavLink } from 'react-router-dom';
-
-// export interface ITabPanel {
-//     children: React.ReactElement | React.ReactElement[],
-//     index: number,
-//     value: number,
-// }
-
-// const TabPanel = (props: ITabPanel) => {
-//   const { children, value, index, ...other } = props;
-//   return (
-//     <Typography
-//       component="div"
-//       role="tabpanel"
-//       hidden={value !== index}
-//       {...other}>
-//       {value === index && <Box p={4}>{children}</Box>}
-//     </Typography>
-//   );
-// }
 
 export interface IPageTitleProps {
     pageTitleStyle?: string;

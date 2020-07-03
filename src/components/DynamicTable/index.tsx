@@ -64,11 +64,11 @@ export interface IHeaderCellType {
     filterCB?: (id: string, value: string) => void;
 }
 export interface IDynamicTable {
-   onSelectedCallBack?: (monitoring: IBOLMonitoring, selected: string[], pk: string) => void;
-   rows: any[];
-   headers: IHeaderCellType[];
-   headerProperty: string;
-   isMultiSelectable?: boolean;
+  rows: any[];
+  headers: IHeaderCellType[];
+  headerProperty: string;
+  isMultiSelectable?: boolean;
+  onSelectedCallBack?: (monitoring: IBOLMonitoring, selected: string[], pk: string) => void;
    isSelectionRestricted?: (monitoring: IBOLMonitoring, selected: string[], pk: string) => boolean;
 }
 
@@ -168,18 +168,20 @@ const DynamicTable = (props: IDynamicTable) => {
               rowCount={rows.length}
               headCells={props.headers}
             />
-            <TableBody>
+            {/* <TableBody> */}
               {
                 stableSort(rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row: any, index: number) => {
+                .map((row: any, globalIndex: number) => {
                   const isItemSelected = isSelected(row[props.headerProperty]);
                   const labelId = 'enhanced-table-checkbox';
 
                   return (
-                    <>
+                    <TableBody
+                      key={globalIndex}
+                    >
                       <TableRow
-                        hover
+                        style={{ height: '53px' }}
                         onClick={event => {
                           if (props.isSelectionRestricted && props.isSelectionRestricted(row, selected, props.headerProperty)) {
                             return;
@@ -187,14 +189,11 @@ const DynamicTable = (props: IDynamicTable) => {
                           handleClick(event, row[props.headerProperty]);
                           props.onSelectedCallBack && props.onSelectedCallBack(row, selected, props.headerProperty);
                         }}
-                        role="checkbox"
                         aria-checked={isItemSelected}
-                        draggable="true"
-                        key={index}
                         selected={isItemSelected}
                       >
                         <TableCell
-                          key={`checkbox-${index}`}
+                          key="checkbox-static"
                           padding="checkbox">
                           <Checkbox
                             checked={isItemSelected}
@@ -202,53 +201,54 @@ const DynamicTable = (props: IDynamicTable) => {
                           />
                         </TableCell>
                         {
-                          <>
-                              {
-                                  Object.keys(row)
-                                  .filter((k: string) => k !== props.headerProperty && k !== 'remarks')
-                                  .map(
-                                      (k: string, i: number) => {
-                                          const copyRow: any = row;
-                                          const rowItem = copyRow[k];
-                                          return (
-                                          <TableCell
-                                              key={`inner-cell-${i}--${index}`}
-                                              component="th"
-                                              align="center"
-                                              id={labelId}
-                                          >
-                                            {rowItem.value}
-                                          </TableCell>
-                                          )
-                                      }
+                          Object.keys(row)
+                            .filter((k: string) => k !== props.headerProperty && k !== 'remarks')
+                            .map(
+                              (k: string, i: number) => {
+                                  const copyRow: any = row;
+                                  const rowItem = copyRow[k];
+                                  return (
+                                  <TableCell
+                                      key={`cell-#${i}`}
+                                      component="th"
+                                      align="center"
+                                      title={rowItem.title}
+                                      id={labelId}
+                                  >
+                                    {rowItem.value}
+                                  </TableCell>
                                   )
                               }
-                          </>
+                            )
                         }
-                    </TableRow>
-                    {
-                      row.remarks ? (
-                        <TableRow>
-                          <TableCell
-                            key={`info-cell-${index}`}
-                            colSpan={Object.keys(row).length + 1}
-                          >
-                            <Typography>
-                              Remarks: {row.remarks && row.remarks.source}
-                            </Typography>
-                          </TableCell>
+                      </TableRow>
+                      {
+                        row.remarks ? (
+                          <TableRow>
+                            <TableCell
+                              key="remark-cell"
+                              colSpan={Object.keys(row).length + 1}
+                            >
+                              <Typography>
+                                Remarks: {row.remarks && row.remarks.source}
+                              </Typography>
+                            </TableCell>
                         </TableRow>
-                      ) : null
-                    }
-                    </>
+                        ) : null
+                      }
+                    </TableBody>
                   );
-                })}
+                })
+              }
               {emptyRows > 0 && (
-                <TableRow style={{ height: (33 * emptyRows) }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
+                <TableBody
+                  key="empty-row"
+                >
+                  <TableRow style={{ height: (33 * emptyRows) }}>
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                </TableBody>
               )}
-            </TableBody>
           </Table>
           
         </TableContainer>

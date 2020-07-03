@@ -17,7 +17,7 @@ function* monitoringAsync(action: IActionPayload) {
 function* monitoringRecallAsync(action: IActionPayload) {
     try {
         const { props } = action.payload || {};
-        if (props && props.status === 4) {
+        if (props && props.status >= 4) {
             yield call(BOLService.recallMonitoringChangeStatus, props);
             yield put(BOL_ACTIONS.bolMonitoringRecallRequestSuccess(props));
             
@@ -145,6 +145,22 @@ function* processingUpdateLocationInfo(action: IActionPayload) {
     }
 }
 
+function* processingSplitShipment(action: any) {
+    try {
+        const { props } = action.payload || {};
+        yield put(BOL_ACTIONS.bolProcessingSplitShipmentRequestStart());
+        const split = yield call(BOLService.splitBolShipment, props);
+        yield put(BOL_ACTIONS.bolProcessingSplitShipmentRequestSuccess(split));
+        // have no idea what to do with it
+    } catch(e) {
+        yield put(BOL_ACTIONS.bolProcessingSplitShipmentRequestFail(e));
+    }
+}
+
+function* watchBOLProcessingSplitShipment() {
+    yield takeLatest(BOL_ACTIONS.BOL_PROCESSING_SPLIT_SHIPMENT_REQUEST, processingSplitShipment);
+}
+
 function* watchBOLProcessingUpdateLocationInfo() {
     yield takeLatest(BOL_ACTIONS.BOL_PROCESSING_UPDATE_LOCATION_INFO_REQUEST, processingUpdateLocationInfo);
 }
@@ -194,6 +210,7 @@ function* watchBOLProcessingRequests() {
 }
 
 const bolSagas = [
+    fork(watchBOLProcessingSplitShipment),
     fork(watchBOLProcessingUpdateShippingAddress),
     fork(watchBOLProcessingUpdateLocationInfo),
     fork(watchBOLProcessingUpdateBillingAddress),

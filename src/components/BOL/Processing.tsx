@@ -23,7 +23,6 @@ import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import { IconButtonGroup, EIconButtonGroupType } from '../Shared/Buttons';
 import ReceiptIcon from '@material-ui/icons/ReceiptOutlined';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import * as _ from 'lodash';
 import { AdditionalInfo } from './dialogs/AdditionalInfo';
 import { SplitShipment } from './dialogs/SplitShipment';
 
@@ -66,6 +65,7 @@ export interface IBOLProcessingProps {
     updateBillingAddress?: (p: IUpdateBillingAddress) => void;
     updateLocationInfo?: (p: IBOLUpdateLocationInfo) => void;
     updateShippingAddress?: (p: IUpdateShippingAddress) => void;
+    splitShipment: (p: any) => void;
 }
 
 export interface IBOLProcessingState {
@@ -287,6 +287,7 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
     }
 
     private onSkidClick = (p: IBOLProcessing): void => {
+        console.log(p);
         this.setState(prev => ({
             ...prev,
             selectedSkipProcess: p,
@@ -295,10 +296,7 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
     }
 
     private onSelectedAddressToProcess = (p: ConflictAddressType): void => {
-        this.setState(prev => ({
-            ...prev,
-            selectedAddress: p,
-        }))
+        this.setState(prev => ({ ...prev, selectedAddress: p, }));
     }
 
     private onAdditionalClicked = (p: IBOLProcessing): void => {
@@ -442,11 +440,11 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                                         id={`${process.id}-bol-processing-carrier`}
                                         key={`${process.id}-bol-processing-carrier`}
                                         options={options.sort((a, b) => -b.firstLetter.localeCompare(a.firstLetter))}
-                                        groupBy={(option) => option && option.firstLetter || ''}
+                                        groupBy={(option) => (option && option.firstLetter) || ''}
                                         getOptionLabel={(option) => option && option.carrierName}
                                         style={{ width: 200 }}
                                         value={cs || defCs || null}
-                                        disabled={!process.carriers || !process.carriers.length}
+                                        disabled={(!process.carriers || !process.carriers.length)}
                                         onChange={(e: any, p: any) => this.handleProcessCarrierChange(e, p, process.id)}
                                         renderInput={(params) => {
                                             return (
@@ -533,22 +531,26 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
     }
 
     private doGenerateProcessingHeader = (): IHeaderCellType[] => {
-        const processingHeaderCells: IHeaderCellType[] = [
-            { id: 'orderNumber', numeric: false, disablePadding: true, label: 'Order' },
-            { id: 'deliveryNumber', numeric: false, disablePadding: true, label: 'Delivery' },
-            { id: 'pilot', numeric: false, disablePadding: true, label: 'Pilot' },
-            { id: 'carrier', numeric: false, disablePadding: true, label: 'Carrier' },
-            { id: 'freightTerms', numeric: false, disablePadding: true, label: 'Terms' },
-            { id: 'freightCharges', numeric: false, disablePadding: true, label: 'Charge' },
-            { id: 'customerName', numeric: false, disablePadding: true, label: 'Customer Name' },
-            { id: 'shipToCity', numeric: false, disablePadding: true, label: 'City' },
-            { id: 'shipToState', numeric: false, disablePadding: true, label: 'State' },
-            { id: 'boxes', numeric: false, disablePadding: true, label: '# Boxes' },
-            { id: 'skid', numeric: false, disablePadding: true, label: '# Skids' },
-            { id: 'originalWeight', numeric: false, disablePadding: true, label: 'Actual Weight' },
-            { id: 'actions', numeric: false, disablePadding: true, label: 'Actions' },
-        ];
-        return processingHeaderCells;
+        if (!this.state.processingArray || !this.state.processingArray.length) {
+            return [];
+        } else {
+            const processingHeaderCells: IHeaderCellType[] = [
+                { id: 'orderNumber', numeric: false, disablePadding: true, label: 'Order' },
+                { id: 'deliveryNumber', numeric: false, disablePadding: true, label: 'Delivery' },
+                { id: 'pilot', numeric: false, disablePadding: true, label: 'Pilot' },
+                { id: 'carrier', numeric: false, disablePadding: true, label: 'Carrier' },
+                { id: 'freightTerms', numeric: false, disablePadding: true, label: 'Terms' },
+                { id: 'freightCharges', numeric: false, disablePadding: true, label: 'Charge' },
+                { id: 'customerName', numeric: false, disablePadding: true, label: 'Customer Name' },
+                { id: 'shipToCity', numeric: false, disablePadding: true, label: 'City' },
+                { id: 'shipToState', numeric: false, disablePadding: true, label: 'State' },
+                { id: 'boxes', numeric: false, disablePadding: true, label: '# Boxes' },
+                { id: 'skid', numeric: false, disablePadding: true, label: '# Skids' },
+                { id: 'originalWeight', numeric: false, disablePadding: true, label: 'Actual Weight' },
+                { id: 'actions', numeric: false, disablePadding: true, label: 'Actions' },
+            ];
+            return processingHeaderCells;
+        }
     }
 
     public render(): React.ReactElement {
@@ -626,8 +628,6 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                         </Grid>
                     </div>
                 </div>
-
-                
                 <DynamicTable
                     headerProperty={'id'}
                     isMultiSelectable
@@ -682,17 +682,13 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                             </Paper>
                         </DialogContent>
                         <DialogActions>
-                            <FormControl variant="outlined" style={{
-                                minWidth: '250px',
-                                margin: '1%'
-                            }}>
+                            <FormControl variant="outlined" style={{ minWidth: '250px', margin: '1%' }}>
                                 <InputLabel id="demo-simple-select-outlined-label">
                                     Set combined freight Terms*
                                 </InputLabel>
                                 <Select
                                     labelId="demo-simple-select-outlined-label"
                                     id="demo-simple-select-outlined"
-                                    // value={age}
                                     label="Set combined freight Terms*"
                                 >
                                     {
@@ -717,6 +713,7 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                             </FormControl>
                             <Button
                                 color="primary"
+                                disabled={!this.state.selectedAddress.shipToAddressId}
                                 onClick={e => {
                                     e.stopPropagation();
                                     this.doUpdateAddress()
@@ -759,6 +756,14 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
                             <Paper>
                                 <SplitShipment
                                     selectedSkipProcess={this.state.selectedSkipProcess}
+                                    updateShipment={(d) => {
+                                        this.props.splitShipment && 
+                                        this.props.splitShipment({...d, locationId: this.props.locationId});
+                                        this.setState(prev => ({
+                                            ...prev,
+                                            isOpenDialogSkid: false,
+                                        })) 
+                                    }}
                                 />
                             </Paper>
                         </DialogContent>
@@ -822,7 +827,7 @@ class BOLProcessing extends React.Component<IBOLProcessingProps, IBOLProcessingS
 
 const mapStateToProps = (state: IRootState) => ({
     locationId: state.user.locationId,
-    branchId: state.user.location && state.user.location.branchId || 0,
+    branchId: (state.user.location && state.user.location.branchId) || 0,
     processing: state.bol.processing,
     conflictAddress: state.bol.conflictAddress,
     processInfo: state.bol.processInfo,
@@ -862,6 +867,9 @@ const mapDispatchToProps = (dispatch: Dispatch<IActionPayload>) => ({
     updateLocationInfo: (p: IBOLUpdateLocationInfo): void => {
         dispatch(BOL_ACTIONS.bolProcessingUpdateLocationRequest(p));
     },
+    splitShipment: (p: any): void => {
+        dispatch(BOL_ACTIONS.bolProcessingSplitShipmentRequest(p));
+    }
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(BOLProcessing);
